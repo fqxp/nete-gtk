@@ -1,0 +1,14 @@
+Source: nete
+Maintainer: Frank Ploss <nete@fqxp.de>
+Section: python
+Priority: optional
+Build-Depends: dh-python, python-setuptools (>= 0.6b3), python (>= 2.6.6-3), debhelper (>= 9)
+Standards-Version: 3.9.6
+Homepage: https://github.com/fqxp/nete-qt
+X-Python-Depends: >=2.7
+
+Package: nete
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}, python-markdown, python-pyqt5, python-pyqt5.qtquick, python-markdown, qml-module-qt-labs-settings, qml-module-qtquick2, qml-module-qtquick-window2, qml-module-qtquick-controls, qml-module-qtquick-layouts, fonts-font-awesome
+Description: A note-taking application with Qt and command line frontends
+

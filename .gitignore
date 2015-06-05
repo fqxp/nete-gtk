@@ -1,0 +1,10 @@
+*.pyc
+notes/
+nete.egg-info/
+build/
+dist/
+debian/nete/
+debian/source/
+debian/files
+.pybuild/
+core
