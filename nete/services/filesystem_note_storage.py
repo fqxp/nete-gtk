@@ -1,3 +1,4 @@
+from __future__ import print_function
 from nete.models.note import Note
 import glob
 import json
@@ -10,7 +11,7 @@ class FilesystemNoteStorage(object):
 
     def __init__(self, context):
         self._context = context
-        print 'Using directory %s' % self.note_dir()
+        print('Using directory %s' % self.note_dir())
 
     def list(self):
         notes = [
@@ -38,7 +39,7 @@ class FilesystemNoteStorage(object):
             note.id = str(uuid.uuid4())
 
         filename = self._filename_from_id(note.id)
-        print "Saving note %s in %s" % (note.id, filename)
+        print("Saving note %s in %s" % (note.id, filename))
 
         with open(filename, 'w') as fd:
             content = {

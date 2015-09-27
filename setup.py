@@ -20,6 +20,7 @@ setup(
     entry_points={
         'gui_scripts': [
             'nete-qt = nete.qtgui.application:main',
+            'nete-gtk = nete.gtkgui.main:main',
         ],
         'console_scripts': [
             'nete-cli = nete.cli.main:main',

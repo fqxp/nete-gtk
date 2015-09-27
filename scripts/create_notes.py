@@ -1,10 +1,10 @@
-#! python
+#! /usr/bin/env python3
 
 from nete.services.filesystem_note_storage import FilesystemNoteStorage
 import sys
 import random
 
-words = map(str.strip, open('/usr/share/dict/ngerman').readlines())
+words = list(map(str.strip, open('/usr/share/dict/ngerman').readlines()))
 
 def random_text(count=1):
     return ' '.join([
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     storage = FilesystemNoteStorage('./notes')
 
     for i in range(count):
-        print 'Creating note #%d' % i
+        print('Creating note #%d' % i)
         note = storage.create()
         note.title = random_text(2)
         note.text = random_text(50)
