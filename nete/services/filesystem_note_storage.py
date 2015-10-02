@@ -22,7 +22,7 @@ class FilesystemNoteStorage(object):
         return notes
 
     def load(self, note_id):
-        note = Note()
+        note = self.create()
         note.id = note_id
 
         with open(self._filename_from_id(note_id)) as fd:
@@ -49,7 +49,7 @@ class FilesystemNoteStorage(object):
             json.dump(content, fd)
 
     def create(self):
-        return Note()
+        return Note(storage=self)
 
     def delete(self, note):
         os.unlink(self._filename_from_id(note.id))

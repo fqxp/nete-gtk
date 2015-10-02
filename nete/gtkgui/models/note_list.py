@@ -9,11 +9,7 @@ class NoteList(Gtk.ListStore):
 
     def __init__(self, nete_uri):
         super().__init__(Note, str)
-        # self.connect('notify::nete_uri', self.on_nete_uri_changed)
         self.note_storage = StorageFactory.create_storage(NeteUri(nete_uri))
-
-    def on_nete_uri_changed(self):
-        self.note_storage = StorageFactory.create_storage(NeteUri(self.nete_uri))
 
     def load(self):
         self.clear()

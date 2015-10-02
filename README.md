@@ -62,6 +62,12 @@ Use
 
 to toggle the visibility of the main window.
 
+# Installation PyGTK3 client
+
+'''
+sudo aptitude install python3-markdown
+'''
+
 # Development
 First, set up a virtualenv to install required development packages into and
 install development requirements:

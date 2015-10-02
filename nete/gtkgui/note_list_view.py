@@ -40,18 +40,20 @@ class NoteListView(Gtk.Grid):
         selection = self.tree_view.get_selection()
         model, current_iter = selection.get_selected()
         next_iter = model.iter_next(current_iter)
-        if next_iter is not False:
+        if next_iter is not None:
             selection.select_iter(next_iter)
 
     def select_previous(self):
         selection = self.tree_view.get_selection()
         model, current_iter = selection.get_selected()
         prev_iter = model.iter_previous(current_iter)
-        if prev_iter is not False:
+        if prev_iter is not None:
             selection.select_iter(prev_iter)
 
     def on_selection_changed(self, selection):
         model, treeiter = selection.get_selected()
+        self.tree_view.scroll_to_cell(model.get_path(treeiter))
+
         note = model[treeiter][0]
         self.emit('selection-changed', note)
 
