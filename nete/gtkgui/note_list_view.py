@@ -22,7 +22,6 @@ class NoteListView(Gtk.Grid):
             hexpand=True,
             vexpand=True,
             can_focus=False)
-        self.scrollable_treelist.set_size_request(160, -1)
         self.attach(self.scrollable_treelist, 0, 0, 1, 1)
 
         self.tree_view = Gtk.TreeView(model, headers_visible=False, can_focus=False)

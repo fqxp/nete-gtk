@@ -9,9 +9,11 @@ class MainWindow(Gtk.Window, GObject.GObject):
     note_list = GObject.property(type=NoteList)
 
     __gsignals__ = {
-        'next_note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
-        'prev_note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
-        'toggle_edit_mode': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
+        'next-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
+        'prev-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
+        'toggle-edit-mode': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
+        'toggle-edit-title-mode': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
+        'quit': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
     }
 
     def __init__(self, note_list):
@@ -21,7 +23,7 @@ class MainWindow(Gtk.Window, GObject.GObject):
         self._current_note = None
         self._note_attribute_changed_handler_id = None
 
-        self.set_default_size(600, 350)
+        self.set_default_size(800, 450)
 
         self.build_ui()
         self.connect_signals()
@@ -47,19 +49,29 @@ class MainWindow(Gtk.Window, GObject.GObject):
 
     def add_accelerators(self):
         self.accel_group = Gtk.AccelGroup()
-        self.add_accelerator('next_note',
+        self.add_accelerator('next-note',
                              self.accel_group,
                              Gdk.KEY_Page_Down,
                              Gdk.ModifierType.CONTROL_MASK,
                              Gtk.AccelFlags.VISIBLE)
-        self.add_accelerator('prev_note',
+        self.add_accelerator('prev-note',
                              self.accel_group,
                              Gdk.KEY_Page_Up,
                              Gdk.ModifierType.CONTROL_MASK,
                              Gtk.AccelFlags.VISIBLE)
-        self.add_accelerator('toggle_edit_mode',
+        self.add_accelerator('toggle-edit-mode',
                              self.accel_group,
                              Gdk.KEY_Return,
+                             Gdk.ModifierType.CONTROL_MASK,
+                             Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator('toggle-edit-title-mode',
+                             self.accel_group,
+                             ord('T'),
+                             Gdk.ModifierType.CONTROL_MASK,
+                             Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator('quit',
+                             self.accel_group,
+                             ord('Q'),
                              Gdk.ModifierType.CONTROL_MASK,
                              Gtk.AccelFlags.VISIBLE)
         self.add_accel_group(self.accel_group)
@@ -72,6 +84,12 @@ class MainWindow(Gtk.Window, GObject.GObject):
 
     def do_toggle_edit_mode(self):
         self.note_view.toggle_edit_mode()
+
+    def do_toggle_edit_title_mode(self):
+        self.note_view.toggle_title_mode()
+
+    def do_quit(self):
+        Gtk.main_quit()
 
     def on_note_list_selection_changed(self, source, note):
         self.grid.remove(self.note_view)
