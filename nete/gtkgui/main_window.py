@@ -19,6 +19,8 @@ class MainWindow(Gtk.Window, GObject.GObject):
     def __init__(self, note_list):
         Gtk.Window.__init__(self, title='nete')
 
+        self.set_name('main-window')
+
         self.note_list = note_list
         self._current_note = None
         self._note_attribute_changed_handler_id = None
@@ -32,6 +34,32 @@ class MainWindow(Gtk.Window, GObject.GObject):
         self.note_list_view.select_first()
 
     def build_ui(self):
+        css = b"""
+            #main-window {
+                background-color: #ff0000;
+            }
+
+            GtkTreeView {
+                font-size: 14px;
+            }
+            GtkTreeView row {
+                color: #eeeeee;
+                background-color: #666666;
+            }
+            GtkTreeView row:selected {
+                color: #000000;
+                background-color: #eeeeee;
+            }
+        """
+        css_provider = Gtk.CssProvider()
+        css_provider.load_from_data(css)
+
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            css_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+
         self.grid = Gtk.Grid()
         self.add(self.grid)
 

@@ -11,6 +11,7 @@ class NoteListView(Gtk.Grid):
     def __init__(self, model):
         super().__init__()
 
+        self.set_name('note-list-view')
         self.build_ui(model)
 
     @GObject.property
