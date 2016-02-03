@@ -29,6 +29,7 @@ class NoteListView(Gtk.Grid):
         title_renderer = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn('title', title_renderer, text=1)
         self.tree_view.append_column(column)
+
         self.scrollable_treelist.add(self.tree_view)
 
         self.tree_view.get_selection().connect('changed', self.on_selection_changed)

@@ -60,14 +60,14 @@ class MainWindow(Gtk.Window, GObject.GObject):
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
 
-        self.grid = Gtk.Grid()
-        self.add(self.grid)
+        self.paned = Gtk.HPaned()
+        self.add(self.paned)
 
         self.note_list_view = NoteListView(self.note_list)
-        self.grid.attach(self.note_list_view, 0, 0, 1, 1)
+        self.note_list_view.set_size_request(180, -1)
+        self.paned.add1(self.note_list_view)
 
-        self.note_view = NoteView()
-        self.grid.attach(self.note_view, 1, 0, 3, 1)
+        self.note_view = None
 
         self.add_accelerators()
 
@@ -120,10 +120,12 @@ class MainWindow(Gtk.Window, GObject.GObject):
         Gtk.main_quit()
 
     def on_note_list_selection_changed(self, source, note):
-        self.grid.remove(self.note_view)
-        self.note_view = NoteView(note)
-        self.grid.attach(self.note_view, 1, 0, 3, 1)
-        self.show_all()
+        if self.note_view is None:
+            self.note_view = NoteView(note)
+            self.paned.add2(self.note_view)
+            self.show_all()
+        else:
+            self.note_view.set_note(note)
 
         if self._note_attribute_changed_handler_id is not None:
             self._current_note.disconnect(self._note_attribute_changed_handler_id)

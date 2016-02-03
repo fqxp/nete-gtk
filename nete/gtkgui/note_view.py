@@ -5,16 +5,17 @@ import markdown
 
 class NoteView(Gtk.Grid):
 
-    def __init__(self, note=None):
+    def __init__(self, note):
         super().__init__()
 
-        self.note = note
+        self.build_ui()
+        self.connect_signals()
+        self.set_note(note)
 
-        if note is not None:
-            self.build_ui()
-            self.connect_signals()
-            self.enable_title_view_mode()
-            self.enable_text_view_mode()
+    def set_note(self, note):
+        self.note = note
+        self.enable_title_view_mode()
+        self.enable_text_view_mode()
 
     def toggle_edit_mode(self):
         if self.stack.get_visible_child_name() == 'editor':
@@ -79,7 +80,7 @@ class NoteView(Gtk.Grid):
         self.stack.add_named(text_editor, 'editor')
 
     def build_title_view(self):
-        title_view = Gtk.Label(label=self.note.title, hexpand=True)
+        title_view = Gtk.Label(hexpand=True)
 
         return title_view
 
