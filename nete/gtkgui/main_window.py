@@ -132,6 +132,6 @@ class MainWindow(Gtk.Window, GObject.GObject):
         self._note_attribute_changed_handler_id = note.connect('changed', self.on_note_attributes_changed)
         self._current_note = note
 
-    def on_note_attributes_changed(self, obj, note):
+    def on_note_attributes_changed(self, note):
         note.save()
 

@@ -50,16 +50,19 @@ class NoteView(Gtk.Grid):
 
     def connect_signals(self):
         self.title_editor.connect('key-press-event', self.on_title_key_press)
+        self.title_editor.connect('notify::text', self.on_title_changed)
         self.text_editor.get_buffer().connect('notify::text', self.on_text_buffer_text_changed)
 
     def on_text_buffer_text_changed(self, obj, note):
         self.note.text = self.text_editor.get_buffer().get_property('text')
 
+    def on_title_changed(self, source, text):
+        self.note.title = self.title_editor.get_text()
+
     def on_title_key_press(self, source, event):
         if event.keyval == Gdk.KEY_Escape:
             self.enable_title_view_mode()
         elif event.keyval == Gdk.KEY_Return:
-            self.note.title = self.title_editor.get_text()
             self.enable_title_view_mode()
 
     def build_ui(self):
