@@ -1,5 +1,5 @@
-nete (0.1-1) unstable; urgency=low
+nete-gtk (0.1-1) unstable; urgency=low
 
   * source package automatically created by stdeb 0.8.5
 
- -- Frank Ploss <nete@fqxp.de>  Sun, 09 Aug 2015 11:28:17 +0000
+ -- Frank Ploss <nete@fqxp.de>  Sat, 06 Feb 2016 14:21:17 +0000

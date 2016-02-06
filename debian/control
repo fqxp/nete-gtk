@@ -1,14 +1,14 @@
-Source: nete
+Source: nete-gtk
 Maintainer: Frank Ploss <nete@fqxp.de>
 Section: python
 Priority: optional
-Build-Depends: dh-python, python-setuptools (>= 0.6b3), python (>= 2.6.6-3), debhelper (>= 9)
+Build-Depends: dh-python, python-setuptools (>= 0.6b3), python (>= 3.4.2), debhelper (>= 9)
 Standards-Version: 3.9.6
-Homepage: https://github.com/fqxp/nete-qt
-X-Python-Depends: >=2.7
+Homepage: https://github.com/fqxp/nete-gtk
+X-Python-Depends: >=3.4
 
-Package: nete
+Package: nete-gtk
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-markdown, python-pyqt5, python-pyqt5.qtquick, python-markdown, qml-module-qt-labs-settings, qml-module-qtquick2, qml-module-qtquick-window2, qml-module-qtquick-controls, qml-module-qtquick-layouts, fonts-font-awesome
-Description: A note-taking application with Qt and command line frontends
+Depends: ${misc:Depends}, python3-markdown, python3-gi, libgtk-3-0
+Description: A note-taking application with Gtk and command line frontends
 

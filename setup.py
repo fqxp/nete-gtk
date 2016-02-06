@@ -8,18 +8,15 @@ setup(
     author='Frank Ploss',
     author_email='nete@fqxp.de',
     license='GPL',
-    url='https://github.com/fqxp/nete-qt',
+    url='https://github.com/fqxp/nete-gtk',
     packages=find_packages(),
     package_data={
         '': ['*.png'],
-        'nete.qtgui': [
-            'qml/*.qml',
-            'qml/controls/*.qml',
+        'nete.gtkgui': [
         ],
     },
     entry_points={
         'gui_scripts': [
-            'nete-qt = nete.qtgui.application:main',
             'nete-gtk = nete.gtkgui.main:main',
         ],
         'console_scripts': [
