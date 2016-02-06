@@ -4,7 +4,7 @@ from gi.repository import GObject
 class Note(GObject.Object):
 
     __gsignals__ = {
-        'changed': (GObject.SIGNAL_RUN_FIRST, None, (GObject.Object, )),
+        'changed': (GObject.SIGNAL_RUN_FIRST, None, []),
     }
 
     def __init__(self, note):
@@ -21,9 +21,9 @@ class Note(GObject.Object):
     @title.setter
     def title(self, title):
         is_changed = (self.note.title != title)
-        self.note.title = title
         if is_changed:
-            self.emit('changed', self)
+            self.note.title = title
+            self.emit('changed')
 
     @GObject.property
     def text(self):
@@ -32,7 +32,7 @@ class Note(GObject.Object):
     @text.setter
     def text(self, text):
         is_changed = (self.note.text != text)
-        self.note.text = text
         if is_changed:
-            self.emit('changed', self)
+            self.note.text = text
+            self.emit('changed')
 

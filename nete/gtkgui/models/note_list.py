@@ -14,5 +14,19 @@ class NoteList(Gtk.ListStore):
     def load(self):
         self.clear()
         for note in map(Note, self.note_storage.list()):
-            self.append((note, note.note.title))
+            note.connect('changed', self.on_note_changed)
+            self.append((note, note.title))
 
+    def on_note_changed(self, note):
+        treeiter = self._get_treeiter_for_note(note)
+        self[treeiter] = (note, note.title)
+
+    def _get_treeiter_for_note(self, note):
+        treeiter = self.get_iter_first()
+
+        while treeiter is not None:
+            if self[treeiter][0] == note:
+                return treeiter
+            treeiter = self.iter_next(treeiter)
+
+        raise Exception('note not found')
