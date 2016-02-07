@@ -21,10 +21,10 @@ class CommandLineClient(object):
             self.usage()
 
     def usage(self):
-        print '''Available commands:
+        print('''Available commands:
 list        List available notes
 view ID     View note starting with given ID
-'''
+''')
 
     def list(self):
         notes = self._storage.list()
