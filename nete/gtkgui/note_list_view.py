@@ -1,4 +1,4 @@
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Pango
 from .models.note import Note
 
 
@@ -27,6 +27,7 @@ class NoteListView(Gtk.Grid):
 
         self.tree_view = Gtk.TreeView(model, headers_visible=False, can_focus=False)
         title_renderer = Gtk.CellRendererText()
+        title_renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
         column = Gtk.TreeViewColumn('title', title_renderer, text=1)
         self.tree_view.append_column(column)
 
