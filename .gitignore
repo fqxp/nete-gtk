@@ -10,3 +10,4 @@ debian/nete-gtk.debhelper.log
 .pybuild/
 core
 Session.vim
+venv/

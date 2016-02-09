@@ -2,6 +2,7 @@ from gi.repository import Gtk, Gdk, GObject
 from nete.gtkgui.note_list_view import NoteListView
 from .note_view import NoteView
 from .models.note_list import NoteList
+import pkg_resources
 
 
 class MainWindow(Gtk.Window, GObject.GObject):
@@ -34,25 +35,8 @@ class MainWindow(Gtk.Window, GObject.GObject):
         self.note_list_view.select_first()
 
     def build_ui(self):
-        css = b"""
-            #main-window {
-                background-color: #ff0000;
-            }
-
-            GtkTreeView {
-                font-size: 14px;
-            }
-            GtkTreeView row {
-                color: #eeeeee;
-                background-color: #666666;
-            }
-            GtkTreeView row:selected {
-                color: #000000;
-                background-color: #eeeeee;
-            }
-        """
         css_provider = Gtk.CssProvider()
-        css_provider.load_from_data(css)
+        css_provider.load_from_path(pkg_resources.resource_filename(__name__, 'style/style.css'))
 
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),

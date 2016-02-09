@@ -13,6 +13,7 @@ setup(
     package_data={
         '': ['*.png'],
         'nete.gtkgui': [
+            'style/*.css',
         ],
     },
     entry_points={

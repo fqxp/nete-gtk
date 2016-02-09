@@ -1,0 +1,18 @@
+#main-window {
+  background-color: #ff0000;
+}
+
+GtkTreeView {
+  font-size: 14px;
+}
+
+GtkTreeView row {
+  color: #eeeeee;
+  background-color: #666666;
+}
+
+GtkTreeView row:selected {
+  color: #000000;
+  background-color: #eeeeee;
+}
+
