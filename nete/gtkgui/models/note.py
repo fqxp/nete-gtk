@@ -15,6 +15,10 @@ class Note(GObject.Object):
         self.note.save()
 
     @GObject.property
+    def id(self):
+        return self.note.id
+
+    @GObject.property
     def title(self):
         return self.note.title
 

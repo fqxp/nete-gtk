@@ -1,69 +1,96 @@
 from gi.repository import Gtk, GObject, WebKit, Gdk
+from nete.gtkgui.state.actions import (
+    change_note_text, change_note_title, finish_edit_note_title)
 from .models.note import Note
 import markdown
 
 
 class NoteView(Gtk.Grid):
 
-    def __init__(self, note):
+    def __init__(self, store):
         super().__init__()
 
         self.build_ui()
-        self.connect_signals()
-        self.set_note(note)
 
-    def set_note(self, note):
-        self.note = note
-        self.enable_title_view_mode()
-        self.enable_text_view_mode()
+        self.note_id = None
+        self.note_text = ''
+        self.note_title = ''
 
-    def toggle_edit_mode(self):
-        if self.stack.get_visible_child_name() == 'editor':
-            self.enable_text_view_mode()
-        else:
+        store.subscribe(self.on_state_changed)
+        self.connect_store(store)
+        self.on_state_changed(store.state)
+
+    def on_state_changed(self, state):
+        if state['current_note_id'] != self.note_id:
+            self.note_id = state['current_note_id']
+
+        if state['is_editing_text'] and self.edit_mode() == 'view':
             self.enable_text_edit_mode()
+        elif not state['is_editing_text'] and self.edit_mode() == 'editor':
+            self.enable_text_view_mode()
 
-    def toggle_title_mode(self):
-        if self.title_stack.get_visible_child_name() == 'editor':
-            self.enable_title_view_mode()
-        else:
+        if state['is_editing_title'] and self.title_edit_mode() == 'view':
             self.enable_title_edit_mode()
+        elif not state['is_editing_title'] and self.title_edit_mode() == 'editor':
+            self.enable_title_view_mode()
+
+        if state['note_text'] != self.note_text:
+            self.note_text = state['note_text']
+            self.set_note_view_text(self.note_text)
+
+        if state['note_title'] != self.note_title:
+            self.note_title = state['note_title']
+
+    def connect_store(self, store):
+        self.text_editor.get_buffer().connect(
+            'notify::text',
+            lambda obj, data: store.dispatch(
+                change_note_text(
+                    self.note_id,
+                    self.text_editor.get_buffer().get_property('text'))))
+
+        self.title_editor.connect(
+            'notify::text',
+            lambda source, text: store.dispatch(
+                change_note_title(
+                    self.note_id,
+                    self.title_editor.get_text())))
+
+        self.title_editor.connect(
+            'key-press-event',
+            lambda source, event: store.dispatch(
+                self.map_key_press_to_action(source, event)))
+
+    def map_key_press_to_action(self, source, event):
+        if event.keyval in (Gdk.KEY_Escape, Gdk.KEY_Return):
+            return finish_edit_note_title()
+
+    def set_note_view_text(self, text):
+        html_text = markdown.markdown(text)
+        self.web_view.load_html_string(html_text, 'file://.')
+
+    def edit_mode(self):
+        return self.stack.get_visible_child_name()
+
+    def title_edit_mode(self):
+        return self.title_stack.get_visible_child_name()
 
     def enable_text_view_mode(self):
-        html_text = markdown.markdown(self.note.text)
-        self.web_view.load_html_string(html_text, 'file://.')
         self.stack.set_visible_child_name('view')
 
     def enable_text_edit_mode(self):
-        self.text_editor.get_buffer().set_text(self.note.text)
+        self.text_editor.get_buffer().set_text(self.note_text)
+        self.title_editor.set_text(self.note_title)
         self.stack.set_visible_child_name('editor')
         self.text_editor.grab_focus()
 
     def enable_title_view_mode(self):
-        self.title_view.set_text(self.note.title)
+        self.title_view.set_text(self.note_title)
         self.title_stack.set_visible_child_name('view')
 
     def enable_title_edit_mode(self):
-        self.title_editor.set_text(self.note.title)
         self.title_stack.set_visible_child_name('editor')
         self.title_editor.grab_focus()
-
-    def connect_signals(self):
-        self.title_editor.connect('key-press-event', self.on_title_key_press)
-        self.title_editor.connect('notify::text', self.on_title_changed)
-        self.text_editor.get_buffer().connect('notify::text', self.on_text_buffer_text_changed)
-
-    def on_text_buffer_text_changed(self, obj, note):
-        self.note.text = self.text_editor.get_buffer().get_property('text')
-
-    def on_title_changed(self, source, text):
-        self.note.title = self.title_editor.get_text()
-
-    def on_title_key_press(self, source, event):
-        if event.keyval == Gdk.KEY_Escape:
-            self.enable_title_view_mode()
-        elif event.keyval == Gdk.KEY_Return:
-            self.enable_title_view_mode()
 
     def build_ui(self):
         self.title_stack = Gtk.Stack()
@@ -73,6 +100,7 @@ class NoteView(Gtk.Grid):
         self.title_editor = self.build_title_editor()
         self.title_stack.add_named(self.title_view, 'view')
         self.title_stack.add_named(self.title_editor, 'editor')
+        self.title_stack.set_visible_child_name('view')
 
         self.stack = Gtk.Stack()
         self.attach(self.stack, 0, 1, 1, 1)
@@ -81,6 +109,9 @@ class NoteView(Gtk.Grid):
         text_editor = self.build_text_editor()
         self.stack.add_named(text_view, 'view')
         self.stack.add_named(text_editor, 'editor')
+        self.stack.set_visible_child_name('view')
+
+        self.show_all()
 
     def build_title_view(self):
         title_view = Gtk.Label(hexpand=True)
