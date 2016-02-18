@@ -10,7 +10,9 @@ def make_immutable(value):
         return ImmutableList(value)
     elif isinstance(value, set):
         return frozenset(value)
-    elif isinstance(value, (int, float, complex, str, frozenset, type(None))):
+    elif isinstance(value, (
+            int, float, complex, str, frozenset, type(None),
+            ImmutableDict, ImmutableList)):
         return value
     else:
         raise ValueError('Cannot make value of type %s immutable' % type(value))
