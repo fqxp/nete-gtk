@@ -3,13 +3,10 @@ from nete.gtkgui.note_list_view import NoteListView
 from nete.gtkgui.state.actions import (
     select_note, toggle_edit_note_text, toggle_edit_note_title)
 from .note_view import NoteView
-from .models.note_list import NoteList
 import pkg_resources
 
 
 class MainWindow(Gtk.Window, GObject.GObject):
-
-    note_list = GObject.property(type=NoteList)
 
     __gsignals__ = {
         'next-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
@@ -19,32 +16,23 @@ class MainWindow(Gtk.Window, GObject.GObject):
         'quit': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
     }
 
-    def __init__(self, store, note_list):
+    def __init__(self, store):
         Gtk.Window.__init__(self, title='nete')
 
         self.set_name('main-window')
-
-        self.note_list = note_list
-        self._current_note = None
-        self._note_attribute_changed_handler_id = None
-
         self.set_default_size(800, 450)
 
         self.build_ui(store)
 
-        self.note_list.load()
         self.note_list_view.select_first()
 
         store.subscribe(self.on_state_changed)
         self.connect_store(store)
 
     def on_state_changed(self, state):
-        print('NEW STATE: % s', state)
+        pass
 
     def connect_store(self, store):
-        self.note_list_view.connect(
-            'selection-changed',
-            lambda source, note: store.dispatch(select_note(note.id)))
         self.connect(
             'toggle-edit-mode',
             lambda source: store.dispatch(toggle_edit_note_text()))
@@ -64,14 +52,12 @@ class MainWindow(Gtk.Window, GObject.GObject):
         self.paned = Gtk.HPaned()
         self.add(self.paned)
 
-        self.note_list_view = NoteListView(self.note_list)
+        self.note_list_view = NoteListView(store)
         self.note_list_view.set_size_request(180, -1)
         self.paned.add1(self.note_list_view)
 
         self.note_view = NoteView(store)
         self.paned.add2(self.note_view)
-
-        # self.show_all()
 
         self.add_accelerators()
 
@@ -113,19 +99,18 @@ class MainWindow(Gtk.Window, GObject.GObject):
     def do_quit(self):
         Gtk.main_quit()
 
-    def on_note_list_selection_changed(self, source, note):
-        if self.note_view is None:
-            self.note_view = NoteView(note)
-            self.paned.add2(self.note_view)
-            self.show_all()
-        else:
-            self.note_view.set_note(note)
+    # def on_note_list_selection_changed(self, source, note):
+        # if self.note_view is None:
+            # self.note_view = NoteView(note)
+            # self.paned.add2(self.note_view)
+            # self.show_all()
+        # else:
+            # self.note_view.set_note(note)
 
-        if self._note_attribute_changed_handler_id is not None:
-            self._current_note.disconnect(self._note_attribute_changed_handler_id)
-        self._note_attribute_changed_handler_id = note.connect('changed', self.on_note_attributes_changed)
-        self._current_note = note
+        # if self._note_attribute_changed_handler_id is not None:
+            # self._current_note.disconnect(self._note_attribute_changed_handler_id)
+        # self._note_attribute_changed_handler_id = note.connect('changed', self.on_note_attributes_changed)
+        # self._current_note = note
 
-    def on_note_attributes_changed(self, note):
-        note.save()
-
+    # def on_note_attributes_changed(self, note):
+        # note.save()

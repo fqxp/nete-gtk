@@ -1,7 +1,6 @@
 from gi.repository import Gtk, GObject, WebKit, Gdk
 from nete.gtkgui.state.actions import (
     change_note_text, change_note_title, finish_edit_note_title)
-from .models.note import Note
 import markdown
 
 
