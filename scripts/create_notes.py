@@ -19,8 +19,9 @@ if __name__ == '__main__':
 
     for i in range(count):
         print('Creating note #%d' % i)
-        note = storage.create()
-        note.title = random_text(2)
-        note.text = random_text(50)
+        note = {
+            'title': random_text(2),
+            'text': random_text(50),
+        }
         storage.save(note)
 
