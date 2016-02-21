@@ -1,4 +1,4 @@
-from fluous.immutable import ImmutableDict
+from immutable import ImmutableDict
 
 
 class Store:
