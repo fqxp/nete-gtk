@@ -21,6 +21,7 @@ class FilesystemNoteStorage(object):
         return notes
 
     def load(self, note_id):
+        print('Loading note %s' % note_id)
         with open(self._filename_from_id(note_id)) as fd:
             content = json.load(fd)
             return {
@@ -32,14 +33,15 @@ class FilesystemNoteStorage(object):
     def save(self, note):
         self._ensure_dir_exists(self.note_dir())
 
-        if note.fetch('id') is None:
-            note['id'] = str(uuid.uuid4())
+        if note.get('id') is None:
+            raise Exception('note has no id')
 
         filename = self._filename_from_id(note['id'])
-        print("Saving note %s in %s" % (note['id'], filename))
+        print('Saving note %s in %s' % (note['id'], filename))
 
         with open(filename, 'w') as fd:
             content = {
+                'id': note['id'],
                 'title': note['title'],
                 'text': note['text'],
             }

@@ -1,6 +1,9 @@
-from gi.repository import Gdk, Gtk, GObject, Pango
-from .models.note import Note
+from gi.repository import Gtk, GObject, Pango
 from nete.gtkgui.state.actions import select_note
+
+
+NOTE_ID = 0
+NOTE_TITLE = 1
 
 
 class NoteListModel(Gtk.ListStore):
@@ -9,27 +12,50 @@ class NoteListModel(Gtk.ListStore):
     def __init__(self):
         super().__init__(str, str)
 
-    def update_from_list(self, note_data):
+        self.set_sort_column_id(NOTE_TITLE, Gtk.SortType.ASCENDING)
+
+    def set_data(self, notes):
         self.clear()
-        for note in note_data:
-            self.append([note['id'], note['title']])
 
-    # def on_note_changed(self, note):
-        # tree_iter = self.get_treeiter_for_note(note)
-        # self[tree_iter] = (note, note.title)
+        for note_id, note in notes.items():
+            row = [note_id, note['title']]
+            self.append(row)
 
-    def get_treeiter_for_note(self, note_id):
+    def update(self, notes):
+        note_ids = tuple(row[NOTE_ID] for row in self)
+        deleted_row_ids = []
+
+        for row in self:
+            if row[NOTE_ID] in notes:
+                title = notes[row[NOTE_ID]]['title']
+                if row[NOTE_TITLE] != title:
+                    row[NOTE_TITLE] = title
+            else:
+                deleted_row_ids.append(row)
+
+        for deleted_row_id in deleted_row_ids:
+            self.remove(deleted_row_id.iter)
+
+        for note_id, note in notes.items():
+            if note_id not in note_ids:
+                row = [note_id, note['title']]
+                self.append(row)
+
+    def get_note_id_by_treeiter(self, treeiter):
+        return self[tree_iter][0]
+
+    def get_treeiter_by_note_id(self, note_id):
         tree_iter = self.get_iter_first()
 
         while tree_iter is not None:
-            if self[tree_iter][0] == note_id:
+            if self[tree_iter][NOTE_ID] == note_id:
                 return tree_iter
             tree_iter = self.iter_next(tree_iter)
 
         raise Exception('note not found')
 
-    def get_tree_path_for_note(self, note_id):
-        treeiter = self.get_treeiter_for_note(note_id)
+    def get_tree_path_by_note(self, note_id):
+        treeiter = self.get_treeiter_by_note_id(note_id)
         return self.get_path(treeiter)
 
 
@@ -41,8 +67,6 @@ class NoteListView(Gtk.Grid):
     def __init__(self, store):
         super().__init__()
 
-        self._selected_iter = None
-
         self.set_name('note-list-view')
 
         self.build_ui()
@@ -53,16 +77,15 @@ class NoteListView(Gtk.Grid):
         self.set_state(store.state)
 
     def connect_events(self):
-        self.connect('notify::notes', self.on_notify_notes)
-        self.connect('notify::current-note', self.on_notify_current_note)
+        self.connect('notify::notes', lambda source, param: self.on_notify_notes())
+        self.connect('notify::current-note', lambda source, param: self.on_notify_current_note())
 
-    def on_notify_notes(self, obj, gparamstring):
-        self.list_model().update_from_list(self.get_property('notes'))
+    def on_notify_notes(self):
+        self.list_model().update(self.get_property('notes'))
+        self.scroll_current_cell_into_view()
 
-    def on_notify_current_note(self, source, param_name):
-        selected_note_id = self.get_property('current-note')
-
-        self.tree_view.scroll_to_cell(self.list_model().get_tree_path_for_note(selected_note_id))
+    def on_notify_current_note(self):
+        self.scroll_current_cell_into_view()
 
     def set_state(self, state):
         if self.get_property('notes') != state.get('notes'):
@@ -79,8 +102,8 @@ class NoteListView(Gtk.Grid):
         )
 
     def selected_note_id(self, selection):
-        model, tree_iter = selection.get_selected()
-        return model[tree_iter][0]
+        model, treeiter = selection.get_selected()
+        return model[treeiter][0]
 
     def list_model(self):
         return self.tree_view.get_model()
@@ -103,8 +126,7 @@ class NoteListView(Gtk.Grid):
         self.scrollable_treelist.add(self.tree_view)
 
     def select_first(self):
-        model = self.list_model()
-        first_iter = model.get_iter_first()
+        first_iter = self.list_model().get_iter_first()
         self.tree_view.get_selection().select_iter(first_iter)
 
     def select_next(self):
@@ -120,3 +142,9 @@ class NoteListView(Gtk.Grid):
         prev_iter = model.iter_previous(current_iter)
         if prev_iter is not None:
             selection.select_iter(prev_iter)
+
+    def scroll_current_cell_into_view(self):
+        note_id = self.get_property('current-note')
+
+        if note_id:
+            self.tree_view.scroll_to_cell(self.list_model().get_tree_path_by_note(note_id))

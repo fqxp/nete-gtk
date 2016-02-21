@@ -1,7 +1,6 @@
 from gi.repository import Gtk, Gdk, GObject
-from nete.gtkgui.note_list_view import NoteListView
-from nete.gtkgui.state.actions import (
-    select_note, toggle_edit_note_text, toggle_edit_note_title)
+from nete.gtkgui.state.actions import toggle_edit_note_text, toggle_edit_note_title
+from .note_list_view import NoteListView
 from .note_view import NoteView
 import pkg_resources
 
@@ -26,11 +25,16 @@ class MainWindow(Gtk.Window, GObject.GObject):
 
         self.note_list_view.select_first()
 
-        store.subscribe(self.on_state_changed)
+        store.subscribe(self.set_state)
         self.connect_store(store)
+        self.set_state(store.state)
 
-    def on_state_changed(self, state):
-        pass
+    def set_state(self, state):
+        if self.get_title() != self._make_title(state['note_title']):
+            self.set_title(self._make_title(state['note_title']))
+
+    def _make_title(self, note_title):
+        return 'nete: %s' % note_title
 
     def connect_store(self, store):
         self.connect(
@@ -98,19 +102,3 @@ class MainWindow(Gtk.Window, GObject.GObject):
 
     def do_quit(self):
         Gtk.main_quit()
-
-    # def on_note_list_selection_changed(self, source, note):
-        # if self.note_view is None:
-            # self.note_view = NoteView(note)
-            # self.paned.add2(self.note_view)
-            # self.show_all()
-        # else:
-            # self.note_view.set_note(note)
-
-        # if self._note_attribute_changed_handler_id is not None:
-            # self._current_note.disconnect(self._note_attribute_changed_handler_id)
-        # self._note_attribute_changed_handler_id = note.connect('changed', self.on_note_attributes_changed)
-        # self._current_note = note
-
-    # def on_note_attributes_changed(self, note):
-        # note.save()
