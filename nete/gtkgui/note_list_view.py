@@ -6,6 +6,13 @@ NOTE_ID = 0
 NOTE_TITLE = 1
 
 
+def map_state_to_props(state):
+    return {
+        'notes': state.get('notes'),
+        'current-note': state.get('current_node_id'),
+    }
+
+
 class NoteListModel(Gtk.ListStore):
     nete_uri = GObject.property(type=str)
 

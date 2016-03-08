@@ -11,8 +11,8 @@ class NoteTextView(Gtk.Stack):
     def __init__(self, store):
         super().__init__()
 
-        self.connect_events()
         self.build_ui()
+        self.connect_events()
 
         store.subscribe(self.set_state)
         self.connect_store(store)
