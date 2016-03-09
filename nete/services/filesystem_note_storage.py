@@ -26,8 +26,8 @@ class FilesystemNoteStorage(object):
             content = json.load(fd)
             return {
                 'id': note_id,
-                'title': content['title'],
-                'text': content['text'],
+                'title': content['title'] or '',
+                'text': content['text'] or '',
             }
 
     def save(self, note):

@@ -19,8 +19,6 @@ initial_state = {
 
 
 def reducer(state, action):
-    print('ACTION', action)
-
     action_type = action['type']
 
     if action_type == SELECT_NOTE:
@@ -51,6 +49,19 @@ def reducer(state, action):
         return state
 
 
+def create_logging_reducer(reducer):
+    def logging_reducer(state, action):
+        import traceback ; traceback.print_stack()
+        print('ACTION', action)
+
+        new_state = reducer(state, action)
+
+        print(dict(new_state.delete('notes')))
+
+        return new_state
+    return logging_reducer
+
+
 class Application:
 
     def __init__(self):
@@ -71,11 +82,6 @@ class Application:
             (note_id, self._build_note_list_entry(storage.load(note_id)))
             for note_id in storage.list()
         )))
-        # store.dispatch(
-            # loaded_notes(dict([
-                # (note_id, self._build_note_list_entry(storage.load(note_id)))
-                # for note_id in storage.list()
-            # ]))
 
     def _build_note_list_entry(self, note):
         return {
