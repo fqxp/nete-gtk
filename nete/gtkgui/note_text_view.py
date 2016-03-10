@@ -38,7 +38,7 @@ class NoteTextView(Gtk.Stack):
     def _connect_events(self):
         self.connect('notify::text', lambda source, param: self._on_notify_text())
         self.connect('notify::mode', lambda source, param: self._on_notify_mode())
-        self.text_editor.get_buffer().connect(
+        self._text_editor_text_changed_handler = self.text_editor.get_buffer().connect(
             'notify::text',
             lambda source, event: self.emit(
                 'text-changed',

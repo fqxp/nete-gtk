@@ -18,6 +18,28 @@ initial_state = {
 }
 
 
+def logging_reducer(reducer):
+    def logging_reducer(state, action):
+        print('ACTION <%s>: %r' % (action['type'], action))
+
+        new_state = reducer(state, action)
+
+        print(dict(new_state.delete('notes')))
+
+        return new_state
+    return logging_reducer
+
+
+def traceback_reducer(reducer):
+    def traceback_reducer(state, action):
+        import traceback ; traceback.print_stack()
+
+        return reducer(state, action)
+    return traceback_reducer
+
+
+# @traceback_reducer
+# @logging_reducer
 def reducer(state, action):
     action_type = action['type']
 
@@ -47,19 +69,6 @@ def reducer(state, action):
         return state.set('notes', action['notes'])
     else:
         return state
-
-
-def create_logging_reducer(reducer):
-    def logging_reducer(state, action):
-        import traceback ; traceback.print_stack()
-        print('ACTION', action)
-
-        new_state = reducer(state, action)
-
-        print(dict(new_state.delete('notes')))
-
-        return new_state
-    return logging_reducer
 
 
 class Application:
