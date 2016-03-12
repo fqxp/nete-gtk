@@ -10,4 +10,3 @@ def main():
     app.show_window()
 
     Gtk.main()
-

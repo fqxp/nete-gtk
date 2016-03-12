@@ -76,14 +76,14 @@ class NoteListView(Gtk.Grid):
 
         self.set_name('note-list-view')
 
-        self.build_ui()
-        self.connect_events()
+        self._build_ui()
+        self._connect_events()
 
         store.subscribe(self.set_state)
         self.connect_store(store)
         self.set_state(store.state)
 
-    def connect_events(self):
+    def _connect_events(self):
         self.connect('notify::notes', lambda source, param: self.on_notify_notes())
         self.connect('notify::current-note', lambda source, param: self.on_notify_current_note())
 
@@ -115,7 +115,7 @@ class NoteListView(Gtk.Grid):
     def list_model(self):
         return self.tree_view.get_model()
 
-    def build_ui(self):
+    def _build_ui(self):
         model = NoteListModel()
 
         self.scrollable_treelist = Gtk.ScrolledWindow(

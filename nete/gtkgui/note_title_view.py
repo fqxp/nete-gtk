@@ -34,12 +34,12 @@ class NoteTitleView(Gtk.Stack):
     def __init__(self):
         super().__init__()
 
-        self.build_ui()
-        self.connect_events()
+        self._build_ui()
+        self._connect_events()
 
-    def connect_events(self):
-        self.connect('notify::title', lambda source, param: self.on_notify_title())
-        self.connect('notify::mode', lambda source, param: self.on_notify_mode())
+    def _connect_events(self):
+        self.connect('notify::title', lambda source, param: self._on_notify_title())
+        self.connect('notify::mode', lambda source, param: self._on_notify_mode())
 
         self.title_editor.connect(
             'notify::text',
@@ -53,13 +53,13 @@ class NoteTitleView(Gtk.Stack):
         if event.keyval in (Gdk.KEY_Escape, Gdk.KEY_Return):
             self.emit('finish-edit', self.note_id)
 
-    def on_notify_title(self):
+    def _on_notify_title(self):
         if self.get_property('title') is None:
             return
 
         self.title_view.set_text(self.get_property('title'))
 
-    def on_notify_mode(self):
+    def _on_notify_mode(self):
         if self.get_property('mode') == 'view':
             self.set_visible_child_name('view')
         elif self.get_property('mode') == 'edit':
@@ -67,7 +67,7 @@ class NoteTitleView(Gtk.Stack):
             self.title_editor.grab_focus()
             self.set_visible_child_name('editor')
 
-    def build_ui(self):
+    def _build_ui(self):
         self.title_view = Gtk.Label(hexpand=True)
         self.title_editor = Gtk.Entry()
         self.add_named(self.title_view, 'view')
