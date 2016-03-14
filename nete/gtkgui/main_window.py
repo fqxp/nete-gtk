@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Gdk, GObject
-from nete.gtkgui.state.actions import toggle_edit_note_text, toggle_edit_note_title
-from .note_list_view import NoteListView
+from nete.gtkgui.state.actions import toggle_edit_note_text, toggle_edit_note_title, select_next, select_previous
+from .note_list_view import ConnectedNoteListView
 from .note_view import NoteView
 import pkg_resources
 
@@ -23,8 +23,6 @@ class MainWindow(Gtk.Window, GObject.GObject):
 
         self.build_ui(store)
 
-        self.note_list_view.select_first()
-
         store.subscribe(self.set_state)
         self.connect_store(store)
         self.set_state(store.state)
@@ -43,6 +41,12 @@ class MainWindow(Gtk.Window, GObject.GObject):
         self.connect(
             'toggle-edit-title-mode',
             lambda source: store.dispatch(toggle_edit_note_title()))
+        self.connect(
+            'next-note',
+            lambda source: store.dispatch(select_next()))
+        self.connect(
+            'prev-note',
+            lambda source: store.dispatch(select_previous()))
 
     def build_ui(self, store):
         css_provider = Gtk.CssProvider()
@@ -56,7 +60,7 @@ class MainWindow(Gtk.Window, GObject.GObject):
         self.paned = Gtk.HPaned()
         self.add(self.paned)
 
-        self.note_list_view = NoteListView(store)
+        self.note_list_view = ConnectedNoteListView(store)
         self.note_list_view.set_size_request(180, -1)
         self.paned.add1(self.note_list_view)
 
@@ -93,12 +97,6 @@ class MainWindow(Gtk.Window, GObject.GObject):
                              Gdk.ModifierType.CONTROL_MASK,
                              Gtk.AccelFlags.VISIBLE)
         self.add_accel_group(self.accel_group)
-
-    def do_next_note(self):
-        self.note_list_view.select_next()
-
-    def do_prev_note(self):
-        self.note_list_view.select_previous()
 
     def do_quit(self):
         Gtk.main_quit()

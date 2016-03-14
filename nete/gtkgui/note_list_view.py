@@ -1,16 +1,10 @@
 from gi.repository import Gtk, GObject, Pango
 from nete.gtkgui.state.actions import select_note
+from fluous.gobject import connect
 
 
 NOTE_ID = 0
 NOTE_TITLE = 1
-
-
-def map_state_to_props(state):
-    return {
-        'notes': state.get('notes'),
-        'current-note': state.get('current_node_id'),
-    }
 
 
 class NoteListModel(Gtk.ListStore):
@@ -19,37 +13,52 @@ class NoteListModel(Gtk.ListStore):
     def __init__(self):
         super().__init__(str, str)
 
-        self.set_sort_column_id(NOTE_TITLE, Gtk.SortType.ASCENDING)
-
     def set_data(self, notes):
         self.clear()
 
-        for note_id, note in notes.items():
-            row = [note_id, note['title']]
+        for note in notes:
+            row = [note['id'], note['title']]
             self.append(row)
 
-    def update(self, notes):
-        note_ids = tuple(row[NOTE_ID] for row in self)
-        deleted_row_ids = []
+    def update(self, note_list):
+        notes_by_id = dict((note['id'], note) for note in note_list)
 
+        self._delete_rows(notes_by_id)
+        self._update_rows(notes_by_id)
+        self._append_rows(note_list)
+        self._sync_order(note_list)
+
+    def _delete_rows(self, notes_by_id):
+        rows_to_delete = [
+            row
+            for row in self
+            if row[NOTE_ID] not in notes_by_id]
+
+        for row in rows_to_delete:
+            self.remove(row.iter)
+
+    def _update_rows(self, notes_by_id):
         for row in self:
-            if row[NOTE_ID] in notes:
-                title = notes[row[NOTE_ID]]['title']
-                if row[NOTE_TITLE] != title:
-                    row[NOTE_TITLE] = title
-            else:
-                deleted_row_ids.append(row)
+            note = notes_by_id[row[NOTE_ID]]
+            row[NOTE_TITLE] = note['title']
 
-        for deleted_row_id in deleted_row_ids:
-            self.remove(deleted_row_id.iter)
+    def _append_rows(self, note_list):
+        row_ids = [row[NOTE_ID] for row in self]
+        rows_to_append = [
+            (note['id'], note['title'])
+            for note in note_list
+            if note['id'] not in row_ids]
 
-        for note_id, note in notes.items():
-            if note_id not in note_ids:
-                row = [note_id, note['title']]
-                self.append(row)
+        for row in rows_to_append:
+            self.append(row)
 
-    def get_note_id_by_treeiter(self, treeiter):
-        return self[tree_iter][0]
+    def _sync_order(self, note_list):
+        row_ids = [row[NOTE_ID] for row in self]
+        new_order = [
+            row_ids.index(note['id'])
+            for note in note_list]
+
+        self.reorder(new_order)
 
     def get_treeiter_by_note_id(self, note_id):
         tree_iter = self.get_iter_first()
@@ -66,12 +75,29 @@ class NoteListModel(Gtk.ListStore):
         return self.get_path(treeiter)
 
 
+def map_state_to_props(state):
+    return {
+        'notes': state['notes'],
+        'current-note': state['current_note_id'],
+    }
+
+
+def map_dispatch_to_props(dispatch):
+    return {
+        'selected-note': lambda note_id: dispatch(select_note(note_id)),
+    }
+
+
 class NoteListView(Gtk.Grid):
 
     notes = GObject.property(type=GObject.TYPE_PYOBJECT)
     current_note = GObject.property(type=str, default='')
 
-    def __init__(self, store):
+    __gsignals__ = {
+        'selected-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (str,)),
+    }
+
+    def __init__(self):
         super().__init__()
 
         self.set_name('note-list-view')
@@ -79,40 +105,40 @@ class NoteListView(Gtk.Grid):
         self._build_ui()
         self._connect_events()
 
-        store.subscribe(self.set_state)
-        self.connect_store(store)
-        self.set_state(store.state)
-
     def _connect_events(self):
-        self.connect('notify::notes', lambda source, param: self.on_notify_notes())
-        self.connect('notify::current-note', lambda source, param: self.on_notify_current_note())
-
-    def on_notify_notes(self):
-        self.list_model().update(self.get_property('notes'))
-        self.scroll_current_cell_into_view()
-
-    def on_notify_current_note(self):
-        self.scroll_current_cell_into_view()
-
-    def set_state(self, state):
-        if self.get_property('notes') != state.get('notes'):
-            self.set_property('notes', state.get('notes'))
-
-        if self.get_property('current-note') != state.get('current_note_id'):
-            self.set_property('current-note', state.get('current_note_id'))
-
-    def connect_store(self, store):
+        self.connect(
+            'notify::notes',
+            lambda source, param: self._on_notify_notes())
+        self.connect(
+            'notify::current-note',
+            lambda source, param: self._on_notify_current_note())
         self.tree_view.get_selection().connect(
             'changed',
-            lambda selection: store.dispatch(
-                select_note(self.selected_note_id(selection)))
-        )
+            lambda selection: self.emit(
+                'selected-note', self._selected_note_id(selection)))
 
-    def selected_note_id(self, selection):
+    def _on_notify_notes(self):
+        self._list_model().update(self.get_property('notes'))
+        self._scroll_current_cell_into_view()
+
+    def _on_notify_current_note(self):
+        if self.get_property('current-note') is None:
+            return
+
+        self._select_note(self.get_property('current-note'))
+
+    def _select_note(self, note_id):
+        treeiter = self._list_model().get_treeiter_by_note_id(note_id)
+        self.tree_view.get_selection().select_iter(treeiter)
+        self._scroll_current_cell_into_view()
+
+    def _selected_note_id(self, selection):
         model, treeiter = selection.get_selected()
+        if treeiter is None:
+            return None
         return model[treeiter][0]
 
-    def list_model(self):
+    def _list_model(self):
         return self.tree_view.get_model()
 
     def _build_ui(self):
@@ -132,26 +158,12 @@ class NoteListView(Gtk.Grid):
 
         self.scrollable_treelist.add(self.tree_view)
 
-    def select_first(self):
-        first_iter = self.list_model().get_iter_first()
-        self.tree_view.get_selection().select_iter(first_iter)
-
-    def select_next(self):
-        selection = self.tree_view.get_selection()
-        model, current_iter = selection.get_selected()
-        next_iter = model.iter_next(current_iter)
-        if next_iter is not None:
-            selection.select_iter(next_iter)
-
-    def select_previous(self):
-        selection = self.tree_view.get_selection()
-        model, current_iter = selection.get_selected()
-        prev_iter = model.iter_previous(current_iter)
-        if prev_iter is not None:
-            selection.select_iter(prev_iter)
-
-    def scroll_current_cell_into_view(self):
+    def _scroll_current_cell_into_view(self):
         note_id = self.get_property('current-note')
 
         if note_id:
-            self.tree_view.scroll_to_cell(self.list_model().get_tree_path_by_note(note_id))
+            self.tree_view.scroll_to_cell(
+                self._list_model().get_tree_path_by_note(note_id))
+
+
+ConnectedNoteListView = connect(NoteListView, map_state_to_props, map_dispatch_to_props)

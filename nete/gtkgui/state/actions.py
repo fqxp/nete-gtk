@@ -62,3 +62,21 @@ def loaded_notes(notes):
         'type': LOADED_NOTES,
         'notes': notes
     }
+
+
+def select_first():
+    return {
+        'type': SELECT_FIRST,
+    }
+
+
+def select_next():
+    return {
+        'type': SELECT_NEXT,
+    }
+
+
+def select_previous():
+    return {
+        'type': SELECT_PREVIOUS,
+    }
