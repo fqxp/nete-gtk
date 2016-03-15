@@ -1,4 +1,5 @@
 import collections
+import types
 
 
 def make_immutable(value):
@@ -7,7 +8,8 @@ def make_immutable(value):
 
     if isinstance(value, collections.MutableMapping):
         return ImmutableDict(value)
-    elif isinstance(value, collections.MutableSequence):
+    elif (isinstance(value, collections.MutableSequence) or
+          isinstance(value, types.GeneratorType)):
         return ImmutableList(value)
     elif isinstance(value, set):
         return frozenset(value)

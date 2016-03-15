@@ -1,4 +1,5 @@
 import collections.abc
+import types
 from .functions import make_immutable
 
 
@@ -7,7 +8,8 @@ class ImmutableList(collections.abc.Sequence):
     def __init__(self, initial=[]):
         if isinstance(initial, ImmutableList):
             self.data = initial.data
-        elif isinstance(initial, collections.abc.MutableSequence):
+        elif (isinstance(initial, collections.abc.MutableSequence) or
+              isinstance(initial, types.GeneratorType)):
             self.data = self._copy(initial)
         else:
             raise ValueError('Argument `initial` must be sequence')
