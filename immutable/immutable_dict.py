@@ -75,3 +75,7 @@ class ImmutableDict(collections.abc.Mapping):
         return dict(
             (k, make_immutable(v))
             for k, v in data.items())
+
+    def __str__(self):
+        return '{%s}' % ', '.join(map(lambda kv: '%r: %s' % (kv[0], str(kv[1])),
+                            self.data.items()))

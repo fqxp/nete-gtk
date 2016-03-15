@@ -71,3 +71,7 @@ class ImmutableList(collections.abc.Sequence):
 
     def _copy(self, data):
         return list(map(make_immutable, data))
+
+    def __str__(self):
+        return '[%s]' % ', '.join(
+            map(lambda v: '%s' % v, self.data))
