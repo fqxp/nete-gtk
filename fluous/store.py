@@ -6,14 +6,24 @@ class Store:
         self._reducer = reducer
         self._state = ImmutableDict(initial_state)
         self._listeners = []
+        self._middlewares = []
 
     @property
     def state(self):
         return self._state
 
+    def add_middleware(self, middleware):
+        self._middlewares.append(middleware)
+
     def dispatch(self, action):
         if action is None:
             return
+
+        for middleware in self._middlewares:
+            if callable(action):
+                action = action(self.dispatch, self._state)
+
+            action = middleware(self._state, action)
 
         if callable(action):
             action = action(self.dispatch, self._state)

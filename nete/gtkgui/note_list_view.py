@@ -112,7 +112,7 @@ class NoteListView(Gtk.Grid):
         self.connect(
             'notify::current-note',
             lambda source, param: self._on_notify_current_note())
-        self.tree_view.get_selection().connect(
+        self._changed_selection_handler = self.tree_view.get_selection().connect(
             'changed',
             lambda selection: self.emit(
                 'selected-note', self._selected_note_id(selection)))
@@ -125,7 +125,8 @@ class NoteListView(Gtk.Grid):
         if self.get_property('current-note') is None:
             return
 
-        self._select_note(self.get_property('current-note'))
+        with self.tree_view.get_selection().handler_block(self._changed_selection_handler):
+            self._select_note(self.get_property('current-note'))
 
     def _select_note(self, note_id):
         treeiter = self._list_model().get_treeiter_by_note_id(note_id)

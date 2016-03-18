@@ -17,6 +17,23 @@ def select_note(note_id):
     return load_note
 
 
+def select_first():
+    return {
+        'type': SELECT_FIRST,
+    }
+
+
+def select_next():
+    return {
+        'type': SELECT_NEXT,
+    }
+
+
+def select_previous():
+    return {
+        'type': SELECT_PREVIOUS,
+    }
+
 def toggle_edit_note_text():
     return {
         'type': TOGGLE_EDIT_NOTE_TEXT,
@@ -61,22 +78,4 @@ def loaded_notes(notes):
     return {
         'type': LOADED_NOTES,
         'notes': notes
-    }
-
-
-def select_first():
-    return {
-        'type': SELECT_FIRST,
-    }
-
-
-def select_next():
-    return {
-        'type': SELECT_NEXT,
-    }
-
-
-def select_previous():
-    return {
-        'type': SELECT_PREVIOUS,
     }

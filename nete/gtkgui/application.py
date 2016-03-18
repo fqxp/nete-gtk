@@ -4,7 +4,7 @@ from nete.services.storage_factory import create_storage
 from nete.services.note_persistence import NotePersistence
 from nete.gtkgui.main_window import MainWindow
 from nete.gtkgui.state.action_types import *
-from nete.gtkgui.state.actions import loaded_notes, select_first, select_next, select_previous
+from nete.gtkgui.state.actions import loaded_notes, select_first, select_note
 from nete.gtkgui.state import note_list
 
 
@@ -49,7 +49,7 @@ def traceback_reducer(reducer):
 
 
 @log_action_reducer
-@traceback_reducer
+# @traceback_reducer
 # @log_state_reducer
 def reducer(state, action):
     action_type = action['type']
@@ -80,24 +80,35 @@ def reducer(state, action):
         return state.set('is_editing_text', False)
     elif action_type == LOADED_NOTES:
         return state.set('notes', note_list.ordered(action['notes']))
-    elif action_type == SELECT_FIRST:
-        return state \
-            .set('current_note_id', note_list.first_note_id(state['notes']))
-    elif action_type == SELECT_NEXT:
-        return state \
-            .set('current_note_id',
-                 note_list.next_note_id(state['notes'], state['current_note_id']))
-    elif action_type == SELECT_PREVIOUS:
-        return state \
-            .set('current_note_id', note_list.previous_note_id(state['notes'], state['current_note_id']))
     else:
         return state
+
+
+def relative_selection_middleware(state, action):
+    action_type = action['type']
+
+    if action_type == SELECT_FIRST:
+        note_id = note_list.first_note_id(state['notes'])
+        return select_note(note_id)
+    elif action_type == SELECT_NEXT:
+        note_id = note_list.next_note_id(
+            state['notes'],
+            state['current_note_id'])
+        return select_note(note_id)
+    elif action_type == SELECT_PREVIOUS:
+        note_id = note_list.previous_note_id(
+            state['notes'],
+            state['current_note_id'])
+        return select_note(note_id)
+    else:
+        return action
 
 
 class Application:
 
     def __init__(self):
         store = Store(reducer, initial_state)
+        store.add_middleware(relative_selection_middleware)
         self.persistence = NotePersistence(store)
 
         self.load_notes(store, store.state['storage_uri'])
