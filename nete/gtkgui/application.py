@@ -19,28 +19,38 @@ initial_state = {
 }
 
 
-def logging_reducer(reducer):
+def log_action_reducer(reducer):
     def logging_reducer(state, action):
-        print('ACTION <%s>: %r' % (action['type'], action))
-
         new_state = reducer(state, action)
 
-        print(new_state)
+        print('ACTION <%s>: %r' % (action['type'], action))
 
         return new_state
     return logging_reducer
 
 
+def log_state_reducer(reducer):
+    def printing_state_reducer(state, action):
+        new_state = reducer(state, action)
+
+        print(new_state)
+
+        return new_state
+
+
 def traceback_reducer(reducer):
     def traceback_reducer(state, action):
+        new_state = reducer(state, action)
+
         import traceback ; traceback.print_stack()
 
-        return reducer(state, action)
+        return new_state
     return traceback_reducer
 
 
-# @traceback_reducer
-# @logging_reducer
+@log_action_reducer
+@traceback_reducer
+# @log_state_reducer
 def reducer(state, action):
     action_type = action['type']
 
