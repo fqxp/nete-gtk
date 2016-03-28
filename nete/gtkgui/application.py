@@ -1,4 +1,5 @@
 from fluous.store import Store
+from fluous.reducer_decorators import log_action, log_traceback, log_state_diff
 from gi.repository import Gtk
 from nete.services.storage_factory import create_storage
 from nete.services.note_persistence import NotePersistence
@@ -19,38 +20,9 @@ initial_state = {
 }
 
 
-def log_action_reducer(reducer):
-    def logging_reducer(state, action):
-        new_state = reducer(state, action)
-
-        print('ACTION <%s>: %r' % (action['type'], action))
-
-        return new_state
-    return logging_reducer
-
-
-def log_state_reducer(reducer):
-    def printing_state_reducer(state, action):
-        new_state = reducer(state, action)
-
-        print(new_state)
-
-        return new_state
-
-
-def traceback_reducer(reducer):
-    def traceback_reducer(state, action):
-        new_state = reducer(state, action)
-
-        import traceback ; traceback.print_stack()
-
-        return new_state
-    return traceback_reducer
-
-
-@log_action_reducer
-# @traceback_reducer
-# @log_state_reducer
+# @log_traceback
+@log_state_diff
+@log_action
 def reducer(state, action):
     action_type = action['type']
 
