@@ -37,6 +37,10 @@ class ImmutableDict(collections.abc.Mapping):
         del new_dict.data[key]
         return new_dict
 
+    def mutable(self):
+        return {key: value.mutable() if hasattr(value, 'mutable') else value
+                for key, value in self.data.items()}
+
     def __getitem__(self, key):
         return self.data[key]
 

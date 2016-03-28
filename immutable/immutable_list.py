@@ -60,6 +60,10 @@ class ImmutableList(collections.abc.Sequence):
         new.data.remove(value)
         return new
 
+    def mutable(self):
+        return [value.mutable() if hasattr(value, 'mutable') else value
+                for value in self.data]
+
     def __eq__(self, other):
         return isinstance(other, ImmutableList) and hash(self) == hash(other)
 
