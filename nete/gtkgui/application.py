@@ -52,9 +52,13 @@ def reducer(state, action):
                  note_list.ordered(
                     note_list.change_title(state['notes'], action['note_id'], action['title'])))
     elif action_type == TOGGLE_EDIT_NOTE_TEXT:
-        return state.set('is_editing_text', not state['is_editing_text'])
+        return state \
+            .set('is_editing_text', not state['is_editing_text']) \
+            .set('is_editing_title', False)
     elif action_type == TOGGLE_EDIT_NOTE_TITLE:
-        return state.set('is_editing_title', not state['is_editing_title'])
+        return state \
+            .set('is_editing_title', not state['is_editing_title']) \
+            .set('is_editing_text', False)
     elif action_type == FINISH_EDIT_NOTE_TITLE:
         return state.set('is_editing_title', False)
     elif action_type == FINISH_EDIT_NOTE_TEXT:
