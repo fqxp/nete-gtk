@@ -1,5 +1,7 @@
 from gi.repository import Gtk, Gdk, GObject
-from nete.gtkgui.state.actions import toggle_edit_note_text, toggle_edit_note_title, select_next, select_previous
+from nete.gtkgui.state.actions import (
+    toggle_edit_note_text, toggle_edit_note_title, select_next,
+    select_previous, create_note)
 from .note_list_view import ConnectedNoteListView
 from .note_view import NoteView
 import pkg_resources
@@ -12,6 +14,7 @@ class MainWindow(Gtk.Window, GObject.GObject):
         'prev-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'toggle-edit-mode': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'toggle-edit-title-mode': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
+        'create-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'quit': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
     }
 
@@ -47,6 +50,9 @@ class MainWindow(Gtk.Window, GObject.GObject):
         self.connect(
             'prev-note',
             lambda source: store.dispatch(select_previous()))
+        self.connect(
+            'create-note',
+            lambda source: store.dispatch(create_note()))
 
     def build_ui(self, store):
         css_provider = Gtk.CssProvider()
@@ -89,6 +95,11 @@ class MainWindow(Gtk.Window, GObject.GObject):
         self.add_accelerator('toggle-edit-title-mode',
                              self.accel_group,
                              ord('T'),
+                             Gdk.ModifierType.CONTROL_MASK,
+                             Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator('create-note',
+                             self.accel_group,
+                             ord('N'),
                              Gdk.ModifierType.CONTROL_MASK,
                              Gtk.AccelFlags.VISIBLE)
         self.add_accelerator('quit',

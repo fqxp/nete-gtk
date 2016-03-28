@@ -1,5 +1,6 @@
 from .action_types import *
 from nete.services.storage_factory import create_storage
+import uuid
 
 
 def select_note(note_id):
@@ -15,6 +16,15 @@ def select_note(note_id):
         }
 
     return load_note
+
+
+def create_note():
+    return {
+        'type': CREATE_NOTE,
+        'note_id': str(uuid.uuid4()),
+        'title': 'New Note',
+        'text': '',
+    }
 
 
 def select_first():

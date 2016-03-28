@@ -34,6 +34,15 @@ def reducer(state, action):
             'is_editing_title': False,
             'is_editing_text': False,
         })
+    elif action_type == CREATE_NOTE:
+        return state.update({
+            'current_note_id': action['note_id'],
+            'note_title': action['title'],
+            'note_text': action['text'],
+            'is_editing_title': True,
+            'is_editing_text': False,
+            'notes': note_list.add_new(
+                state['notes'], action['note_id'], action['title'])})
     elif action_type == CHANGE_NOTE_TEXT:
         return state.set('note_text', action['text'])
     elif action_type == CHANGE_NOTE_TITLE:

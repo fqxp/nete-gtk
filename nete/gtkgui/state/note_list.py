@@ -1,5 +1,13 @@
 from immutable import ImmutableList
 
+
+def add_new(note_list, note_id, title):
+    return ImmutableList(
+        ordered(
+            note_list.append(
+                build_entry({'id': note_id, 'title': title}))))
+
+
 def first_note_id(note_list):
     return note_list[0]['id'] if len(note_list) > 0 else None
 
