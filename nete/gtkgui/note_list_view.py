@@ -76,10 +76,10 @@ class NoteListModel(Gtk.ListStore):
 
 
 def map_state_to_props(state):
-    return {
-        'notes': state['notes'],
-        'current-note': state['current_note_id'],
-    }
+    return (
+        ('notes', state['notes']),
+        ('current-note', state['current_note_id']),
+    )
 
 
 def map_dispatch_to_props(dispatch):

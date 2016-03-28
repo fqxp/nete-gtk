@@ -4,11 +4,11 @@ from fluous.gobject import connect
 
 
 def map_state_to_props(state):
-    return {
-        'note_id': state['current_note_id'],
-        'title': state['note_title'],
-        'mode': 'edit' if state['is_editing_title'] else 'view',
-    }
+    return (
+        ('note_id', state['current_note_id']),
+        ('title', state['note_title']),
+        ('mode', 'edit' if state['is_editing_title'] else 'view'),
+    )
 
 
 def map_dispatch_to_props(dispatch):

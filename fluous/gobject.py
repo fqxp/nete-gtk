@@ -1,6 +1,6 @@
 def set_props(component, props):
-    for key, value in props.items():
-        if component.get_property(key) != props[key]:
+    for key, value in props:
+        if component.get_property(key) != value:
             component.set_property(key, value)
 
 
