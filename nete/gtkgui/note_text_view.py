@@ -59,7 +59,8 @@ class NoteTextView(Gtk.Stack):
             self.web_view.load_html_string(html_text, 'file://.')
             self.set_visible_child_name('view')
         elif self.get_property('mode') == 'edit':
-            self.text_editor.get_buffer().set_property('text', self.get_property('text'))
+            with self.text_editor.get_buffer().handler_block(self._text_editor_text_changed_handler):
+                self.text_editor.get_buffer().set_property('text', self.get_property('text'))
             self.text_editor.grab_focus()
             self.set_visible_child_name('editor')
 

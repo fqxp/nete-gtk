@@ -41,7 +41,7 @@ class NoteTitleView(Gtk.Stack):
         self.connect('notify::title', lambda source, param: self._on_notify_title())
         self.connect('notify::mode', lambda source, param: self._on_notify_mode())
 
-        self.title_editor.connect(
+        self._changed_title_handler = self.title_editor.connect(
             'notify::text',
             lambda source, param: self.emit('title-changed', self.note_id, self.title_editor.get_text()))
 
@@ -63,7 +63,8 @@ class NoteTitleView(Gtk.Stack):
         if self.get_property('mode') == 'view':
             self.set_visible_child_name('view')
         elif self.get_property('mode') == 'edit':
-            self.title_editor.set_text(self.get_property('title'))
+            with self.title_editor.handler_block(self._changed_title_handler):
+                self.title_editor.set_text(self.get_property('title'))
             self.title_editor.grab_focus()
             self.set_visible_child_name('editor')
 
