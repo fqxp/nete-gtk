@@ -1,3 +1,6 @@
+from inspect import getargspec
+
+
 def set_props(component, props):
     for key, value in props:
         if component.get_property(key) != value:
@@ -7,7 +10,12 @@ def set_props(component, props):
 def connect(Component, map_state_to_props, map_dispatch_to_props={}):
 
     def create_component(store, *args, **kwargs):
-        component = Component()
+        if 'build_component' in getargspec(Component).args:
+            build_component = lambda ChildComponent: ChildComponent(
+                store=store)
+            component = Component(*args, build_component=build_component, **kwargs)
+        else:
+            component = Component(*args, **kwargs)
 
         # connect GObject signals to handlers
         for signal, signal_handler in map_dispatch_to_props(store.dispatch).items():

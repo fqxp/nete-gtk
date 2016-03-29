@@ -3,7 +3,7 @@ from fluous.reducer_decorators import log_action, log_traceback, log_state_diff
 from gi.repository import Gtk
 from nete.services.storage_factory import create_storage
 from nete.services.note_persistence import NotePersistence
-from nete.gtkgui.main_window import MainWindow
+from nete.gtkgui.main_window import ConnectedMainWindow
 from nete.gtkgui.state.action_types import *
 from nete.gtkgui.state.actions import loaded_notes, select_first, select_note
 from nete.gtkgui.state import note_list
@@ -98,7 +98,7 @@ class Application:
 
         self.load_notes(store, store.state['storage_uri'])
 
-        self.main_window = MainWindow(store)
+        self.main_window = ConnectedMainWindow(store)
         self.main_window.connect("delete-event", Gtk.main_quit)
 
         store.dispatch(select_first())

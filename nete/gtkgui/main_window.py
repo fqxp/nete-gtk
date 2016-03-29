@@ -2,13 +2,29 @@ from gi.repository import Gtk, Gdk, GObject
 from nete.gtkgui.state.actions import (
     toggle_edit_note_text, toggle_edit_note_title, select_next,
     select_previous, create_note)
+from fluous.gobject import connect
 from .note_list_view import ConnectedNoteListView
 from .note_view import NoteView
 import pkg_resources
 
 
-class MainWindow(Gtk.Window, GObject.GObject):
+def map_state_to_props(state):
+    return (
+        ('title', 'nete: %s' % state['note_title']),
+    )
 
+
+def map_dispatch_to_props(dispatch):
+    return {
+        'toggle-edit-mode': lambda source: dispatch(toggle_edit_note_text()),
+        'toggle-edit-title-mode': lambda source: dispatch(toggle_edit_note_title()),
+        'next-note': lambda source: dispatch(select_next()),
+        'prev-note': lambda source: dispatch(select_previous()),
+        'create-note': lambda source: dispatch(create_note()),
+    }
+
+
+class MainWindow(Gtk.Window):
     __gsignals__ = {
         'next-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'prev-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
@@ -18,43 +34,17 @@ class MainWindow(Gtk.Window, GObject.GObject):
         'quit': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
     }
 
-    def __init__(self, store):
+    def __init__(self, build_component):
         Gtk.Window.__init__(self, title='nete')
 
         self.set_name('main-window')
         self.set_default_size(800, 450)
 
-        self.build_ui(store)
+        self.set_property('title', 'AARRGGHH')
 
-        store.subscribe(self.set_state)
-        self.connect_store(store)
-        self.set_state(store.state)
+        self._build_ui(build_component)
 
-    def set_state(self, state):
-        if self.get_title() != self._make_title(state['note_title']):
-            self.set_title(self._make_title(state['note_title']))
-
-    def _make_title(self, note_title):
-        return 'nete: %s' % note_title
-
-    def connect_store(self, store):
-        self.connect(
-            'toggle-edit-mode',
-            lambda source: store.dispatch(toggle_edit_note_text()))
-        self.connect(
-            'toggle-edit-title-mode',
-            lambda source: store.dispatch(toggle_edit_note_title()))
-        self.connect(
-            'next-note',
-            lambda source: store.dispatch(select_next()))
-        self.connect(
-            'prev-note',
-            lambda source: store.dispatch(select_previous()))
-        self.connect(
-            'create-note',
-            lambda source: store.dispatch(create_note()))
-
-    def build_ui(self, store):
+    def _build_ui(self, build_component):
         css_provider = Gtk.CssProvider()
         css_provider.load_from_path(pkg_resources.resource_filename(__name__, 'style/style.css'))
 
@@ -66,16 +56,16 @@ class MainWindow(Gtk.Window, GObject.GObject):
         self.paned = Gtk.HPaned()
         self.add(self.paned)
 
-        self.note_list_view = ConnectedNoteListView(store)
+        self.note_list_view = build_component(ConnectedNoteListView)
         self.note_list_view.set_size_request(180, -1)
         self.paned.add1(self.note_list_view)
 
-        self.note_view = NoteView(store)
+        self.note_view = build_component(NoteView)
         self.paned.add2(self.note_view)
 
-        self.add_accelerators()
+        self._add_accelerators()
 
-    def add_accelerators(self):
+    def _add_accelerators(self):
         self.accel_group = Gtk.AccelGroup()
         self.add_accelerator('next-note',
                              self.accel_group,
@@ -111,3 +101,6 @@ class MainWindow(Gtk.Window, GObject.GObject):
 
     def do_quit(self):
         Gtk.main_quit()
+
+
+ConnectedMainWindow = connect(MainWindow, map_state_to_props, map_dispatch_to_props)
