@@ -2,9 +2,11 @@ from inspect import getargspec
 
 
 def set_props(component, props):
+    component.freeze_notify()
     for key, value in props:
         if component.get_property(key) != value:
             component.set_property(key, value)
+    component.thaw_notify()
 
 
 def connect(Component, map_state_to_props, map_dispatch_to_props={}):
