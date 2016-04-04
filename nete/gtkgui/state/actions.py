@@ -89,3 +89,18 @@ def loaded_notes(notes):
         'type': LOADED_NOTES,
         'notes': notes
     }
+
+
+def move_or_resize_window(x, y, width, height):
+    return {
+        'type': MOVE_OR_RESIZE_WINDOW,
+        'position': [x, y],
+        'size': [width, height],
+    }
+
+
+def loaded_ui_state(ui_state):
+    return {
+        'type': LOADED_UI_STATE,
+        'ui_state': ui_state,
+    }

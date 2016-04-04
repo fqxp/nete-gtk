@@ -1,7 +1,7 @@
 from gi.repository import Gtk, Gdk, GObject
 from nete.gtkgui.state.actions import (
     toggle_edit_note_text, toggle_edit_note_title, select_next,
-    select_previous, create_note)
+    select_previous, create_note, move_or_resize_window)
 from fluous.gobject import connect
 from .note_list_view import ConnectedNoteListView
 from .note_view import NoteView
@@ -11,6 +11,8 @@ import pkg_resources
 def map_state_to_props(state):
     return (
         ('title', 'nete: %s' % state['note_title']),
+        ('position', list(state['ui_state']['window_position'])),
+        ('size', list(state['ui_state']['window_size'])),
     )
 
 
@@ -21,10 +23,14 @@ def map_dispatch_to_props(dispatch):
         'next-note': lambda source: dispatch(select_next()),
         'prev-note': lambda source: dispatch(select_previous()),
         'create-note': lambda source: dispatch(create_note()),
+        'move-or-resize': lambda x, y, width, height: dispatch(move_or_resize_window(x, y, width, height)),
     }
 
 
 class MainWindow(Gtk.Window):
+    position = GObject.property(type=GObject.TYPE_PYOBJECT)
+    size = GObject.property(type=GObject.TYPE_PYOBJECT)
+
     __gsignals__ = {
         'next-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'prev-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
@@ -32,17 +38,35 @@ class MainWindow(Gtk.Window):
         'toggle-edit-title-mode': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'create-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'quit': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
+        'move_or_resize': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (int, int, int, int)),
     }
 
     def __init__(self, build_component):
-        Gtk.Window.__init__(self, title='nete')
+        Gtk.Window.__init__(self)
 
         self.set_name('main-window')
-        self.set_default_size(800, 450)
-
-        self.set_property('title', 'AARRGGHH')
 
         self._build_ui(build_component)
+        self._connect_events()
+
+    def _connect_events(self):
+        self.connect('configure-event', self._on_configure_event)
+        self.connect('delete-event', lambda source, param: self.do_quit())
+        self._notify_position_handler = self.connect('notify::position', self._on_notify_position)
+        self._notify_size_handler = self.connect('notify::size', self._on_notify_size)
+
+    def _on_configure_event(self, source, event):
+        x, y = self.get_position()
+        width, height = self.get_size()
+        with self.handler_block(self._notify_position_handler):
+            with self.handler_block(self._notify_size_handler):
+                self.emit('move-or-resize', x, y, width, height)
+
+    def _on_notify_position(self, source, param):
+        self.move(*self.get_property('position'))
+
+    def _on_notify_size(self, source, param):
+        self.resize(*self.get_property('size'))
 
     def _build_ui(self, build_component):
         css_provider = Gtk.CssProvider()

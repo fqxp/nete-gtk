@@ -8,8 +8,8 @@ class ImmutableList(collections.abc.Sequence):
     def __init__(self, initial=[]):
         if isinstance(initial, ImmutableList):
             self.data = initial.data
-        elif (isinstance(initial, collections.abc.MutableSequence) or
-              isinstance(initial, types.GeneratorType)):
+        elif (isinstance(initial,
+                         (collections.abc.MutableSequence, types.GeneratorType, tuple))):
             self.data = self._copy(initial)
         else:
             raise ValueError('Argument `initial` must be sequence')

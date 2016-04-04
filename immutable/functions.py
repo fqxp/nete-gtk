@@ -8,8 +8,7 @@ def make_immutable(value):
 
     if isinstance(value, collections.MutableMapping):
         return ImmutableDict(value)
-    elif (isinstance(value, collections.MutableSequence) or
-          isinstance(value, types.GeneratorType)):
+    elif isinstance(value, (collections.MutableSequence, types.GeneratorType, tuple)):
         return ImmutableList(value)
     elif isinstance(value, set):
         return frozenset(value)

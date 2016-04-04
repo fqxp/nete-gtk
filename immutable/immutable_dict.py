@@ -29,7 +29,7 @@ class ImmutableDict(collections.abc.Mapping):
             return self
 
         new_dict = ImmutableDict(self.data)
-        new_dict.data.update(data)
+        new_dict.data.update(make_immutable(data))
         return new_dict
 
     def delete(self, key):

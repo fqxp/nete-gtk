@@ -21,7 +21,6 @@ class FilesystemNoteStorage(object):
         return notes
 
     def load(self, note_id):
-        print('Loading note %s' % note_id)
         with open(self._filename_from_id(note_id)) as fd:
             content = json.load(fd)
             return {
