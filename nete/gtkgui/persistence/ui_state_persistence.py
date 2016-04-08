@@ -1,6 +1,6 @@
 from gi.repository import GObject
 from fluous.gobject import connect
-from .ui_state_storage import load_ui_state, save_ui_state
+from nete.services.ui_state_storage import load_ui_state, save_ui_state
 
 
 def map_state_to_props(state):

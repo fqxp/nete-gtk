@@ -4,6 +4,5 @@ from nete.models.nete_uri import NeteUri
 
 def create_storage(nete_uri):
     nete_uri = NeteUri(nete_uri)
-    #import pdb ; pdb.set_trace()
     return FilesystemNoteStorage(nete_uri.context)
 

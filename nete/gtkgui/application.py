@@ -1,7 +1,7 @@
 from fluous.store import Store
 from fluous.reducer_decorators import log_action, log_traceback, log_state_diff
-from nete.services.note_persistence import NotePersistence
-from nete.services.ui_state_persistence import ConnectedUiStatePersistence
+from .persistence.note_persistence import NotePersistence
+from .persistence.ui_state_persistence import ConnectedUiStatePersistence
 from .components.main_window import ConnectedMainWindow
 from .state.action_types import *
 from .state.actions import select_note, load_notes, load_ui_state
