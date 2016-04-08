@@ -1,5 +1,5 @@
 from gi.repository import Gtk
-from nete.gtkgui.application import Application
+from .application import Application
 
 
 def main():

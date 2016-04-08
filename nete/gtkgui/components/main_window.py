@@ -70,7 +70,7 @@ class MainWindow(Gtk.Window):
 
     def _build_ui(self, build_component):
         css_provider = Gtk.CssProvider()
-        css_provider.load_from_path(pkg_resources.resource_filename(__name__, 'style/style.css'))
+        css_provider.load_from_path(pkg_resources.resource_filename('nete.gtkgui', 'style/style.css'))
 
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),

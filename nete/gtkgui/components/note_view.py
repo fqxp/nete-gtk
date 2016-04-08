@@ -1,6 +1,6 @@
 from gi.repository import Gtk
-from nete.gtkgui.note_title_view import ConnectedNoteTitleView
-from nete.gtkgui.note_text_view import ConnectedNoteTextView
+from .note_title_view import ConnectedNoteTitleView
+from .note_text_view import ConnectedNoteTextView
 
 
 class NoteView(Gtk.Grid):

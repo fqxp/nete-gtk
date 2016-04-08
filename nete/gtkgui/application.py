@@ -2,10 +2,10 @@ from fluous.store import Store
 from fluous.reducer_decorators import log_action, log_traceback, log_state_diff
 from nete.services.note_persistence import NotePersistence
 from nete.services.ui_state_persistence import ConnectedUiStatePersistence
-from nete.gtkgui.main_window import ConnectedMainWindow
-from nete.gtkgui.state.action_types import *
-from nete.gtkgui.state.actions import select_note, load_notes, load_ui_state
-from nete.gtkgui.state import note_list
+from .components.main_window import ConnectedMainWindow
+from .state.action_types import *
+from .state.actions import select_note, load_notes, load_ui_state
+from .state import note_list
 
 
 initial_state = {
