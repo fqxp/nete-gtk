@@ -28,7 +28,7 @@ def save_ui_state(ui_state):
     config = ConfigParser()
 
     config['general'] = {}
-    config['general']['current_note_id'] = ui_state['current_note_id']
+    config['general']['current_note_id'] = ui_state['current_note_id'] or ''
 
     config['window-geometry'] = {}
     config['window-geometry']['width'] = str(ui_state['window_size'][0])

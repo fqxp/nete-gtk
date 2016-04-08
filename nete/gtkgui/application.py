@@ -1,6 +1,5 @@
 from fluous.store import Store
 from fluous.reducer_decorators import log_action, log_traceback, log_state_diff
-from gi.repository import Gtk
 from nete.services.note_persistence import NotePersistence
 from nete.services.ui_state_persistence import ConnectedUiStatePersistence
 from nete.gtkgui.main_window import ConnectedMainWindow
@@ -87,7 +86,8 @@ def relative_selection_middleware(state, action):
 
     if action_type == SELECT_FIRST:
         note_id = note_list.first_note_id(state['notes'])
-        return select_note(note_id)
+        if note_id is not None:
+            return select_note(note_id)
     elif action_type == SELECT_NEXT:
         note_id = note_list.next_note_id(
             state['notes'],
