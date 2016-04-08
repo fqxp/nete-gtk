@@ -3,6 +3,7 @@
 from nete.services.filesystem_note_storage import FilesystemNoteStorage
 import sys
 import random
+import uuid
 
 words = list(map(str.strip, open('/usr/share/dict/ngerman').readlines()))
 
@@ -19,8 +20,10 @@ if __name__ == '__main__':
 
     for i in range(count):
         print('Creating note #%d' % i)
-        note = storage.create()
-        note.title = random_text(2)
-        note.text = random_text(50)
+        note = {
+            'id': str(uuid.uuid4()),
+            'title': random_text(2),
+            'text': random_text(50),
+        }
         storage.save(note)
 

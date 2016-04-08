@@ -1,5 +1,4 @@
 from __future__ import print_function
-from nete.models.note import Note
 import glob
 import json
 import os
@@ -15,44 +14,44 @@ class FilesystemNoteStorage(object):
 
     def list(self):
         notes = [
-            self.load(self._id_from_filename(os.path.basename(filename)))
+            self._id_from_filename(os.path.basename(filename))
             for filename in glob.glob(os.path.join(self.note_dir(), '*.json'))
         ]
 
         return notes
 
     def load(self, note_id):
-        note = self.create()
-        note.id = note_id
-
         with open(self._filename_from_id(note_id)) as fd:
             content = json.load(fd)
-            note.title = content['title']
-            note.text = content['text']
-
-        return note
+            return {
+                'id': note_id,
+                'title': content['title'],
+                'text': content['text'],
+            }
 
     def save(self, note):
         self._ensure_dir_exists(self.note_dir())
 
-        if note.id is None:
-            note.id = str(uuid.uuid4())
+        if note.get('id') is None:
+            raise Exception('Cannot save note - note has no id')
+        if note.get('title') is None:
+            raise Exception('Cannot save note - title is not set')
+        if note.get('text') is None:
+            raise Exception('Cannot save note - text is not set')
 
-        filename = self._filename_from_id(note.id)
-        print("Saving note %s in %s" % (note.id, filename))
+        filename = self._filename_from_id(note['id'])
+        print('Saving note in %s' % filename)
 
         with open(filename, 'w') as fd:
             content = {
-                'title': note.title,
-                'text': note.text,
+                'id': note['id'],
+                'title': note['title'],
+                'text': note['text'],
             }
             json.dump(content, fd)
 
-    def create(self):
-        return Note(storage=self)
-
     def delete(self, note):
-        os.unlink(self._filename_from_id(note.id))
+        os.unlink(self._filename_from_id(note['id']))
 
     def note_dir(self):
         if 'NETE_DIR' in os.environ:

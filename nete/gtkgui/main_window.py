@@ -1,65 +1,95 @@
 from gi.repository import Gtk, Gdk, GObject
-from nete.gtkgui.note_list_view import NoteListView
+from nete.gtkgui.state.actions import (
+    toggle_edit_note_text, toggle_edit_note_title, select_next,
+    select_previous, create_note, move_or_resize_window)
+from fluous.gobject import connect
+from .note_list_view import ConnectedNoteListView
 from .note_view import NoteView
-from .models.note_list import NoteList
 import pkg_resources
 
 
-class MainWindow(Gtk.Window, GObject.GObject):
+def map_state_to_props(state):
+    return (
+        ('title', 'nete: %s' % state['note_title']),
+        ('position', state['ui_state']['window_position']),
+        ('size', state['ui_state']['window_size']),
+    )
 
-    note_list = GObject.property(type=NoteList)
+
+def map_dispatch_to_props(dispatch):
+    return {
+        'toggle-edit-mode': lambda source: dispatch(toggle_edit_note_text()),
+        'toggle-edit-title-mode': lambda source: dispatch(toggle_edit_note_title()),
+        'next-note': lambda source: dispatch(select_next()),
+        'prev-note': lambda source: dispatch(select_previous()),
+        'create-note': lambda source: dispatch(create_note()),
+        'move-or-resize': lambda x, y, width, height: dispatch(move_or_resize_window(x, y, width, height)),
+    }
+
+
+class MainWindow(Gtk.Window):
+    position = GObject.property(type=GObject.TYPE_PYOBJECT)
+    size = GObject.property(type=GObject.TYPE_PYOBJECT)
 
     __gsignals__ = {
         'next-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'prev-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'toggle-edit-mode': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'toggle-edit-title-mode': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
+        'create-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'quit': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
+        'move_or_resize': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (int, int, int, int)),
     }
 
-    def __init__(self, note_list):
-        Gtk.Window.__init__(self, title='nete')
+    def __init__(self, build_component):
+        Gtk.Window.__init__(self)
 
         self.set_name('main-window')
 
-        self.note_list = note_list
-        self._current_note = None
-        self._note_attribute_changed_handler_id = None
+        self._build_ui(build_component)
+        self._connect_events()
 
-        self.set_default_size(800, 450)
+    def _connect_events(self):
+        self.connect('configure-event', self._on_configure_event)
+        self.connect('delete-event', lambda source, param: self.do_quit())
+        self._notify_position_handler = self.connect('notify::position', self._on_notify_position)
+        self._notify_size_handler = self.connect('notify::size', self._on_notify_size)
 
-        self.build_ui()
-        self.connect_signals()
+    def _on_configure_event(self, source, event):
+        x, y = self.get_position()
+        width, height = self.get_size()
+        with self.handler_block(self._notify_position_handler):
+            with self.handler_block(self._notify_size_handler):
+                self.emit('move-or-resize', x, y, width, height)
 
-        self.note_list.load()
-        self.note_list_view.select_first()
+    def _on_notify_position(self, source, param):
+        self.move(*self.get_property('position'))
 
-    def build_ui(self):
+    def _on_notify_size(self, source, param):
+        self.resize(*self.get_property('size'))
+
+    def _build_ui(self, build_component):
         css_provider = Gtk.CssProvider()
         css_provider.load_from_path(pkg_resources.resource_filename(__name__, 'style/style.css'))
 
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             css_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         self.paned = Gtk.HPaned()
         self.add(self.paned)
 
-        self.note_list_view = NoteListView(self.note_list)
+        self.note_list_view = build_component(ConnectedNoteListView)
         self.note_list_view.set_size_request(180, -1)
         self.paned.add1(self.note_list_view)
 
-        self.note_view = None
+        self.note_view = build_component(NoteView)
+        self.paned.add2(self.note_view)
 
-        self.add_accelerators()
+        self._add_accelerators()
 
-    def connect_signals(self):
-        self.note_list_view.connect('selection-changed',
-                                    self.on_note_list_selection_changed)
-
-    def add_accelerators(self):
+    def _add_accelerators(self):
         self.accel_group = Gtk.AccelGroup()
         self.add_accelerator('next-note',
                              self.accel_group,
@@ -81,6 +111,11 @@ class MainWindow(Gtk.Window, GObject.GObject):
                              ord('T'),
                              Gdk.ModifierType.CONTROL_MASK,
                              Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator('create-note',
+                             self.accel_group,
+                             ord('N'),
+                             Gdk.ModifierType.CONTROL_MASK,
+                             Gtk.AccelFlags.VISIBLE)
         self.add_accelerator('quit',
                              self.accel_group,
                              ord('Q'),
@@ -88,34 +123,8 @@ class MainWindow(Gtk.Window, GObject.GObject):
                              Gtk.AccelFlags.VISIBLE)
         self.add_accel_group(self.accel_group)
 
-    def do_next_note(self):
-        self.note_list_view.select_next()
-
-    def do_prev_note(self):
-        self.note_list_view.select_previous()
-
-    def do_toggle_edit_mode(self):
-        self.note_view.toggle_edit_mode()
-
-    def do_toggle_edit_title_mode(self):
-        self.note_view.toggle_title_mode()
-
     def do_quit(self):
         Gtk.main_quit()
 
-    def on_note_list_selection_changed(self, source, note):
-        if self.note_view is None:
-            self.note_view = NoteView(note)
-            self.paned.add2(self.note_view)
-            self.show_all()
-        else:
-            self.note_view.set_note(note)
 
-        if self._note_attribute_changed_handler_id is not None:
-            self._current_note.disconnect(self._note_attribute_changed_handler_id)
-        self._note_attribute_changed_handler_id = note.connect('changed', self.on_note_attributes_changed)
-        self._current_note = note
-
-    def on_note_attributes_changed(self, note):
-        note.save()
-
+ConnectedMainWindow = connect(MainWindow, map_state_to_props, map_dispatch_to_props)
