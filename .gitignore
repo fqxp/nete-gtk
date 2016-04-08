@@ -11,3 +11,4 @@ debian/nete-gtk.debhelper.log
 core
 Session.vim
 venv/
+config/
