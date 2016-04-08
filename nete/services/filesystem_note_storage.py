@@ -25,18 +25,22 @@ class FilesystemNoteStorage(object):
             content = json.load(fd)
             return {
                 'id': note_id,
-                'title': content['title'] or '',
-                'text': content['text'] or '',
+                'title': content['title'],
+                'text': content['text'],
             }
 
     def save(self, note):
         self._ensure_dir_exists(self.note_dir())
 
         if note.get('id') is None:
-            raise Exception('note has no id')
+            raise Exception('Cannot save note - note has no id')
+        if note.get('title') is None:
+            raise Exception('Cannot save note - title is not set')
+        if note.get('text') is None:
+            raise Exception('Cannot save note - text is not set')
 
         filename = self._filename_from_id(note['id'])
-        print('Saving note %s in %s' % (note['id'], filename))
+        print('Saving note in %s' % filename)
 
         with open(filename, 'w') as fd:
             content = {

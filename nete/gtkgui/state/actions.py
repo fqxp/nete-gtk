@@ -1,5 +1,7 @@
 from .action_types import *
 from nete.services.storage_factory import create_storage
+from nete.services import ui_state_storage
+from nete.gtkgui.state import note_list
 import uuid
 
 
@@ -84,6 +86,17 @@ def finish_edit_note_title():
     }
 
 
+def load_notes():
+    def load_notes(dispatch, state):
+        storage = create_storage(state['storage_uri'])
+        dispatch(loaded_notes(
+            note_list.build_entry(storage.load(note_id))
+            for note_id in storage.list()
+        ))
+
+    return load_notes
+
+
 def loaded_notes(notes):
     return {
         'type': LOADED_NOTES,
@@ -99,8 +112,25 @@ def move_or_resize_window(x, y, width, height):
     }
 
 
+def load_ui_state():
+    def load_ui_state(dispatch, state):
+        try:
+            ui_state = ui_state_storage.load_ui_state()
+            dispatch(loaded_ui_state(ui_state))
+        except FileNotFoundError:
+            dispatch(select_first())
+
+    return load_ui_state
+
+
 def loaded_ui_state(ui_state):
-    return {
-        'type': LOADED_UI_STATE,
-        'ui_state': ui_state,
-    }
+    def loaded_ui_state(dispatch, state):
+        if ui_state['current_note_id'] is not None:
+            dispatch(select_note(ui_state['current_note_id']))
+
+        return {
+            'type': LOADED_UI_STATE,
+            'ui_state': ui_state,
+        }
+
+    return loaded_ui_state

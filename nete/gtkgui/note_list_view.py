@@ -68,7 +68,7 @@ class NoteListModel(Gtk.ListStore):
                 return tree_iter
             tree_iter = self.iter_next(tree_iter)
 
-        raise Exception('note not found')
+        raise Exception('note with id %s not found' % note_id)
 
     def get_tree_path_by_note(self, note_id):
         treeiter = self.get_treeiter_by_note_id(note_id)
@@ -78,7 +78,7 @@ class NoteListModel(Gtk.ListStore):
 def map_state_to_props(state):
     return (
         ('notes', state['notes']),
-        ('current-note', state['current_note_id']),
+        ('current-note', state['ui_state']['current_note_id']),
     )
 
 

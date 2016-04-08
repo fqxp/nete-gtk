@@ -23,7 +23,13 @@ class Store:
             if callable(action):
                 action = action(self.dispatch, self._state)
 
+            if action is None:
+                return
+
             action = middleware(self._state, action)
+
+        if action is None:
+            return
 
         if callable(action):
             action = action(self.dispatch, self._state)

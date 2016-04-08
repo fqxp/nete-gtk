@@ -6,7 +6,7 @@ import markdown
 
 def map_state_to_props(state):
     return (
-        ('note_id', state['current_note_id']),
+        ('note_id', state['ui_state']['current_note_id']),
         ('text', state['note_text']),
         ('mode', 'edit' if state['is_editing_text'] else 'view'),
     )

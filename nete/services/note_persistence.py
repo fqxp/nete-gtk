@@ -13,7 +13,7 @@ class NotePersistence:
         self.set_state(store.state)
 
     def set_state(self, state):
-        if state['current_note_id'] is None:
+        if state['ui_state']['current_note_id'] is None:
             return
 
         if self.storage != state['storage_uri']:
@@ -29,7 +29,7 @@ class NotePersistence:
 
     def _build_note_from_state(self, state):
         return ImmutableDict({
-            'id': state['current_note_id'],
+            'id': state['ui_state']['current_note_id'],
             'title': state['note_title'],
             'text': state['note_text'],
         })

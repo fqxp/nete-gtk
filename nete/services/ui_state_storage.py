@@ -12,10 +12,13 @@ __all__ = (
 
 def load_ui_state():
     config = ConfigParser()
-    config.read(config_filename())
+    with open(config_filename()) as f:
+        config.read_file(f)
 
+    general = config['general']
     geometry = config['window-geometry']
     return {
+        'current_note_id': general['current_note_id'],
         'window_position': [geometry.getint('x'), geometry.getint('y')],
         'window_size': [geometry.getint('width'), geometry.getint('height')],
     }
@@ -23,17 +26,18 @@ def load_ui_state():
 
 def save_ui_state(ui_state):
     config = ConfigParser()
-    x, y = ui_state['window_position']
-    width, height = ui_state['window_size']
-    config['window-geometry'] = {
-        'x': x,
-        'y': y,
-        'width': width,
-        'height': height,
-    }
+
+    config['general'] = {}
+    config['general']['current_note_id'] = ui_state['current_note_id']
+
+    config['window-geometry'] = {}
+    config['window-geometry']['width'] = str(ui_state['window_size'][0])
+    config['window-geometry']['height'] = str(ui_state['window_size'][1])
+    window_position = ui_state['window_position']
+    config['window-geometry']['x'] = str(window_position[0]) if window_position is not None else ''
+    config['window-geometry']['y'] = str(window_position[1]) if window_position is not None else ''
 
     with open(config_filename(), 'w') as config_file:
-        print('WRITING: %r' % dict(config['window-geometry']))
         config.write(config_file)
 
 
