@@ -1,5 +1,5 @@
 from gi.repository import Gtk, GObject, Pango
-from nete.gtkgui.state.actions import select_note
+from nete.gtkgui.state.actions import select_note, create_note
 from fluous.gobject import connect
 
 
@@ -85,6 +85,7 @@ def map_state_to_props(state):
 def map_dispatch_to_props(dispatch):
     return {
         'selected-note': lambda note_id: dispatch(select_note(note_id)),
+        'create-note': lambda: dispatch(create_note()),
     }
 
 
@@ -95,6 +96,7 @@ class NoteListView(Gtk.Grid):
 
     __gsignals__ = {
         'selected-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (str,)),
+        'create-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
     }
 
     def __init__(self):
@@ -116,6 +118,9 @@ class NoteListView(Gtk.Grid):
             'changed',
             lambda selection: self.emit(
                 'selected-note', self._selected_note_id(selection)))
+        self.create_button.connect(
+            'clicked',
+            lambda source: self.emit('create-note'))
 
     def _on_notify_notes(self):
         self._list_model().update(self.get_property('notes'))
@@ -158,6 +163,9 @@ class NoteListView(Gtk.Grid):
         self.tree_view.append_column(column)
 
         self.scrollable_treelist.add(self.tree_view)
+
+        self.create_button = Gtk.Button('New Note')
+        self.attach(self.create_button, 0, 1, 1, 1)
 
     def _scroll_current_cell_into_view(self):
         note_id = self.get_property('current-note')
