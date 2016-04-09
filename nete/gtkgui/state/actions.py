@@ -30,21 +30,33 @@ def create_note():
 
 
 def select_first():
-    return {
-        'type': SELECT_FIRST,
-    }
+    def select_first(dispatch, state):
+        note_id = note_list.first_note_id(state['notes'])
+        if note_id is not None:
+            dispatch(select_note(note_id))
+
+    return select_first
 
 
 def select_next():
-    return {
-        'type': SELECT_NEXT,
-    }
+    def select_next(dispatch, state):
+        note_id = note_list.next_note_id(
+            state['notes'],
+            state['ui_state']['current_note_id'])
+        dispatch(select_note(note_id))
+
+    return select_next
 
 
 def select_previous():
-    return {
-        'type': SELECT_PREVIOUS,
-    }
+    def select_previous(dispatch, state):
+        note_id = note_list.previous_note_id(
+            state['notes'],
+            state['ui_state']['current_note_id'])
+        dispatch(select_note(note_id))
+
+    return select_previous
+
 
 def toggle_edit_note_text():
     return {

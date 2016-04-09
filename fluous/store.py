@@ -16,23 +16,11 @@ class Store:
         self._middlewares.append(middleware)
 
     def dispatch(self, action):
-        if action is None:
-            return
-
-        for middleware in self._middlewares:
-            if callable(action):
-                action = action(self.dispatch, self._state)
-
-            if action is None:
-                return
-
-            action = middleware(self._state, action)
-
-        if action is None:
-            return
-
-        if callable(action):
+        while callable(action):
             action = action(self.dispatch, self._state)
+
+        if action is None:
+            return
 
         prev_state = self._state
         self._state = self._reducer(self._state, action)
