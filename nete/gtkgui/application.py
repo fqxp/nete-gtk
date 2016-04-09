@@ -1,6 +1,6 @@
 from fluous.store import Store
 from fluous.reducer_decorators import log_action, log_traceback, log_state_diff
-from .persistence.note_persistence import NotePersistence
+from .persistence.note_persistence import ConnectedNotePersistence
 from .persistence.ui_state_persistence import ConnectedUiStatePersistence
 from .components.main_window import ConnectedMainWindow
 from .state.action_types import *
@@ -89,7 +89,7 @@ class Application:
         store.dispatch(load_notes())
         store.dispatch(load_ui_state())
 
-        self.persistence = NotePersistence(store)
+        self.persistence = ConnectedNotePersistence(store)
         self.ui_persistence = ConnectedUiStatePersistence(store)
 
         self.main_window = ConnectedMainWindow(store)
