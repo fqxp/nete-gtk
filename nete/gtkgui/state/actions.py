@@ -43,7 +43,8 @@ def select_next():
         note_id = note_list.next_note_id(
             state['notes'],
             state['ui_state']['current_note_id'])
-        dispatch(select_note(note_id))
+        if note_id != state['ui_state']['current_note_id']:
+            dispatch(select_note(note_id))
 
     return select_next
 
@@ -53,7 +54,8 @@ def select_previous():
         note_id = note_list.previous_note_id(
             state['notes'],
             state['ui_state']['current_note_id'])
-        dispatch(select_note(note_id))
+        if note_id != state['ui_state']['current_note_id']:
+            dispatch(select_note(note_id))
 
     return select_previous
 
