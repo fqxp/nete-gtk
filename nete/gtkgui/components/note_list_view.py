@@ -13,13 +13,6 @@ class NoteListModel(Gtk.ListStore):
     def __init__(self):
         super().__init__(str, str)
 
-    def set_data(self, notes):
-        self.clear()
-
-        for note in notes:
-            row = [note['id'], note['title']]
-            self.append(row)
-
     def update(self, note_list):
         notes_by_id = dict((note['id'], note) for note in note_list)
 
