@@ -19,7 +19,8 @@ initial_state = {
         'current_note_id': None,
         'window_position': None,
         'window_size': [600, 400],
-    },
+        'paned_position': 250,
+   },
 }
 
 
@@ -73,6 +74,9 @@ def reducer(state, action):
         return state \
             .set_by_path(('ui_state', 'window_position'), action['position']) \
             .set_by_path(('ui_state', 'window_size'), action['size'])
+    elif action_type == MOVE_PANED_POSITION:
+        return state \
+            .set_by_path(('ui_state', 'paned_position'), action['position'])
     elif action_type == LOADED_UI_STATE:
         new_ui_state = dict(state['ui_state'])
         new_ui_state.update(action['ui_state'])

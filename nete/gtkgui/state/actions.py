@@ -126,6 +126,13 @@ def move_or_resize_window(x, y, width, height):
     }
 
 
+def move_paned_position(position):
+    return {
+        'type': MOVE_PANED_POSITION,
+        'position': position,
+    }
+
+
 def load_ui_state():
     def load_ui_state(dispatch, state):
         try:
