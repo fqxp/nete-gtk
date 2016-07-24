@@ -6,11 +6,11 @@ from immutable import ImmutableDict
 
 def map_state_to_props(state):
     return (
-        ('storage_uri', state['storage_uri']),
+        ('storage_uri', state['ui_state']['storage_uri']),
         ('note', {
             'id': state['ui_state']['current_note_id'],
-            'title': state['note_title'],
-            'text': state['note_text'],
+            'title': state['current_note']['note_title'],
+            'text': state['current_note']['note_text'],
         }),
     )
 

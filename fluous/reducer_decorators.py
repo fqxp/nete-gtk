@@ -1,3 +1,4 @@
+from .functions import call_reducer
 import traceback
 
 
@@ -10,7 +11,7 @@ __all__ = [
 
 def log_action(reducer):
     def logging_reducer(state, action):
-        new_state = reducer(state, action)
+        new_state = call_reducer(reducer, state, action)
 
         print('ACTION <%s>: %r' % (action['type'], action))
 
@@ -20,7 +21,7 @@ def log_action(reducer):
 
 def log_state_diff(reducer):
     def log_state_reducer(state, action):
-        new_state = reducer(state, action)
+        new_state = call_reducer(reducer, state, action)
 
         print_diff(state, new_state)
 
@@ -30,7 +31,7 @@ def log_state_diff(reducer):
 
 def log_state(reducer):
     def log_state_reducer(state, action):
-        new_state = reducer(state, action)
+        new_state = call_reducer(reducer, state, action)
 
         print(new_state)
 
@@ -40,7 +41,7 @@ def log_state(reducer):
 
 def log_traceback(reducer):
     def traceback_reducer(state, action):
-        new_state = reducer(state, action)
+        new_state = call_reducer(reducer, state, action)
 
         traceback.print_stack()
 
@@ -69,5 +70,3 @@ def print_diff(old_state, new_state):
             print('*** UNKNOWN CHANGE TYPE: %s' % change_type)
             print('    %r' % changes)
     print('***')
-
-

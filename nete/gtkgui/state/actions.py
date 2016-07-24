@@ -7,15 +7,15 @@ import uuid
 
 def select_note(note_id):
     def load_note(dispatch, state):
-        storage = create_storage(state['storage_uri'])
+        storage = create_storage(state['ui_state']['storage_uri'])
         note = storage.load(note_id)
 
-        return {
+        dispatch({
             'type': SELECT_NOTE,
             'note_id': note['id'],
             'title': note['title'],
             'text': note['text'],
-        }
+        })
 
     return load_note
 
@@ -31,7 +31,7 @@ def create_note():
 
 def select_first():
     def select_first(dispatch, state):
-        note_id = note_list.first_note_id(state['notes'])
+        note_id = note_list.first_note_id(state['cache']['notes'])
         if note_id is not None:
             dispatch(select_note(note_id))
 
@@ -41,7 +41,7 @@ def select_first():
 def select_next():
     def select_next(dispatch, state):
         note_id = note_list.next_note_id(
-            state['notes'],
+            state['cache']['notes'],
             state['ui_state']['current_note_id'])
         if note_id != state['ui_state']['current_note_id']:
             dispatch(select_note(note_id))
@@ -52,7 +52,7 @@ def select_next():
 def select_previous():
     def select_previous(dispatch, state):
         note_id = note_list.previous_note_id(
-            state['notes'],
+            state['cache']['notes'],
             state['ui_state']['current_note_id'])
         if note_id != state['ui_state']['current_note_id']:
             dispatch(select_note(note_id))
@@ -102,7 +102,7 @@ def finish_edit_note_title():
 
 def load_notes():
     def load_notes(dispatch, state):
-        storage = create_storage(state['storage_uri'])
+        storage = create_storage(state['ui_state']['storage_uri'])
         dispatch(loaded_notes(
             note_list.build_entry(storage.load(note_id))
             for note_id in storage.list()

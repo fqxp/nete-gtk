@@ -11,7 +11,7 @@ import pkg_resources
 
 def map_state_to_props(state):
     return (
-        ('title', 'nete: %s' % state['note_title']),
+        ('title', 'nete: %s' % state['current_note']['note_title']),
         ('position', state['ui_state']['window_position']),
         ('size', state['ui_state']['window_size']),
         ('paned-position', state['ui_state']['paned_position']),

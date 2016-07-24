@@ -54,6 +54,12 @@ Or you can run one of the clients using
 
     NETE_DIR=. nete-gtk
 
+## Running tests
+
+Run tests:
+
+    (venv)$ nose2 -c nose2.cfg
+
 # Make Debian package (for Debian 9/stretch only)
 
 Install requirements
