@@ -1,11 +1,11 @@
-from .actions import *
+from .actions import ActionType
 from nete.services.storage_factory import create_storage
 from nete.gtkgui.state import note_list
 
 
 def set_storage(storage_uri):
     return {
-        'type': SET_STORAGE_URI,
+        'type': ActionType.SET_STORAGE_URI,
         'storage_uri': storage_uri,
     }
 
@@ -23,6 +23,6 @@ def load_notes():
 
 def loaded_notes(notes):
     return {
-        'type': LOADED_NOTES,
+        'type': ActionType.LOADED_NOTES,
         'notes': notes
     }

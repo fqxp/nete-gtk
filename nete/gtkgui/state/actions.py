@@ -1,4 +1,4 @@
-from .action_types import *
+from .action_types import ActionType
 from nete.services.storage_factory import create_storage
 from nete.services import ui_state_storage
 from nete.gtkgui.state import note_list
@@ -11,7 +11,7 @@ def select_note(note_id):
         note = storage.load(note_id)
 
         dispatch({
-            'type': SELECT_NOTE,
+            'type': ActionType.SELECT_NOTE,
             'note_id': note['id'],
             'title': note['title'],
             'text': note['text'],
@@ -22,7 +22,7 @@ def select_note(note_id):
 
 def create_note():
     return {
-        'type': CREATE_NOTE,
+        'type': ActionType.CREATE_NOTE,
         'note_id': str(uuid.uuid4()),
         'title': 'New Note',
         'text': '',
@@ -68,7 +68,7 @@ def toggle_edit_note_text():
 
 def change_note_text(note_id, text):
     return {
-        'type': CHANGE_NOTE_TEXT,
+        'type': ActionType.CHANGE_NOTE_TEXT,
         'note_id': note_id,
         'text': text,
     }
@@ -76,19 +76,19 @@ def change_note_text(note_id, text):
 
 def finish_edit_note_text(note_id):
     return {
-        'type': FINISH_EDIT_NOTE_TEXT,
+        'type': ActionType.FINISH_EDIT_NOTE_TEXT,
     }
 
 
 def toggle_edit_note_title():
     return {
-        'type': TOGGLE_EDIT_NOTE_TITLE,
+        'type': ActionType.TOGGLE_EDIT_NOTE_TITLE,
     }
 
 
 def change_note_title(note_id, title):
     return {
-        'type': CHANGE_NOTE_TITLE,
+        'type': ActionType.CHANGE_NOTE_TITLE,
         'note_id': note_id,
         'title': title,
     }
@@ -96,7 +96,7 @@ def change_note_title(note_id, title):
 
 def finish_edit_note_title():
     return {
-        'type': FINISH_EDIT_NOTE_TITLE,
+        'type': ActionType.FINISH_EDIT_NOTE_TITLE,
     }
 
 
@@ -113,14 +113,14 @@ def load_notes():
 
 def loaded_notes(notes):
     return {
-        'type': LOADED_NOTES,
+        'type': ActionType.LOADED_NOTES,
         'notes': notes
     }
 
 
 def move_or_resize_window(x, y, width, height):
     return {
-        'type': MOVE_OR_RESIZE_WINDOW,
+        'type': ActionType.MOVE_OR_RESIZE_WINDOW,
         'position': [x, y],
         'size': [width, height],
     }
@@ -128,7 +128,7 @@ def move_or_resize_window(x, y, width, height):
 
 def move_paned_position(position):
     return {
-        'type': MOVE_PANED_POSITION,
+        'type': ActionType.MOVE_PANED_POSITION,
         'position': position,
     }
 
@@ -150,7 +150,7 @@ def loaded_ui_state(ui_state):
             dispatch(select_note(ui_state['current_note_id']))
 
         return {
-            'type': LOADED_UI_STATE,
+            'type': ActionType.LOADED_UI_STATE,
             'ui_state': ui_state,
         }
 
