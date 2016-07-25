@@ -1,4 +1,4 @@
-from nete.gtkgui.note_list_view import NoteListModel
+from nete.gtkgui.components.note_list_view import NoteListModel
 from nose2.tools import such
 import mock
 

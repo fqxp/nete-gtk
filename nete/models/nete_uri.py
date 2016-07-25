@@ -25,7 +25,7 @@ class NeteUri(object):
 
         self._context = match.group('context')
 
-    def __unicode__(self):
+    def __str__(self):
         return 'nete:%(context)s' % {
             'context': self.context,
         }

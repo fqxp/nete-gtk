@@ -14,5 +14,5 @@ class NeteUriTest(unittest.TestCase):
 
     def test_unicode_representation(self):
         nete_uri = NeteUri('nete:foo')
-        self.assertEqual(unicode(nete_uri), 'nete:foo')
+        self.assertEqual(str(nete_uri), 'nete:foo')
 
