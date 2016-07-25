@@ -1,3 +1,4 @@
+from pyrsistent import thaw
 from .functions import call_reducer
 import traceback
 
@@ -51,7 +52,7 @@ def log_traceback(reducer):
 
 def print_diff(old_state, new_state):
     import deepdiff
-    diff = deepdiff.DeepDiff(old_state.mutable(), new_state.mutable())
+    diff = deepdiff.DeepDiff(thaw(old_state), thaw(new_state))
 
     if len(diff) == 0:
         print('*** NO CHANGES')

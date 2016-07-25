@@ -1,6 +1,6 @@
 from nete.gtkgui.application import reducer
 from nete.gtkgui.state.action_types import *
-from immutable import make_immutable
+from pyrsistent import freeze
 from nose2.tools import such
 import mock
 
@@ -9,7 +9,7 @@ with such.A('reducer') as it:
 
     @it.has_setup
     def setup():
-        it.state = make_immutable({
+        it.state = freeze({
             'storage_uri': 'nete:notes',
             'is_editing_title': False,
             'is_editing_text': False,
@@ -45,8 +45,8 @@ with such.A('reducer') as it:
             'size': [300, 300],
         })
 
-        it.assertEqual(result['ui_state']['window_position'], make_immutable([100, 100]))
-        it.assertEqual(result['ui_state']['window_size'], make_immutable([300, 300]))
+        it.assertEqual(result['ui_state']['window_position'], freeze([100, 100]))
+        it.assertEqual(result['ui_state']['window_size'], freeze([300, 300]))
 
     @it.should('change the paned position on MOVE_PANED_POSITION action')
     def test():

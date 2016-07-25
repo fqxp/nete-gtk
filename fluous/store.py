@@ -1,10 +1,10 @@
-from immutable import ImmutableDict
+from pyrsistent import freeze
 
 
 class Store:
     def __init__(self, reducer, initial_state={}):
         self._reducer = reducer
-        self._state = ImmutableDict(initial_state)
+        self._state = freeze(initial_state)
         self._listeners = []
         self._middlewares = []
 

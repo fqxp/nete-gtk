@@ -1,6 +1,6 @@
 from nete.gtkgui.state.action_types import ActionType
 from fluous.reducer_decorators import log_action, log_traceback, log_state_diff
-from immutable.functions import make_immutable
+from pyrsistent import freeze, thaw
 
 
 @log_state_diff
@@ -22,14 +22,14 @@ def reduce(state, action):
         })
 
     elif action_type == ActionType.TOGGLE_EDIT_NOTE_TEXT:
-        return state \
-            .set('is_editing_text', not state['is_editing_text']) \
-            .set('is_editing_title', False)
+        return state.update({
+            'is_editing_text': not state['is_editing_text'],
+            'is_editing_title': False})
 
     elif action_type == ActionType.TOGGLE_EDIT_NOTE_TITLE:
-        return state \
-            .set('is_editing_title', not state['is_editing_title']) \
-            .set('is_editing_text', False)
+        return state.update({
+            'is_editing_title': not state['is_editing_title'],
+            'is_editing_text': False})
 
     elif action_type == ActionType.FINISH_EDIT_NOTE_TITLE:
         return state.set('is_editing_title', False)
@@ -38,18 +38,15 @@ def reduce(state, action):
         return state.set('is_editing_text', False)
 
     elif action_type == ActionType.MOVE_OR_RESIZE_WINDOW:
-        return state \
-            .set('window_position', action['position']) \
-            .set('window_size', action['size'])
+        return state.update({
+            'window_position': action['position'],
+            'window_size': action['size']})
 
     elif action_type == ActionType.MOVE_PANED_POSITION:
-        return state \
-            .set('paned_position', action['position'])
+        return state.set('paned_position', action['position'])
 
     elif action_type == ActionType.LOADED_UI_STATE:
-        new_ui_state = dict(state)
-        new_ui_state.update(action['ui_state'])
-        return make_immutable(new_ui_state)
+        return state.update(action['ui_state'])
 
     else:
         return state

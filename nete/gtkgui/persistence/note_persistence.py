@@ -1,7 +1,6 @@
 from gi.repository import GObject
 from fluous.gobject import connect
 from nete.services.storage_factory import create_storage
-from immutable import ImmutableDict
 
 
 def map_state_to_props(state):

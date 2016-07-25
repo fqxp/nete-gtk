@@ -62,7 +62,7 @@ def select_previous():
 
 def toggle_edit_note_text():
     return {
-        'type': TOGGLE_EDIT_NOTE_TEXT,
+        'type': ActionType.TOGGLE_EDIT_NOTE_TEXT,
     }
 
 

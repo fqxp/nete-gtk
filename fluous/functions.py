@@ -1,14 +1,14 @@
-from immutable import ImmutableDict, ImmutableList
+from pyrsistent import PMap, PList
 import inspect
 
 
 def call_reducer(reducer, state, action):
     result = reducer(state, action)
 
-    if not isinstance(result, (ImmutableDict, ImmutableList)):
+    if not isinstance(result, (PMap, PList)):
         reducer_name = reducer.__name__
         source_file = inspect.getsourcefile(reducer)
-        print("WARNING: reduce function '%s' (defined in %s) didn't return immutable object on action %s" %
+        print("WARNING: reduce function '%s' (defined in %s) didn't return persistent object on action %s" %
               (reducer_name, source_file, action))
 
     return result

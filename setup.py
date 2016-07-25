@@ -9,6 +9,10 @@ setup(
     author_email='nete@fqxp.de',
     license='GPL',
     url='https://github.com/fqxp/nete-gtk',
+    install_requires=[
+        'markdown',
+        'pyrsistent',
+    ],
     packages=find_packages(),
     package_data={
         '': ['*.png'],
