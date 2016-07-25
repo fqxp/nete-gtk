@@ -30,7 +30,7 @@ After having fulfilled the dependencies, simply install by using setuptools:
 
     python setup.py install
 
-You should now have the scripts `nete-qt` and `nete-cli` in your path.
+You should now have the scripts `nete-gtk` and `nete-cli` in your path.
 
 # Development
 First, set up a virtualenv to install required development packages into and
