@@ -4,6 +4,8 @@ nete (pronounce: neat) will be a nice, useful note-taking application suite.
 
 It's currently in alpha state.
 
+[![Build Status](https://travis-ci.org/fqxp/nete-gtk.svg?branch=master)](https://travis-ci.org/fqxp/nete-gtk)
+
 ## Plans
 
 nete will:
