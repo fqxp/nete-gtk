@@ -1,5 +1,5 @@
 from gi.repository import Gtk, GObject, Pango
-from nete.gtkgui.state.actions import select_note, create_note
+from nete.gtkgui.actions import select_note, create_note
 from fluous.gobject import connect
 
 

@@ -1,5 +1,5 @@
 from gi.repository import Gtk, GObject
-from nete.gtkgui.state.actions import change_filter_term
+from nete.gtkgui.actions import change_filter_term
 
 
 class FilterView(Gtk.Box):

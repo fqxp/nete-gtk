@@ -1,5 +1,5 @@
 from gi.repository import Gtk, Gdk, GObject
-from nete.gtkgui.state.actions import (
+from nete.gtkgui.actions import (
     toggle_edit_note_text, toggle_edit_note_title, select_next,
     select_previous, create_note, move_or_resize_window,
     move_paned_position)

@@ -1,5 +1,5 @@
 from gi.repository import Gdk, Gtk, GObject, WebKit
-from nete.gtkgui.state.actions import change_note_text, finish_edit_note_title
+from nete.gtkgui.actions import change_note_text, finish_edit_note_title
 from fluous.gobject import connect
 import markdown
 

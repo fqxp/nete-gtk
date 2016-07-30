@@ -1,5 +1,5 @@
 from nete.services.storage_factory import create_storage
-from nete.gtkgui.state.actions import saved_note
+from nete.gtkgui.actions import saved_note
 
 __all__ = ('on_note_changed',)
 

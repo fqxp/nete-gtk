@@ -1,5 +1,5 @@
 from gi.repository import Gdk, Gtk, GObject
-from nete.gtkgui.state.actions import change_note_title, finish_edit_note_title
+from nete.gtkgui.actions import change_note_title, finish_edit_note_title
 from fluous.gobject import connect
 
 

@@ -4,7 +4,7 @@ from fluous.functions import combine_reducers
 from .persistence.note_persistence import on_note_changed
 from .persistence.ui_state_persistence import ConnectedUiStatePersistence
 from .components.main_window import ConnectedMainWindow
-from .state.actions import load_notes, load_ui_state
+from .actions import load_notes, load_ui_state
 from .state import selectors
 from . import reducers
 

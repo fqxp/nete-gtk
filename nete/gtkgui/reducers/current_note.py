@@ -1,4 +1,4 @@
-from nete.gtkgui.state.action_types import ActionType
+from nete.gtkgui.actions.action_types import ActionType
 from fluous.reducer_decorators import log_action, log_traceback, log_state_diff
 
 
