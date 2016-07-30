@@ -22,7 +22,7 @@ def select_first():
     def select_first(dispatch, state):
         note_id = note_list.first_note_id(state['cache']['notes'])
         if note_id is not None:
-            dispatch(select_note(note_id))
+            return select_note(note_id)
 
     return select_first
 
@@ -32,8 +32,8 @@ def select_next():
         note_id = note_list.next_note_id(
             state['cache']['notes'],
             state['ui_state']['current_note_id'])
-        if note_id != state['ui_state']['current_note_id']:
-            dispatch(select_note(note_id))
+        if note_id is not None:
+            return select_note(note_id)
 
     return select_next
 
@@ -43,7 +43,7 @@ def select_previous():
         note_id = note_list.previous_note_id(
             state['cache']['notes'],
             state['ui_state']['current_note_id'])
-        if note_id != state['ui_state']['current_note_id']:
-            dispatch(select_note(note_id))
+        if note_id is not None:
+            return select_note(note_id)
 
     return select_previous

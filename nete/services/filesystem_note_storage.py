@@ -50,8 +50,9 @@ class FilesystemNoteStorage(object):
             }
             json.dump(content, fd)
 
-    def delete(self, note):
-        os.unlink(self._filename_from_id(note['id']))
+    def delete(self, note_id):
+        print('Deleting note %s' % (note_id,))
+        os.unlink(self._filename_from_id(note_id))
 
     def note_dir(self):
         if 'NETE_DIR' in os.environ:

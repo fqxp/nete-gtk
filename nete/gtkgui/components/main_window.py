@@ -1,7 +1,7 @@
 from gi.repository import Gtk, Gdk, GObject
 from nete.gtkgui.actions import (
     toggle_edit_note_text, toggle_edit_note_title, select_next,
-    select_previous, create_note, move_or_resize_window,
+    select_previous, create_note, delete_note, move_or_resize_window,
     move_paned_position)
 from fluous.gobject import connect
 from .note_list_view import ConnectedNoteListView
@@ -25,6 +25,7 @@ def map_dispatch_to_props(dispatch):
         'next-note': lambda source: dispatch(select_next()),
         'prev-note': lambda source: dispatch(select_previous()),
         'create-note': lambda source: dispatch(create_note()),
+        'delete-note': lambda source: dispatch(delete_note()),
         'move-or-resize': lambda x, y, width, height: dispatch(move_or_resize_window(x, y, width, height)),
         'move-paned': lambda position: dispatch(move_paned_position(position)),
     }
@@ -41,6 +42,7 @@ class MainWindow(Gtk.Window):
         'toggle-edit-mode': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'toggle-edit-title-mode': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'create-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
+        'delete-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'quit': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'move_or_resize': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (int, int, int, int)),
         'move-paned': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (int,)),
@@ -131,6 +133,11 @@ class MainWindow(Gtk.Window):
                              self.accel_group,
                              ord('N'),
                              Gdk.ModifierType.CONTROL_MASK,
+                             Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator('delete-note',
+                             self.accel_group,
+                             ord('D'),
+                             Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK,
                              Gtk.AccelFlags.VISIBLE)
         self.add_accelerator('quit',
                              self.accel_group,
