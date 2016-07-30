@@ -1,5 +1,6 @@
 from gi.repository import Gdk, Gtk, GObject
-from nete.gtkgui.actions import change_note_title, finish_edit_note_title, toggle_edit_note_text
+from nete.gtkgui.actions import (
+    change_note_title, finish_edit_note_title, toggle_edit_note_text, toggle_edit_note_title)
 from fluous.gobject import connect
 
 
@@ -18,6 +19,8 @@ def map_dispatch_to_props(dispatch):
             dispatch(change_note_title(note_id, text)),
         'finish-edit': lambda note_id:
             dispatch(finish_edit_note_title()),
+        'toggle-edit-title': lambda:
+            dispatch(toggle_edit_note_title()),
         'toggle-edit-text': lambda:
             dispatch(toggle_edit_note_text()),
     }
@@ -34,6 +37,7 @@ class NoteTitleView(Gtk.Box):
         'title-changed': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (str, str)),
         'finish-edit': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (str,)),
         'toggle-edit-text': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, tuple()),
+        'toggle-edit-title': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, tuple()),
     }
 
     def __init__(self):
@@ -51,6 +55,9 @@ class NoteTitleView(Gtk.Box):
             'notify::text',
             lambda source, param: self.emit('title-changed', self.note_id, self.title_editor.get_text()))
 
+        self.title_view_event_box.connect(
+            'button-press-event',
+            lambda source, event: self._on_text_view_button_press(event))
         self.title_editor.connect(
             'key-press-event',
             lambda source, event: self._on_key_press_event(event))
@@ -62,6 +69,11 @@ class NoteTitleView(Gtk.Box):
     def _on_key_press_event(self, event):
         if event.keyval in (Gdk.KEY_Escape, Gdk.KEY_Return):
             self.emit('finish-edit', self.note_id)
+
+    def _on_text_view_button_press(self, event):
+        if event.type == Gdk.EventType._2BUTTON_PRESS:
+            self.emit('toggle-edit-title')
+        return False
 
     def _on_notify_title(self):
         if self.get_property('title') is None:
@@ -88,10 +100,15 @@ class NoteTitleView(Gtk.Box):
             self.edit_button.set_label('Done')
 
     def _build_ui(self):
-        self.title_stack = Gtk.Stack()
         self.title_view = Gtk.Label(hexpand=True)
+
+        self.title_view_event_box = Gtk.EventBox()
+        self.title_view_event_box.add(self.title_view)
+
         self.title_editor = Gtk.Entry()
-        self.title_stack.add_named(self.title_view, 'view')
+
+        self.title_stack = Gtk.Stack()
+        self.title_stack.add_named(self.title_view_event_box, 'view')
         self.title_stack.add_named(self.title_editor, 'editor')
         self.title_stack.set_visible_child_name('view')
 
