@@ -12,7 +12,7 @@ def select_note(note_id):
 
         dispatch({
             'type': ActionType.SELECT_NOTE,
-            'note_id': note['id'],
+            'id': note['id'],
             'title': note['title'],
             'text': note['text'],
         })
@@ -26,6 +26,12 @@ def create_note():
         'note_id': str(uuid.uuid4()),
         'title': 'New Note',
         'text': '',
+    }
+
+
+def saved_note():
+    return {
+        'type': ActionType.NOTE_SAVED,
     }
 
 

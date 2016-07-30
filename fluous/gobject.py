@@ -34,7 +34,7 @@ def connect(Component, map_state_to_props, map_dispatch_to_props=lambda dispatch
         def set_state(state):
             set_props(component, map_state_to_props(state))
         set_state(store.state)
-        store.subscribe(set_state)
+        store.subscribe(lambda state, _: set_state(state))
 
         return component
 

@@ -5,15 +5,11 @@ class Store:
     def __init__(self, reducer, initial_state={}):
         self._reducer = reducer
         self._state = freeze(initial_state)
-        self._listeners = []
-        self._middlewares = []
+        self._listeners = {}
 
     @property
     def state(self):
         return self._state
-
-    def add_middleware(self, middleware):
-        self._middlewares.append(middleware)
 
     def dispatch(self, action):
         while callable(action):
@@ -28,13 +24,20 @@ class Store:
         if prev_state is self._state:
             return
 
-        for listener in self._listeners:
-            listener(self._state)
+        self._inform_listeners(prev_state, self._state)
 
-    def subscribe(self, listener):
-        if listener not in self._listeners:
-            self._listeners.append(listener)
+    def subscribe(self, listener, selector=lambda state: state):
+        if selector not in self._listeners:
+            self._listeners[selector] = []
+        self._listeners[selector].append(listener)
 
-    def unsubscribe(self, listener):
-        if listener in self._listeners:
-            self._listeners.remove(listener)
+    def _inform_listeners(self, old_state, new_state):
+        for selector, listeners in self._listeners.items():
+            selected_old_state = selector(old_state)
+            selected_new_state = selector(new_state)
+
+            if selected_old_state == selected_new_state:
+                continue
+
+            for listener in listeners:
+                listener(selected_new_state, self.dispatch)

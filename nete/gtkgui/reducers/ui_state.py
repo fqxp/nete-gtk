@@ -9,7 +9,7 @@ def reduce(state, action):
 
     if action_type == ActionType.SELECT_NOTE:
         return state.update({
-            'current_note_id': action['note_id'],
+            'current_note_id': action['id'],
             'is_editing_title': False,
             'is_editing_text': False,
         })
@@ -39,14 +39,15 @@ def reduce(state, action):
 
     elif action_type == ActionType.MOVE_OR_RESIZE_WINDOW:
         return state.update({
-            'window_position': action['position'],
-            'window_size': action['size']})
+            'window_position': freeze(action['position']),
+            'window_size': freeze(action['size'])
+        })
 
     elif action_type == ActionType.MOVE_PANED_POSITION:
         return state.set('paned_position', action['position'])
 
     elif action_type == ActionType.LOADED_UI_STATE:
-        return state.update(action['ui_state'])
+        return state.update(freeze(action['ui_state']))
 
     else:
         return state

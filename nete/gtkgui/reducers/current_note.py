@@ -7,22 +7,35 @@ def reduce(state, action):
 
     if action_type == ActionType.SELECT_NOTE:
         return state.update({
+            'id': action['id'],
             'note_title': action['title'],
             'note_text': action['text'],
+            'needs_save': False,
         })
 
     elif action_type == ActionType.CREATE_NOTE:
         return state.update({
             'note_title': action['title'],
             'note_text': action['text'],
+            'needs_save': True,
         })
 
     elif action_type == ActionType.CHANGE_NOTE_TEXT:
-        return state.set('note_text', action['text'])
+        return state.update({
+            'note_text': action['text'],
+            'needs_save': True,
+        })
 
     elif action_type == ActionType.CHANGE_NOTE_TITLE:
-        return state \
-            .set('note_title', action['title'])
+        return state.update({
+            'note_title': action['title'],
+            'needs_save': True,
+        })
+
+    elif action_type == ActionType.NOTE_SAVED:
+        return state.update({
+            'needs_save': False,
+        })
 
     else:
         return state

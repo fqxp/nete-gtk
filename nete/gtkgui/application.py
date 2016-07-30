@@ -1,10 +1,11 @@
 from fluous.store import Store
-from fluous.reducer_decorators import log_action, log_traceback, log_state_diff
+from fluous.reducer_decorators import log_action, log_traceback, log_state_diff, log_state
 from fluous.functions import combine_reducers
-from .persistence.note_persistence import ConnectedNotePersistence
+from .persistence.note_persistence import on_note_changed
 from .persistence.ui_state_persistence import ConnectedUiStatePersistence
 from .components.main_window import ConnectedMainWindow
 from .state.actions import load_notes, load_ui_state
+from .state import selectors
 from . import reducers
 
 
@@ -16,6 +17,7 @@ initial_state = {
         'id': None,
         'note_title': None,
         'note_text': None,
+        'needs_save': False,
     },
     'ui_state': {
         'storage_uri': 'nete:notes',
@@ -29,20 +31,12 @@ initial_state = {
 }
 
 
-# @log_traceback
-#@log_state_diff
-#@log_action
-#def reducer(state, action):
-#    action_type = action['type']
-#
-#    else:
-#        return state
-
 reducer = combine_reducers({
     'current_note': reducers.current_note.reduce,
     'ui_state': reducers.ui_state.reduce,
     'cache': reducers.cache.reduce,
 })
+# reducer = log_state(reducer)
 
 
 class Application:
@@ -53,7 +47,8 @@ class Application:
         store.dispatch(load_notes())
         store.dispatch(load_ui_state())
 
-        self.persistence = ConnectedNotePersistence(store)
+        store.subscribe(on_note_changed, selectors.current_note)
+
         self.ui_persistence = ConnectedUiStatePersistence(store)
 
         self.main_window = ConnectedMainWindow(store)
