@@ -2,7 +2,7 @@ from fluous.store import Store
 from fluous.reducer_decorators import log_action, log_traceback, log_state_diff, log_state
 from fluous.functions import combine_reducers
 from .persistence.note_persistence import on_note_changed
-from .persistence.ui_state_persistence import ConnectedUiStatePersistence
+from .persistence.ui_state_persistence import on_ui_state_changed
 from .components.main_window import ConnectedMainWindow
 from .actions import load_notes, load_ui_state
 from .state import selectors
@@ -48,8 +48,7 @@ class Application:
         store.dispatch(load_ui_state())
 
         store.subscribe(on_note_changed, selectors.current_note)
-
-        self.ui_persistence = ConnectedUiStatePersistence(store)
+        store.subscribe(on_ui_state_changed, selectors.ui_state)
 
         self.main_window = ConnectedMainWindow(store)
 

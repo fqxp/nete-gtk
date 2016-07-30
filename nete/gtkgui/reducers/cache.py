@@ -9,7 +9,7 @@ def reduce(state, action):
     if action_type == ActionType.CREATE_NOTE:
         return state.set(
             'notes',
-            add_new(state['notes'], action['note_id'], action['title']))
+            add_new(state['notes'], action['id'], action['title']))
 
     elif action_type == ActionType.CHANGE_NOTE_TITLE:
         return state.set(

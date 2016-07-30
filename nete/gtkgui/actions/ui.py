@@ -1,5 +1,5 @@
 from .action_types import ActionType
-from .selection import select_note
+from .selection import select_note, select_first
 from nete.services import ui_state_storage
 
 

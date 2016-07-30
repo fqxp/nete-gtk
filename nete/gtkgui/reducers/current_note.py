@@ -15,6 +15,7 @@ def reduce(state, action):
 
     elif action_type == ActionType.CREATE_NOTE:
         return state.update({
+            'id': action['id'],
             'note_title': action['title'],
             'note_text': action['text'],
             'needs_save': True,

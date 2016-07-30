@@ -10,3 +10,8 @@ def current_note(state):
         'storage_uri': state['ui_state']['storage_uri'],
         'needs_save': state['current_note']['needs_save'],
     }
+
+
+@lru_cache()
+def ui_state(state):
+    return state['ui_state']

@@ -42,6 +42,8 @@ def save_ui_state(ui_state):
     with open(config_filename(), 'w') as config_file:
         config.write(config_file)
 
+    print('Saved UI state')
+
 
 def config_filename():
     if 'NETE_DIR' in os.environ:

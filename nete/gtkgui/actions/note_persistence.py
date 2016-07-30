@@ -7,7 +7,7 @@ import uuid
 def create_note():
     return {
         'type': ActionType.CREATE_NOTE,
-        'note_id': str(uuid.uuid4()),
+        'id': str(uuid.uuid4()),
         'title': 'New Note',
         'text': '',
     }
