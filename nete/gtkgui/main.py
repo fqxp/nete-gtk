@@ -1,5 +1,8 @@
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from .application import Application
+import sys
 
 
 def main():
@@ -7,6 +10,8 @@ def main():
     settings.set_property('gtk-theme-name', 'Adwaita')
 
     app = Application()
-    app.show_window()
+    exit_status = app.run(sys.argv)
 
     Gtk.main()
+
+    sys.exit(exit_status)

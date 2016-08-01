@@ -40,18 +40,31 @@ reducer = combine_reducers({
 reducer = debug_reducer()(reducer)
 
 
-class Application:
+class Application(Gtk.Application):
 
-    def __init__(self):
-        store = Store(reducer, initial_state)
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            *args, application_id="org.fqxp.nete",
+            flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE,
+            **kwargs)
+        self.set_property('register-session', True)
+        self.store = Store(reducer, initial_state)
+        self.window = None
 
-        store.dispatch(load_notes())
-        store.dispatch(load_ui_state())
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
 
-        store.subscribe(on_note_changed, selectors.current_note)
-        store.subscribe(on_ui_state_changed, selectors.ui_state)
+        self.window = ConnectedMainWindow(self.store)
 
-        self.main_window = ConnectedMainWindow(store)
+        self.store.dispatch(load_notes())
+        self.store.dispatch(load_ui_state())
 
-    def show_window(self):
-        self.main_window.show_all()
+        self.store.subscribe(on_note_changed, selectors.current_note)
+        self.store.subscribe(on_ui_state_changed, selectors.ui_state)
+
+    def do_command_line(self, command_line):
+        self.activate()
+        return 0
+
+    def do_activate(self):
+        self.window.show_all()

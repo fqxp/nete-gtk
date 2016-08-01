@@ -72,7 +72,6 @@ class MainWindow(Gtk.Window):
                 self.emit('move-or-resize', x, y, width, height)
 
     def _on_paned_moved(self, source, param):
-        print('ON PAND MOVED: %d' % self.paned.get_property('position'))
         with self.paned.handler_block(self._notify_paned_position_handler):
             self.emit('move-paned', self.paned.get_property('position'))
 
@@ -83,7 +82,6 @@ class MainWindow(Gtk.Window):
         self.resize(*self.get_property('size'))
 
     def _on_notify_paned_position(self, source, param):
-        print('PANED POSITION: %d' % self.get_property('paned_position'))
         self.paned.set_property('position', self.get_property('paned_position'))
 
     def _build_ui(self, build_component):
