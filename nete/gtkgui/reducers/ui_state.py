@@ -1,9 +1,7 @@
 from nete.gtkgui.actions.action_types import ActionType
-from fluous.reducer_decorators import log_action, log_traceback, log_state_diff
 from pyrsistent import freeze, thaw
 
 
-@log_state_diff
 def reduce(state, action):
     action_type = action['type']
 

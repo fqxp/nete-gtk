@@ -1,5 +1,6 @@
+from gi.repository import Gtk, Gio
 from fluous.store import Store
-from fluous.reducer_decorators import log_action, log_traceback, log_state_diff, log_state
+from fluous.reducer_decorators import debug_reducer
 from fluous.functions import combine_reducers
 from .persistence.note_persistence import on_note_changed
 from .persistence.ui_state_persistence import on_ui_state_changed
@@ -36,7 +37,7 @@ reducer = combine_reducers({
     'ui_state': reducers.ui_state.reduce,
     'cache': reducers.cache.reduce,
 })
-# reducer = log_state(reducer)
+reducer = debug_reducer()(reducer)
 
 
 class Application:
