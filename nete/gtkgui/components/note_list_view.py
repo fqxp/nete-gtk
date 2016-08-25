@@ -1,5 +1,6 @@
 from gi.repository import Gtk, GObject, Pango
 from nete.gtkgui.actions import select_note, create_note
+from .filter_view import ConnectedFilterView
 from fluous.gobject import connect
 
 
@@ -17,12 +18,12 @@ class NoteListView(Gtk.Grid):
         'create-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
     }
 
-    def __init__(self):
+    def __init__(self, build_component):
         super().__init__()
 
         self.set_name('note-list-view')
 
-        self._build_ui()
+        self._build_ui(build_component)
         self._connect_events()
 
     def _connect_events(self):
@@ -42,7 +43,7 @@ class NoteListView(Gtk.Grid):
 
     def _on_notify_notes(self):
         self._list_model().update(self.get_property('notes'))
-        self._scroll_current_cell_into_view()
+        self._select_note(self.get_property('current-note'))
 
     def _on_notify_current_note(self):
         if self.get_property('current-note') is None:
@@ -53,8 +54,10 @@ class NoteListView(Gtk.Grid):
 
     def _select_note(self, note_id):
         treeiter = self._list_model().get_treeiter_by_note_id(note_id)
+        if treeiter is None:
+            return
         self.tree_view.get_selection().select_iter(treeiter)
-        self._scroll_current_cell_into_view()
+        self._scroll_current_cell_into_view(treeiter)
 
     def _selected_note_id(self, selection):
         model, treeiter = selection.get_selected()
@@ -65,14 +68,17 @@ class NoteListView(Gtk.Grid):
     def _list_model(self):
         return self.tree_view.get_model()
 
-    def _build_ui(self):
+    def _build_ui(self, build_component):
+        filter_view = build_component(ConnectedFilterView)
+        self.attach(filter_view, 0, 0, 1, 1)
+
         model = NoteListModel()
 
         self.scrollable_treelist = Gtk.ScrolledWindow(
             hexpand=True,
             vexpand=True,
             can_focus=False)
-        self.attach(self.scrollable_treelist, 0, 0, 1, 1)
+        self.attach(self.scrollable_treelist, 0, 1, 1, 1)
 
         self.tree_view = Gtk.TreeView(model, headers_visible=False, can_focus=False)
         title_renderer = Gtk.CellRendererText()
@@ -83,14 +89,11 @@ class NoteListView(Gtk.Grid):
         self.scrollable_treelist.add(self.tree_view)
 
         self.create_button = Gtk.Button('New Note')
-        self.attach(self.create_button, 0, 1, 1, 1)
+        self.attach(self.create_button, 0, 2, 1, 1)
 
-    def _scroll_current_cell_into_view(self):
-        note_id = self.get_property('current-note')
-
-        if note_id:
-            self.tree_view.scroll_to_cell(
-                self._list_model().get_tree_path_by_note(note_id))
+    def _scroll_current_cell_into_view(self, treeiter):
+        tree_path = self._list_model().get_path(treeiter)
+        self.tree_view.scroll_to_cell(tree_path)
 
 
 def map_state_to_props(state):
@@ -143,7 +146,8 @@ class NoteListModel(Gtk.ListStore):
         rows_to_append = [
             (note['id'], note['title'])
             for note in note_list
-            if note['id'] not in row_ids]
+            if note['id'] not in row_ids
+        ]
 
         for row in rows_to_append:
             self.append(row)
@@ -152,7 +156,8 @@ class NoteListModel(Gtk.ListStore):
         row_ids = [row[NOTE_ID] for row in self]
         new_order = [
             row_ids.index(note['id'])
-            for note in note_list]
+            for note in note_list
+        ]
 
         self.reorder(new_order)
 
@@ -164,8 +169,4 @@ class NoteListModel(Gtk.ListStore):
                 return tree_iter
             tree_iter = self.iter_next(tree_iter)
 
-        raise Exception('note with id %s not found' % note_id)
-
-    def get_tree_path_by_note(self, note_id):
-        treeiter = self.get_treeiter_by_note_id(note_id)
-        return self.get_path(treeiter)
+        return None

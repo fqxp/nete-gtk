@@ -19,6 +19,14 @@ def first_note_id(notes):
     return notes[0]['id'] if len(notes) > 0 else None
 
 
+def last_note_id(notes):
+    return notes[-1]['id'] if len(notes) > 0 else None
+
+
+def contains(notes, note_id):
+    return any(note['id'] == note_id for note in notes)
+
+
 def next_note_id(notes, current_note_id):
     for i, note in enumerate(notes):
         if note['id'] == current_note_id:

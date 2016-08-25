@@ -15,11 +15,13 @@ def reduce(state, action):
         return state.set(
             'notes', note_list.without(state['notes'], action['note_id']))
 
-
     elif action_type == ActionType.CHANGE_NOTE_TITLE:
         return state.set(
             'notes',
             ordered(change_title(state['notes'], action['note_id'], action['title'])))
+
+    elif action_type == ActionType.CHANGE_FILTER_TERM:
+        return state.set('notes', ordered(action['filtered_notes']))
 
     elif action_type == ActionType.LOADED_NOTES:
         return state.set('notes', ordered(action['notes']))

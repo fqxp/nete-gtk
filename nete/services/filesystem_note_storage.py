@@ -12,13 +12,11 @@ class FilesystemNoteStorage(object):
         self._context = context
         print('Using directory %s' % self.note_dir())
 
-    def list(self):
-        notes = [
-            self._id_from_filename(os.path.basename(filename))
-            for filename in glob.glob(os.path.join(self.note_dir(), '*.json'))
-        ]
-
-        return notes
+    def list(self, filter_term=None):
+        return [
+            list_entry
+            for list_entry in self._list_entries()
+            if filter_term is None or filter_term.lower() in list_entry['title'].lower()]
 
     def load(self, note_id):
         with open(self._filename_from_id(note_id)) as fd:
@@ -63,6 +61,19 @@ class FilesystemNoteStorage(object):
             basedir = os.path.join(os.path.expanduser('~'), '.local', 'share', 'nete')
 
         return os.path.join(basedir, self._context)
+
+    def _list_entries(self):
+        return [
+            self._fetch_list_entry(self._id_from_filename(os.path.basename(filename)))
+            for filename in glob.glob(os.path.join(self.note_dir(), '*.json'))
+        ]
+
+    def _fetch_list_entry(self, note_id):
+        note = self.load(note_id)
+        return {
+            'id': note['id'],
+            'title': note['title'],
+        }
 
     def _ensure_dir_exists(self, note_dir):
         if not os.path.isdir(note_dir):

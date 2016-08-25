@@ -13,3 +13,4 @@ Session.vim
 venv/
 config/
 NERD_tree_1
+.ropeproject/
