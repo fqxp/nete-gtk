@@ -25,8 +25,6 @@ initial_state = {
         'is_editing_title': False,
         'is_editing_text': False,
         'current_note_id': None,
-        'window_position': None,
-        'window_size': [600, 400],
         'paned_position': 250,
    },
 }

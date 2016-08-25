@@ -16,13 +16,13 @@ def load_ui_state():
         config.read_file(f)
 
     general = config['general']
-    geometry = config['window-geometry']
-    return {
-        'current_note_id': general['current_note_id'],
-        'window_position': [geometry.getint('x'), geometry.getint('y')],
-        'window_size': [geometry.getint('width'), geometry.getint('height')],
-        'paned_position': geometry.getint('paned-position'),
-    }
+    result = {}
+    if 'current_note_id' in general:
+        result['current_note_id'] = general['current_note_id']
+    if 'paned-position' in general:
+        result['paned_position'] = int(general['paned-position'])
+
+    return result
 
 
 def save_ui_state(ui_state):
@@ -30,14 +30,7 @@ def save_ui_state(ui_state):
 
     config['general'] = {}
     config['general']['current_note_id'] = ui_state['current_note_id'] or ''
-
-    config['window-geometry'] = {}
-    config['window-geometry']['width'] = str(ui_state['window_size'][0])
-    config['window-geometry']['height'] = str(ui_state['window_size'][1])
-    window_position = ui_state['window_position']
-    config['window-geometry']['x'] = str(window_position[0]) if window_position is not None else ''
-    config['window-geometry']['y'] = str(window_position[1]) if window_position is not None else ''
-    config['window-geometry']['paned-position'] = str(ui_state['paned_position'])
+    config['general']['paned-position'] = str(ui_state['paned_position'])
 
     with open(config_filename(), 'w') as config_file:
         config.write(config_file)

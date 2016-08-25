@@ -35,12 +35,6 @@ def reduce(state, action):
     elif action_type == ActionType.FINISH_EDIT_NOTE_TEXT:
         return state.set('is_editing_text', False)
 
-    elif action_type == ActionType.MOVE_OR_RESIZE_WINDOW:
-        return state.update({
-            'window_position': freeze(action['position']),
-            'window_size': freeze(action['size'])
-        })
-
     elif action_type == ActionType.MOVE_PANED_POSITION:
         return state.set('paned_position', action['position'])
 
