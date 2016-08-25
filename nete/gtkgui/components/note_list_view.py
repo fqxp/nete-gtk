@@ -7,81 +7,6 @@ NOTE_ID = 0
 NOTE_TITLE = 1
 
 
-class NoteListModel(Gtk.ListStore):
-    nete_uri = GObject.property(type=str)
-
-    def __init__(self):
-        super().__init__(str, str)
-
-    def update(self, note_list):
-        notes_by_id = dict((note['id'], note) for note in note_list)
-
-        self._delete_rows(notes_by_id)
-        self._update_rows(notes_by_id)
-        self._append_rows(note_list)
-        self._sync_order(note_list)
-
-    def _delete_rows(self, notes_by_id):
-        rows_to_delete = [
-            row
-            for row in self
-            if row[NOTE_ID] not in notes_by_id]
-
-        for row in rows_to_delete:
-            self.remove(row.iter)
-
-    def _update_rows(self, notes_by_id):
-        for row in self:
-            note = notes_by_id[row[NOTE_ID]]
-            row[NOTE_TITLE] = note['title']
-
-    def _append_rows(self, note_list):
-        row_ids = [row[NOTE_ID] for row in self]
-        rows_to_append = [
-            (note['id'], note['title'])
-            for note in note_list
-            if note['id'] not in row_ids]
-
-        for row in rows_to_append:
-            self.append(row)
-
-    def _sync_order(self, note_list):
-        row_ids = [row[NOTE_ID] for row in self]
-        new_order = [
-            row_ids.index(note['id'])
-            for note in note_list]
-
-        self.reorder(new_order)
-
-    def get_treeiter_by_note_id(self, note_id):
-        tree_iter = self.get_iter_first()
-
-        while tree_iter is not None:
-            if self[tree_iter][NOTE_ID] == note_id:
-                return tree_iter
-            tree_iter = self.iter_next(tree_iter)
-
-        raise Exception('note with id %s not found' % note_id)
-
-    def get_tree_path_by_note(self, note_id):
-        treeiter = self.get_treeiter_by_note_id(note_id)
-        return self.get_path(treeiter)
-
-
-def map_state_to_props(state):
-    return (
-        ('notes', state['cache']['notes']),
-        ('current-note', state['ui_state']['current_note_id']),
-    )
-
-
-def map_dispatch_to_props(dispatch):
-    return {
-        'selected-note': lambda note_id: dispatch(select_note(note_id)),
-        'create-note': lambda: dispatch(create_note()),
-    }
-
-
 class NoteListView(Gtk.Grid):
 
     notes = GObject.property(type=GObject.TYPE_PYOBJECT)
@@ -168,4 +93,79 @@ class NoteListView(Gtk.Grid):
                 self._list_model().get_tree_path_by_note(note_id))
 
 
+def map_state_to_props(state):
+    return (
+        ('notes', state['cache']['notes']),
+        ('current-note', state['ui_state']['current_note_id']),
+    )
+
+
+def map_dispatch_to_props(dispatch):
+    return {
+        'selected-note': lambda note_id: dispatch(select_note(note_id)),
+        'create-note': lambda: dispatch(create_note()),
+    }
+
+
 ConnectedNoteListView = connect(NoteListView, map_state_to_props, map_dispatch_to_props)
+
+
+class NoteListModel(Gtk.ListStore):
+    nete_uri = GObject.property(type=str)
+
+    def __init__(self):
+        super().__init__(str, str)
+
+    def update(self, note_list):
+        notes_by_id = dict((note['id'], note) for note in note_list)
+
+        self._delete_rows(notes_by_id)
+        self._update_rows(notes_by_id)
+        self._append_rows(note_list)
+        self._sync_order(note_list)
+
+    def _delete_rows(self, notes_by_id):
+        rows_to_delete = [
+            row
+            for row in self
+            if row[NOTE_ID] not in notes_by_id]
+
+        for row in rows_to_delete:
+            self.remove(row.iter)
+
+    def _update_rows(self, notes_by_id):
+        for row in self:
+            note = notes_by_id[row[NOTE_ID]]
+            row[NOTE_TITLE] = note['title']
+
+    def _append_rows(self, note_list):
+        row_ids = [row[NOTE_ID] for row in self]
+        rows_to_append = [
+            (note['id'], note['title'])
+            for note in note_list
+            if note['id'] not in row_ids]
+
+        for row in rows_to_append:
+            self.append(row)
+
+    def _sync_order(self, note_list):
+        row_ids = [row[NOTE_ID] for row in self]
+        new_order = [
+            row_ids.index(note['id'])
+            for note in note_list]
+
+        self.reorder(new_order)
+
+    def get_treeiter_by_note_id(self, note_id):
+        tree_iter = self.get_iter_first()
+
+        while tree_iter is not None:
+            if self[tree_iter][NOTE_ID] == note_id:
+                return tree_iter
+            tree_iter = self.iter_next(tree_iter)
+
+        raise Exception('note with id %s not found' % note_id)
+
+    def get_tree_path_by_note(self, note_id):
+        treeiter = self.get_treeiter_by_note_id(note_id)
+        return self.get_path(treeiter)
