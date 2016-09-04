@@ -26,6 +26,8 @@ initial_state = {
         'is_editing_text': False,
         'current_note_id': None,
         'paned_position': 250,
+        'filter_term_entry_focus': False,
+        'filter_term': '',
    },
 }
 

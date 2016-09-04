@@ -38,13 +38,10 @@ def saved_note():
     }
 
 
-def load_notes():
+def load_notes(filter_term=None):
     def load_notes(dispatch, state):
         storage = create_storage(state['ui_state']['storage_uri'])
-        dispatch(loaded_notes(
-            note_list.build_entry(storage.load(note_id))
-            for note_id in storage.list()
-        ))
+        dispatch(loaded_notes(storage.list()))
 
     return load_notes
 

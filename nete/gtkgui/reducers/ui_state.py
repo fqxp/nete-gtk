@@ -19,6 +19,23 @@ def reduce(state, action):
             'is_editing_text': False,
         })
 
+    elif action_type == ActionType.FOCUS_FILTER_TERM_ENTRY:
+        if action['has_focus']:
+            return state.update({
+                'filter_term_entry_focus': True,
+                'is_editing_title': False,
+                'is_editing_text': False,
+            })
+        else:
+            return state.update({
+                'filter_term_entry_focus': False,
+            })
+
+    elif action_type == ActionType.CHANGE_FILTER_TERM:
+        return state.update({
+            'filter_term': action['filter_term'],
+        })
+
     elif action_type == ActionType.TOGGLE_EDIT_NOTE_TEXT:
         return state.update({
             'is_editing_text': not state['is_editing_text'],

@@ -1,7 +1,8 @@
 from gi.repository import Gtk, Gdk, GObject
 from nete.gtkgui.actions import (
     toggle_edit_note_text, toggle_edit_note_title, select_next,
-    select_previous, create_note, delete_note, move_paned_position)
+    select_previous, create_note, delete_note, move_paned_position,
+    set_filter_term_entry_focus)
 from fluous.gobject import connect
 from .note_list_view import ConnectedNoteListView
 from .note_view import NoteView
@@ -23,6 +24,7 @@ def map_dispatch_to_props(dispatch):
         'prev-note': lambda source: dispatch(select_previous()),
         'create-note': lambda source: dispatch(create_note()),
         'delete-note': lambda source: dispatch(delete_note()),
+        'focus-filter-term-entry': lambda source: dispatch(set_filter_term_entry_focus(True)),
         'move-paned': lambda position: dispatch(move_paned_position(position)),
     }
 
@@ -37,6 +39,7 @@ class MainWindow(Gtk.Window):
         'toggle-edit-title-mode': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'create-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'delete-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
+        'focus-filter-term-entry': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'quit': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'move-paned': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (int,)),
     }
@@ -115,6 +118,11 @@ class MainWindow(Gtk.Window):
                              self.accel_group,
                              ord('D'),
                              Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK,
+                             Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator('focus-filter-term-entry',
+                             self.accel_group,
+                             ord('F'),
+                             Gdk.ModifierType.CONTROL_MASK,
                              Gtk.AccelFlags.VISIBLE)
         self.add_accelerator('quit',
                              self.accel_group,
