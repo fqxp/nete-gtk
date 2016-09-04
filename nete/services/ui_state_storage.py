@@ -1,4 +1,5 @@
 from configparser import ConfigParser
+import logging
 import os
 import os.path
 
@@ -8,6 +9,8 @@ __all__ = (
     'load_ui_state',
     'save_ui_state',
 )
+
+logger = logging.getLogger(__name__)
 
 
 def load_ui_state():
@@ -35,7 +38,7 @@ def save_ui_state(ui_state):
     with open(config_filename(), 'w') as config_file:
         config.write(config_file)
 
-    print('Saved UI state')
+    logger.debug('Saved UI state')
 
 
 def config_filename():

@@ -1,5 +1,5 @@
 from nete.gtkgui.application import reducer, initial_state
-from nete.gtkgui.state.action_types import ActionType
+from nete.gtkgui.actions.action_types import ActionType
 from pyrsistent import freeze
 from nose2.tools import such
 import mock

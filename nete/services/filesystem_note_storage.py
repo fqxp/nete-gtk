@@ -1,16 +1,18 @@
-from __future__ import print_function
 import glob
 import json
+import logging
 import os
 import os.path
 import uuid
+
+logger = logging.getLogger(__name__)
 
 
 class FilesystemNoteStorage(object):
 
     def __init__(self, context):
         self._context = context
-        print('Using directory %s' % self.note_dir())
+        logger.debug('Using directory %s' % self.note_dir())
 
     def list(self, filter_term=None):
         return [
@@ -38,7 +40,7 @@ class FilesystemNoteStorage(object):
             raise Exception('Cannot save note - text is not set')
 
         filename = self._filename_from_id(note['id'])
-        print('Saving note in %s' % filename)
+        logger.debug('Saving note in %s' % filename)
 
         with open(filename, 'w') as fd:
             content = {
@@ -49,7 +51,7 @@ class FilesystemNoteStorage(object):
             json.dump(content, fd)
 
     def delete(self, note_id):
-        print('Deleting note %s' % (note_id,))
+        logger.debug('Deleting note %s' % (note_id,))
         os.unlink(self._filename_from_id(note_id))
 
     def note_dir(self):

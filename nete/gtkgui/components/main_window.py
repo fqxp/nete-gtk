@@ -6,7 +6,11 @@ from nete.gtkgui.actions import (
 from fluous.gobject import connect
 from .note_list_view import ConnectedNoteListView
 from .note_view import NoteView
+import logging
 import pkg_resources
+
+
+logger = logging.getLogger(__name__)
 
 
 def map_state_to_props(state):
@@ -42,6 +46,8 @@ class MainWindow(Gtk.Window):
         'focus-filter-term-entry': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'quit': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
         'move-paned': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (int,)),
+        'print-marker': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
+        'reset': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
     }
 
     def __init__(self, build_component):
@@ -54,11 +60,13 @@ class MainWindow(Gtk.Window):
 
     def _connect_events(self):
         self.connect('delete-event', lambda source, param: self.do_quit())
+        self.connect('print-marker', lambda source: print('*' * 80))
+        self.connect('reset', lambda source: logger.debug('RESET' * 80))
         self.paned.connect('notify::position', self._on_paned_moved)
         self._notify_paned_position_handler = self.connect('notify::paned-position', self._on_notify_paned_position)
 
     def _on_paned_moved(self, source, param):
-        with self.paned.handler_block(self._notify_paned_position_handler):
+        with self.handler_block(self._notify_paned_position_handler):
             self.emit('move-paned', self.paned.get_property('position'))
 
     def _on_notify_paned_position(self, source, param):
@@ -124,10 +132,20 @@ class MainWindow(Gtk.Window):
                              ord('F'),
                              Gdk.ModifierType.CONTROL_MASK,
                              Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator('reset',
+                             self.accel_group,
+                             Gdk.KEY_Escape,
+                             0,
+                             Gtk.AccelFlags.VISIBLE)
         self.add_accelerator('quit',
                              self.accel_group,
                              ord('Q'),
                              Gdk.ModifierType.CONTROL_MASK,
+                             Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator('print-marker',
+                             self.accel_group,
+                             ord('P'),
+                             Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK,
                              Gtk.AccelFlags.VISIBLE)
         self.add_accel_group(self.accel_group)
 
