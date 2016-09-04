@@ -4,6 +4,7 @@ from nete.gtkgui.actions import (
     select_previous, create_note, delete_note, move_paned_position,
     set_filter_term_entry_focus)
 from fluous.gobject import connect
+from .header_bar import ConnectedHeaderBar
 from .note_list_view import ConnectedNoteListView
 from .note_view import NoteView
 import logging
@@ -15,7 +16,6 @@ logger = logging.getLogger(__name__)
 
 def map_state_to_props(state):
     return (
-        ('title', 'nete: %s' % state['current_note']['note_title']),
         ('paned-position', state['ui_state']['paned_position']),
     )
 
@@ -82,6 +82,9 @@ class MainWindow(Gtk.Window):
             Gdk.Screen.get_default(),
             css_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+        self.header_bar = build_component(ConnectedHeaderBar)
+        self.set_titlebar(self.header_bar)
 
         self.paned = Gtk.HPaned()
         self.add(self.paned)
