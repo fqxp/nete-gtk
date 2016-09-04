@@ -91,6 +91,8 @@ class NoteListView(Gtk.Grid):
         self.create_button = Gtk.Button('New Note')
         self.attach(self.create_button, 0, 2, 1, 1)
 
+        self.set_focus_chain([])
+
     def _scroll_current_cell_into_view(self, treeiter):
         tree_path = self._list_model().get_path(treeiter)
         self.tree_view.scroll_to_cell(tree_path)
