@@ -24,7 +24,7 @@ nete will:
 ### On Debian jessie
 Install required Debian packages:
 
-    apt-get install python3 python3-markdown
+    apt-get install python3
 
 ## Install nete
 
@@ -61,16 +61,6 @@ Or you can run one of the clients using
 Run tests:
 
     (venv)$ nose2 -c nose2.cfg
-
-# Make Debian package (for Debian 9/stretch only)
-
-Install requirements
-
-    apt-get install debhelper dh-python python-setuptools
-
-This should do the trick:
-
-    debian/rules binary
 
 # Credits
 

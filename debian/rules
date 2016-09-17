@@ -1,9 +1,0 @@
-#!/usr/bin/make -f
-
-export PYBUILD_NAME=nete
-%:
-	dh $@ --with python3 --buildsystem=pybuild
-
-override_dh_auto_install:
-	python setup.py install --root=debian/nete --install-layout=deb --install-lib=/usr/share/nete --install-scripts=/usr/share/nete
-override_dh_auto_build:
