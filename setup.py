@@ -13,7 +13,7 @@ setup(
         'markdown',
         'pyrsistent',
     ],
-    packages=find_packages(),
+    packages=find_packages(exclude=['*.tests']),
     package_data={
         '': ['*.png'],
         'nete.gtkgui': [
