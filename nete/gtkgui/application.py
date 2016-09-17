@@ -2,6 +2,7 @@ from gi.repository import Gtk, Gio, GLib
 from fluous.store import Store
 from fluous.reducer_decorators import debug_reducer
 from fluous.functions import combine_reducers
+from nete.utils import in_development_mode
 from .persistence.note_persistence import on_note_changed
 from .persistence.ui_state_persistence import on_ui_state_changed
 from .components.main_window import ConnectedMainWindow
@@ -46,7 +47,8 @@ class Application(Gtk.Application):
 
     def __init__(self, *args, **kwargs):
         super().__init__(
-            *args, application_id="org.fqxp.nete",
+            *args,
+            application_id=self._application_id(),
             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE,
             **kwargs)
         self.set_property('register-session', True)
@@ -109,3 +111,6 @@ class Application(Gtk.Application):
         options.append(option)
 
         self.add_main_option_entries(options)
+
+    def _application_id(self):
+        return 'de.fqxp.nete%s' % ('-dev' if in_development_mode() else '')

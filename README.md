@@ -46,7 +46,11 @@ install development requirements:
 Activate the virtual environment and run setup:
 
     ./venv/bin/activate:
-    python setup.py develop
+    python setup.py egg_info -b dev develop
+
+The `-b dev` adds the string `"dev"` to the version, which is important if you
+want to run an installed version of nete and a version you’re developing on at
+the same time.
 
 You can now run the tests like this:
 
