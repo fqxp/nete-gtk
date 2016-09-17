@@ -35,6 +35,7 @@ def save_ui_state(ui_state):
     config['general']['current_note_id'] = ui_state['current_note_id'] or ''
     config['general']['paned-position'] = str(ui_state['paned_position'])
 
+    os.makedirs(os.path.dirname(config_filename()), exist_ok=True)
     with open(config_filename(), 'w') as config_file:
         config.write(config_file)
 
@@ -47,6 +48,6 @@ def config_filename():
     elif 'XDG_CONFIG_HOME' in os.environ:
         basedir = os.path.join(os.environ['XDG_CONFIG_HOME'], 'nete')
     else:
-        basedir = os.path.join(os.path.expanduser('~'), '.local', 'share', 'nete')
+        basedir = os.path.join(os.path.expanduser('~'), '.config', 'nete')
 
     return os.path.join(basedir, CONFIG_FILENAME)
