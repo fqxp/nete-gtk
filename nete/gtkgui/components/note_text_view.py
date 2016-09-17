@@ -1,7 +1,7 @@
 from gi.repository import Gdk, Gtk, GObject, WebKit
 from nete.gtkgui.actions import change_note_text, finish_edit_note_title
 from fluous.gobject import connect
-import markdown
+import CommonMark
 
 
 def map_state_to_props(state):
@@ -50,12 +50,12 @@ class NoteTextView(Gtk.Stack):
             return
 
         if self.get_property('mode') == 'view':
-            html_text = markdown.markdown(self.get_property('text'))
+            html_text = CommonMark.commonmark(self.get_property('text'))
             self.web_view.load_html_string(html_text, 'file://.')
 
     def _on_notify_mode(self):
         if self.get_property('mode') == 'view':
-            html_text = markdown.markdown(self.get_property('text'))
+            html_text = CommonMark.commonmark(self.get_property('text'))
             self.web_view.load_html_string(html_text, 'file://.')
             self.set_visible_child_name('view')
         elif self.get_property('mode') == 'edit':
