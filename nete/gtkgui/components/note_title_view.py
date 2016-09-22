@@ -15,13 +15,13 @@ def map_state_to_props(state):
 
 def map_dispatch_to_props(dispatch):
     return {
-        'title-changed': lambda note_id, text:
+        'title-changed': lambda  source, note_id, text:
             dispatch(change_note_title(note_id, text)),
-        'finish-edit': lambda note_id:
+        'finish-edit': lambda source, note_id:
             dispatch(finish_edit_note_title()),
-        'toggle-edit-title': lambda:
+        'toggle-edit-title': lambda source:
             dispatch(toggle_edit_note_title()),
-        'toggle-edit-text': lambda:
+        'toggle-edit-text': lambda source:
             dispatch(toggle_edit_note_text()),
     }
 

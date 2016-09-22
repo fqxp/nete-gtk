@@ -107,8 +107,8 @@ def map_state_to_props(state):
 
 def map_dispatch_to_props(dispatch):
     return {
-        'selected-note': lambda note_id: dispatch(select_note(note_id)),
-        'create-note': lambda: dispatch(create_note()),
+        'selected-note': lambda source, note_id: dispatch(select_note(note_id)),
+        'create-note': lambda source: dispatch(create_note()),
     }
 
 

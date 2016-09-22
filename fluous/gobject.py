@@ -26,7 +26,7 @@ def connect(Component, map_state_to_props, map_dispatch_to_props=lambda dispatch
             # we’re defining.
             def handler(source, arg0=None, arg1=None, arg2=None, arg3=None, signal_handler=signal_handler):
                 args_count = signal_handler.__code__.co_argcount
-                handler_args = [arg0, arg1, arg2, arg3][:args_count]
+                handler_args = [source, arg0, arg1, arg2, arg3][:args_count]
                 signal_handler(*handler_args)
             component.connect(signal, handler)
 

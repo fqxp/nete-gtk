@@ -28,8 +28,8 @@ def map_dispatch_to_props(dispatch):
         'prev-note': lambda source: dispatch(select_previous()),
         'create-note': lambda source: dispatch(create_note()),
         'delete-note': lambda source: dispatch(delete_note()),
-        'focus-filter-term-entry': lambda source: dispatch(set_filter_term_entry_focus(True)),
-        'move-paned': lambda position: dispatch(move_paned_position(position)),
+        'focus-filter-term-entry': lambda source, s1: dispatch(set_filter_term_entry_focus(True)),
+        'move-paned': lambda source, position: dispatch(move_paned_position(position)),
     }
 
 

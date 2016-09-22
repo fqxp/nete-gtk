@@ -45,9 +45,9 @@ def map_state_to_props(state):
 
 def map_dispatch_to_props(dispatch):
     return {
-        'filter-term-changed': lambda filter_term:
+        'filter-term-changed': lambda source, filter_term:
             dispatch(change_filter_term(filter_term)),
-        'filter-term-entry-focus-changed': lambda has_focus:
+        'filter-term-entry-focus-changed': lambda source, has_focus:
             dispatch(set_filter_term_entry_focus(has_focus)),
     }
 
