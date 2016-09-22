@@ -25,8 +25,9 @@ class FilesystemNoteStorage(object):
             content = json.load(fd)
             return {
                 'id': note_id,
-                'title': content['title'],
-                'text': content['text'],
+                'title': content.get('title', '<no title>'),
+                'text': content.get('text', ''),
+                'cursor_position': content.get('cursor_position', 0),
             }
 
     def save(self, note):
@@ -47,6 +48,7 @@ class FilesystemNoteStorage(object):
                 'id': note['id'],
                 'title': note['title'],
                 'text': note['text'],
+                'cursor_position': note['cursor_position'],
             }
             json.dump(content, fd)
 

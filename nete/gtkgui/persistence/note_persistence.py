@@ -18,4 +18,5 @@ def build_note(current_note):
         'id': current_note['id'],
         'title': current_note['title'],
         'text': current_note['text'],
+        'cursor_position': current_note['cursor_position'],
     }

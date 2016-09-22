@@ -21,6 +21,7 @@ initial_state = {
         'id': None,
         'note_title': None,
         'note_text': None,
+        'cursor_position': 0,
         'needs_save': False,
     },
     'ui_state': {
@@ -77,10 +78,11 @@ class Application(Gtk.Application):
             reducer = debug_reducer()(reducer)
         self.store = Store(reducer, initial_state)
 
-        self.window = ConnectedMainWindow(self.store)
 
         self.store.dispatch(load_notes())
         self.store.dispatch(load_ui_state())
+
+        self.window = ConnectedMainWindow(self.store)
 
         self.store.subscribe(on_note_changed, selectors.current_note)
         self.store.subscribe(on_ui_state_changed, selectors.ui_state)

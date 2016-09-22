@@ -9,6 +9,7 @@ def reduce(state, action):
             'id': action['id'],
             'note_title': action['title'],
             'note_text': action['text'],
+            'cursor_position': action['cursor_position'],
             'needs_save': False,
         })
 
@@ -17,12 +18,19 @@ def reduce(state, action):
             'id': action['id'],
             'note_title': action['title'],
             'note_text': action['text'],
+            'cursor_position': 0,
             'needs_save': True,
         })
 
     elif action_type == ActionType.CHANGE_NOTE_TEXT:
         return state.update({
             'note_text': action['text'],
+            'needs_save': True,
+        })
+
+    elif action_type == ActionType.CHANGE_CURSOR_POSITION:
+        return state.update({
+            'cursor_position': action['cursor_position'],
             'needs_save': True,
         })
 

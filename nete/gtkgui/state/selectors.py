@@ -7,6 +7,7 @@ def current_note(state):
         'id': state['current_note']['id'],
         'title': state['current_note']['note_title'],
         'text': state['current_note']['note_text'],
+        'cursor_position': state['current_note']['cursor_position'],
         'storage_uri': state['ui_state']['storage_uri'],
         'needs_save': state['current_note']['needs_save'],
     }

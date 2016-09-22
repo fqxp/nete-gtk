@@ -15,6 +15,13 @@ def change_note_text(note_id, text):
     }
 
 
+def change_cursor_position(cursor_position):
+    return {
+        'type': ActionType.CHANGE_CURSOR_POSITION,
+        'cursor_position': cursor_position,
+    }
+
+
 def finish_edit_note_text(note_id):
     return {
         'type': ActionType.FINISH_EDIT_NOTE_TEXT,

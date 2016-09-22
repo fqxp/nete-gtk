@@ -16,6 +16,7 @@ def select_note(note_id):
             'id': note['id'],
             'title': note['title'],
             'text': note['text'],
+            'cursor_position': note['cursor_position'],
         })
 
     return load_note
