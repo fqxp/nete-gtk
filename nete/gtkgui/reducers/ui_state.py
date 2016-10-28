@@ -2,10 +2,10 @@ from nete.gtkgui.actions.action_types import ActionType
 from pyrsistent import freeze, thaw
 
 
-def reduce(state, action):
+def ui_state_reduce(state, action):
     action_type = action['type']
 
-    if action_type == ActionType.SELECT_NOTE:
+    if action_type == ActionType.LOADED_NOTE:
         return state.update({
             'current_note_id': action['id'],
             'is_editing_title': False,

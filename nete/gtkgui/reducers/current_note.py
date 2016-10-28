@@ -1,10 +1,10 @@
 from nete.gtkgui.actions.action_types import ActionType
 
 
-def reduce(state, action):
+def current_note_reduce(state, action):
     action_type = action['type']
 
-    if action_type == ActionType.SELECT_NOTE:
+    if action_type == ActionType.LOADED_NOTE:
         return state.update({
             'id': action['id'],
             'note_title': action['title'],

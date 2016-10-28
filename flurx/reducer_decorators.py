@@ -1,5 +1,5 @@
 from pyrsistent import thaw
-from .functions import call_reducer
+from .call_reducer import call_reducer
 import traceback
 
 

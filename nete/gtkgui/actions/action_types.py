@@ -2,7 +2,9 @@ from enum import Enum
 
 
 class ActionType(Enum):
-    SELECT_NOTE = 'SELECT_NOTE'
+    LOAD_NOTE = 'LOAD_NOTE'
+    LOADED_NOTE = 'LOADED_NOTE'
+
     CREATE_NOTE = 'CREATE_NOTE'
     DELETE_NOTE = 'DELETE_NOTE'
 

@@ -1,11 +1,21 @@
 from gi.repository import Gtk, GObject, Pango
-from nete.gtkgui.actions import select_note, create_note
-from .filter_view import ConnectedFilterView
-from fluous.gobject import connect
+from nete.gtkgui.actions.selection import load_note, create_note
+from .filter_view import create_filter_view
+from flurx import create_component
 
 
-NOTE_ID = 0
-NOTE_TITLE = 1
+def create_note_list_view(store):
+    return create_component(
+        NoteListView, store, map_state_to_props,
+        filter_view=create_filter_view(store)
+    )
+
+
+def map_state_to_props(state):
+    return (
+        ('notes', state['cache']['notes']),
+        ('current-note', state['ui_state']['current_note_id']),
+    )
 
 
 class NoteListView(Gtk.Grid):
@@ -13,39 +23,29 @@ class NoteListView(Gtk.Grid):
     notes = GObject.property(type=GObject.TYPE_PYOBJECT)
     current_note = GObject.property(type=str, default='')
 
-    __gsignals__ = {
-        'selected-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (str,)),
-        'create-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
-    }
-
-    def __init__(self, build_component):
+    def __init__(self, filter_view):
         super().__init__()
 
-        self.set_name('note-list-view')
-
-        self._build_ui(build_component)
+        self.filter_view = filter_view
+        self._build_ui()
         self._connect_events()
 
-    def _connect_events(self):
-        self.connect(
-            'notify::notes',
-            lambda source, param: self._on_notify_notes())
-        self.connect(
-            'notify::current-note',
-            lambda source, param: self._on_notify_current_note())
-        self._changed_selection_handler = self.tree_view.get_selection().connect(
-            'changed',
-            lambda selection: self.emit(
-                'selected-note', self._selected_note_id(selection)))
-        self.create_button.connect(
-            'clicked',
-            lambda source: self.emit('create-note'))
+    @property
+    def list_model(self):
+        return self.tree_view.get_model()
 
-    def _on_notify_notes(self):
-        self._list_model().update(self.get_property('notes'))
+    def _connect_events(self):
+        self.connect('notify::notes', self._on_notify_notes)
+        self.connect('notify::current-note', self._on_notify_current_note)
+        self.create_button.connect('clicked', lambda *args: create_note())
+        self._changed_selection_handler = self.tree_view.get_selection().connect(
+            'changed', lambda selection: load_note(self._selected_note_id(selection)))
+
+    def _on_notify_notes(self, *args):
+        self.list_model.update(self.get_property('notes'))
         self._select_note(self.get_property('current-note'))
 
-    def _on_notify_current_note(self):
+    def _on_notify_current_note(self, *args):
         if self.get_property('current-note') is None:
             return
 
@@ -53,7 +53,7 @@ class NoteListView(Gtk.Grid):
             self._select_note(self.get_property('current-note'))
 
     def _select_note(self, note_id):
-        treeiter = self._list_model().get_treeiter_by_note_id(note_id)
+        treeiter = self.list_model.get_treeiter_by_note_id(note_id)
         if treeiter is None:
             return
         self.tree_view.get_selection().select_iter(treeiter)
@@ -65,12 +65,12 @@ class NoteListView(Gtk.Grid):
             return None
         return model[treeiter][0]
 
-    def _list_model(self):
-        return self.tree_view.get_model()
+    def _scroll_current_cell_into_view(self, treeiter):
+        tree_path = self.list_model.get_path(treeiter)
+        self.tree_view.scroll_to_cell(tree_path)
 
-    def _build_ui(self, build_component):
-        filter_view = build_component(ConnectedFilterView)
-        self.attach(filter_view, 0, 0, 1, 1)
+    def _build_ui(self):
+        self.attach(self.filter_view, 0, 0, 1, 1)
 
         model = NoteListModel()
 
@@ -93,29 +93,13 @@ class NoteListView(Gtk.Grid):
 
         self.set_focus_chain([])
 
-    def _scroll_current_cell_into_view(self, treeiter):
-        tree_path = self._list_model().get_path(treeiter)
-        self.tree_view.scroll_to_cell(tree_path)
 
-
-def map_state_to_props(state):
-    return (
-        ('notes', state['cache']['notes']),
-        ('current-note', state['ui_state']['current_note_id']),
-    )
-
-
-def map_dispatch_to_props(dispatch):
-    return {
-        'selected-note': lambda source, note_id: dispatch(select_note(note_id)),
-        'create-note': lambda source: dispatch(create_note()),
-    }
-
-
-ConnectedNoteListView = connect(NoteListView, map_state_to_props, map_dispatch_to_props)
+NOTE_ID = 0
+NOTE_TITLE = 1
 
 
 class NoteListModel(Gtk.ListStore):
+
     nete_uri = GObject.property(type=str)
 
     def __init__(self):

@@ -1,2 +1,3 @@
 CommonMark
 pyrsistent
+https://github.com/fqxp/RxPY/archive/develop.zip

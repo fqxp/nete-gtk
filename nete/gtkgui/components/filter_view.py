@@ -1,39 +1,11 @@
 from gi.repository import Gtk, GObject
-from nete.gtkgui.actions import change_filter_term, set_filter_term_entry_focus
-from fluous.gobject import connect
+from nete.gtkgui.actions import (
+    change_filter_term, set_filter_term_entry_focus)
+from flurx import create_component
 
 
-class FilterView(Gtk.Box):
-
-    has_focus = GObject.property(type=bool, default=False)
-    filter_term = GObject.property(type=str, default='')
-
-    __gsignals__ = {
-        'filter-term-entry-focus-changed': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (bool, )),
-        'filter-term-changed': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (str, )),
-    }
-
-    def __init__(self):
-        super().__init__()
-        self._build_ui()
-        self._connect_events()
-
-    def _build_ui(self):
-        self.filter_term_entry = Gtk.Entry()
-        self.pack_start(self.filter_term_entry, True, True, 2)
-
-    def _connect_events(self):
-        self.bind_property('filter-term', self.filter_term_entry, 'text', GObject.BindingFlags.BIDIRECTIONAL)
-        self.connect('notify::filter-term', lambda source, param: self.on_notify_filter_term())
-
-        self.bind_property('has-focus', self.filter_term_entry, 'has-focus', GObject.BindingFlags.BIDIRECTIONAL)
-        self.connect('notify::has-focus', lambda source, param: self.on_notify_has_focus())
-
-    def on_notify_filter_term(self):
-        self.emit('filter-term-changed', self.filter_term)
-
-    def on_notify_has_focus(self):
-        self.emit('filter-term-entry-focus-changed', self.has_focus)
+def create_filter_view(store):
+    return create_component(FilterView, store, map_state_to_props)
 
 
 def map_state_to_props(state):
@@ -43,13 +15,24 @@ def map_state_to_props(state):
     )
 
 
-def map_dispatch_to_props(dispatch):
-    return {
-        'filter-term-changed': lambda source, filter_term:
-            dispatch(change_filter_term(filter_term)),
-        'filter-term-entry-focus-changed': lambda source, has_focus:
-            dispatch(set_filter_term_entry_focus(has_focus)),
-    }
+class FilterView(Gtk.Box):
 
+    has_focus = GObject.property(type=bool, default=False)
+    filter_term = GObject.property(type=str, default='')
 
-ConnectedFilterView = connect(FilterView, map_state_to_props, map_dispatch_to_props)
+    def __init__(self):
+        super().__init__()
+
+        self._build_ui()
+        self._connect_events()
+
+    def _build_ui(self):
+        self.filter_term_entry = Gtk.Entry()
+        self.pack_start(self.filter_term_entry, True, True, 2)
+
+    def _connect_events(self):
+        self.bind_property('filter-term', self.filter_term_entry, 'text', GObject.BindingFlags.BIDIRECTIONAL)
+        self.bind_property('has-focus', self.filter_term_entry, 'has-focus', GObject.BindingFlags.BIDIRECTIONAL)
+
+        self.connect('notify::filter-term', lambda *args: change_filter_term(self.filter_term))
+        self.connect('notify::has-focus', lambda *args: set_filter_term_entry_focus(self.has_focus))

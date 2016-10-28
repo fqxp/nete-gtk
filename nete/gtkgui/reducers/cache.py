@@ -3,7 +3,7 @@ from nete.gtkgui.state.note_list import change_title, ordered, add_new
 from nete.gtkgui.state import note_list
 
 
-def reduce(state, action):
+def cache_reduce(state, action):
     action_type = action['type']
 
     if action_type == ActionType.CREATE_NOTE:
@@ -18,7 +18,7 @@ def reduce(state, action):
     elif action_type == ActionType.CHANGE_NOTE_TITLE:
         return state.set(
             'notes',
-            ordered(change_title(state['notes'], action['note_id'], action['title'])))
+            ordered(change_title(state['notes'], action['id'], action['title'])))
 
     elif action_type == ActionType.CHANGE_FILTER_TERM:
         return state.set('notes', ordered(action['filtered_notes']))

@@ -12,6 +12,7 @@ setup(
     install_requires=[
         'markdown',
         'pyrsistent',
+        'rx',
     ],
     packages=find_packages(exclude=['*.tests']),
     package_data={
