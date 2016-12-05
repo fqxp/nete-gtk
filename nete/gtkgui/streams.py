@@ -20,8 +20,13 @@ state_mutating_actions = (
     actions.change_note_text,
     actions.change_note_title,
     actions.create_note,
+<<<<<<< HEAD
     actions.finish_edit_mode_text,
     actions.finish_edit_mode_title,
+=======
+    actions.finish_edit_note_text,
+    actions.finish_edit_note_title,
+>>>>>>> 72348d3... Refactor streams and state code
     actions.load_note,
     actions.load_notes,
     actions.load_ui_state,
@@ -34,8 +39,13 @@ state_mutating_actions = (
     actions.select_first,
     actions.select_last,
     actions.set_filter_term_entry_focus,
+<<<<<<< HEAD
     actions.toggle_edit_mode_text,
     actions.toggle_edit_mode_title,
+=======
+    actions.toggle_edit_note_text,
+    actions.toggle_edit_note_title,
+>>>>>>> 72348d3... Refactor streams and state code
 )
 
 scheduler = GtkScheduler()
