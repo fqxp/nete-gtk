@@ -16,10 +16,10 @@ def debug_reducer(print_diff=False, print_traceback=False):
             print()
             print(
                 colored('→ %s' % action['type'].value, 'magenta'))
-            cprint('before: %s' % _wrap_dict('%r' % thaw(state)), 'blue')
-            cprint('action: %s' % _wrap_dict('%r' % action), 'yellow')
+            cprint('before: %s' % _wrap_dict(thaw(state)), 'blue')
+            cprint('action: %s' % _wrap_dict(action), 'yellow')
             new_state = call_reducer(reducer, state, action)
-            cprint('after:  %s' % _wrap_dict('%r' % thaw(new_state)), 'green')
+            cprint('after:  %s' % _wrap_dict(thaw(new_state)), 'green')
 
             if print_diff:
                 import deepdiff
@@ -36,5 +36,5 @@ def debug_reducer(print_diff=False, print_traceback=False):
 
 
 def _wrap_dict(d):
-    from textwrap import wrap
-    return ('\n' + ' ' * 8).join(wrap(d, width=120))
+    from pprint import pformat
+    return ('\n' + ' ' * 8).join(pformat(d, width=80).split('\n'))
