@@ -10,8 +10,9 @@ setup(
     license='GPL',
     url='https://github.com/fqxp/nete-gtk',
     install_requires=[
-        'markdown',
+        'CommonMark',
         'pyrsistent',
+        'termcolor',
     ],
     packages=find_packages(exclude=['*.tests']),
     package_data={
