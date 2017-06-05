@@ -1,14 +1,11 @@
 from gi.repository import Gtk, Gio, GLib
 from fluous.store import Store
 from fluous.reducer_decorators import debug_reducer
-from fluous.functions import combine_reducers
 from nete.utils import in_development_mode
-from .persistence.note_persistence import on_note_changed
-from .persistence.ui_state_persistence import on_ui_state_changed
 from .components.main_window import ConnectedMainWindow
-from .actions import load_notes, load_ui_state
+from .actions import load_notes, load_ui_state, save_note, save_ui_state
 from .state import selectors
-from . import reducers
+from .reducers import reducer
 import logging
 import sys
 
@@ -34,12 +31,6 @@ initial_state = {
         'filter_term': '',
    },
 }
-
-reducer = combine_reducers({
-    'current_note': reducers.current_note.reduce,
-    'ui_state': reducers.ui_state.reduce,
-    'cache': reducers.cache.reduce,
-})
 
 
 class Application(Gtk.Application):
@@ -78,14 +69,15 @@ class Application(Gtk.Application):
             reducer = debug_reducer()(reducer)
         self.store = Store(reducer, initial_state)
 
-
         self.store.dispatch(load_notes())
         self.store.dispatch(load_ui_state())
 
         self.window = ConnectedMainWindow(self.store)
 
-        self.store.subscribe(on_note_changed, selectors.current_note)
-        self.store.subscribe(on_ui_state_changed, selectors.ui_state)
+        self.store.subscribe(lambda note, dispatch:
+                dispatch(save_note(note)), selectors.current_note)
+        self.store.subscribe(lambda ui_state, dispatch:
+                dispatch(save_ui_state(ui_state)), selectors.ui_state)
 
         self.window.show_all()
 

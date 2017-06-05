@@ -40,3 +40,7 @@ def loaded_ui_state(ui_state):
         }
 
     return loaded_ui_state
+
+
+def save_ui_state(ui_state):
+    ui_state_storage.save_ui_state(ui_state)

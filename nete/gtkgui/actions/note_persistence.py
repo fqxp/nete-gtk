@@ -32,6 +32,18 @@ def delete_note():
     return delete_note
 
 
+def save_note(note):
+    def save_note(dispatch, state):
+        if not note['needs_save']:
+            return
+
+        storage = create_storage(note['storage_uri'])
+        storage.save(note)
+        dispatch(saved_note())
+
+    return save_note
+
+
 def saved_note():
     return {
         'type': ActionType.NOTE_SAVED,
