@@ -14,25 +14,6 @@ import pkg_resources
 logger = logging.getLogger(__name__)
 
 
-def map_state_to_props(state):
-    return (
-        ('paned-position', state['ui_state']['paned_position']),
-    )
-
-
-def map_dispatch_to_props(dispatch):
-    return {
-        'toggle-edit-mode': lambda source: dispatch(toggle_edit_note_text()),
-        'toggle-edit-title-mode': lambda source: dispatch(toggle_edit_note_title()),
-        'next-note': lambda source: dispatch(select_next()),
-        'prev-note': lambda source: dispatch(select_previous()),
-        'create-note': lambda source: dispatch(create_note()),
-        'delete-note': lambda source: dispatch(delete_note()),
-        'focus-filter-term-entry': lambda source, s1: dispatch(set_filter_term_entry_focus(True)),
-        'move-paned': lambda source, position: dispatch(move_paned_position(position)),
-    }
-
-
 class MainWindow(Gtk.Window):
     paned_position = GObject.property(type=int)
 
@@ -154,6 +135,25 @@ class MainWindow(Gtk.Window):
 
     def do_quit(self):
         Gtk.main_quit()
+
+
+def map_state_to_props(state):
+    return (
+        ('paned-position', state['ui_state']['paned_position']),
+    )
+
+
+def map_dispatch_to_props(dispatch):
+    return {
+        'toggle-edit-mode': lambda source: dispatch(toggle_edit_note_text()),
+        'toggle-edit-title-mode': lambda source: dispatch(toggle_edit_note_title()),
+        'next-note': lambda source: dispatch(select_next()),
+        'prev-note': lambda source: dispatch(select_previous()),
+        'create-note': lambda source: dispatch(create_note()),
+        'delete-note': lambda source: dispatch(delete_note()),
+        'focus-filter-term-entry': lambda source, s1: dispatch(set_filter_term_entry_focus(True)),
+        'move-paned': lambda source, position: dispatch(move_paned_position(position)),
+    }
 
 
 ConnectedMainWindow = connect(MainWindow, map_state_to_props, map_dispatch_to_props)

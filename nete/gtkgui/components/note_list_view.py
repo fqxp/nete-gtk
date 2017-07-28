@@ -32,11 +32,12 @@ class NoteListView(Gtk.Grid):
             lambda source, param: self._on_notify_notes())
         self.connect(
             'notify::current-note',
-            lambda source, param: self._on_notify_current_note())
+            lambda source, param:
+                self._select_note(source.get_property('current-note')))
         self._changed_selection_handler = self.tree_view.get_selection().connect(
             'changed',
-            lambda selection: self.emit(
-                'selected-note', self._selected_note_id(selection)))
+            lambda selection:
+                self.emit('selected-note', self._selected_note_id(selection)))
         self.create_button.connect(
             'clicked',
             lambda source: self.emit('create-note'))
@@ -45,18 +46,15 @@ class NoteListView(Gtk.Grid):
         self._list_model().update(self.get_property('notes'))
         self._select_note(self.get_property('current-note'))
 
-    def _on_notify_current_note(self):
-        if self.get_property('current-note') is None:
-            return
-
-        with self.tree_view.get_selection().handler_block(self._changed_selection_handler):
-            self._select_note(self.get_property('current-note'))
-
     def _select_note(self, note_id):
+        if note_id is None:
+            return
         treeiter = self._list_model().get_treeiter_by_note_id(note_id)
         if treeiter is None:
             return
-        self.tree_view.get_selection().select_iter(treeiter)
+
+        with self.tree_view.get_selection().handler_block(self._changed_selection_handler):
+            self.tree_view.get_selection().select_iter(treeiter)
         self._scroll_current_cell_into_view(treeiter)
 
     def _selected_note_id(self, selection):
@@ -96,23 +94,6 @@ class NoteListView(Gtk.Grid):
     def _scroll_current_cell_into_view(self, treeiter):
         tree_path = self._list_model().get_path(treeiter)
         self.tree_view.scroll_to_cell(tree_path)
-
-
-def map_state_to_props(state):
-    return (
-        ('notes', state['cache']['notes']),
-        ('current-note', state['ui_state']['current_note_id']),
-    )
-
-
-def map_dispatch_to_props(dispatch):
-    return {
-        'selected-note': lambda source, note_id: dispatch(select_note(note_id)),
-        'create-note': lambda source: dispatch(create_note()),
-    }
-
-
-ConnectedNoteListView = connect(NoteListView, map_state_to_props, map_dispatch_to_props)
 
 
 class NoteListModel(Gtk.ListStore):
@@ -172,3 +153,20 @@ class NoteListModel(Gtk.ListStore):
             tree_iter = self.iter_next(tree_iter)
 
         return None
+
+
+def map_state_to_props(state):
+    return (
+        ('notes', state['cache']['notes']),
+        ('current-note', state['ui_state']['current_note_id']),
+    )
+
+
+def map_dispatch_to_props(dispatch):
+    return {
+        'selected-note': lambda source, note_id: dispatch(select_note(note_id)),
+        'create-note': lambda source: dispatch(create_note()),
+    }
+
+
+ConnectedNoteListView = connect(NoteListView, map_state_to_props, map_dispatch_to_props)

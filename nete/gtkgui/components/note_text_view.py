@@ -4,25 +4,6 @@ from fluous.gobject import connect
 import CommonMark
 
 
-def map_state_to_props(state):
-    return (
-        ('note_id', state['ui_state']['current_note_id']),
-        ('text', state['current_note']['note_text']),
-        ('cursor-position', state['current_note']['cursor_position']),
-        ('mode', 'edit' if state['ui_state']['is_editing_text'] else 'view'),
-    )
-
-
-def map_dispatch_to_props(dispatch):
-    return {
-        'notify::text': lambda source, param:
-            dispatch(
-                change_note_text(source.get_property('note_id'), source.get_property('text'))),
-        'notify::cursor-position': lambda source, param:
-            dispatch(change_cursor_position(source.get_property('cursor-position'))),
-    }
-
-
 class NoteTextView(Gtk.Stack):
 
     note_id = GObject.property(type=str, default='')
@@ -122,6 +103,25 @@ class TextEdit(Gtk.Box):
         self.text_buffer = self.text_editor.get_buffer()
 
         return scrollable_text_editor
+
+
+def map_state_to_props(state):
+    return (
+        ('note_id', state['ui_state']['current_note_id']),
+        ('text', state['current_note']['note_text']),
+        ('cursor-position', state['current_note']['cursor_position']),
+        ('mode', 'edit' if state['ui_state']['is_editing_text'] else 'view'),
+    )
+
+
+def map_dispatch_to_props(dispatch):
+    return {
+        'notify::text': lambda source, param:
+            dispatch(
+                change_note_text(source.get_property('note_id'), source.get_property('text'))),
+        'notify::cursor-position': lambda source, param:
+            dispatch(change_cursor_position(source.get_property('cursor-position'))),
+    }
 
 
 ConnectedNoteTextView = connect(NoteTextView, map_state_to_props, map_dispatch_to_props)

@@ -24,8 +24,7 @@ def map_state_to_props(state):
 
 
 def map_dispatch_to_props(dispatch):
-    return {
-    }
+    return {}
 
 
 ConnectedHeaderBar = connect(HeaderBar, map_state_to_props, map_dispatch_to_props)
