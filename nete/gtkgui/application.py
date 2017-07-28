@@ -4,33 +4,10 @@ from fluous.reducer_decorators import debug_reducer
 from nete.utils import in_development_mode
 from .components.main_window import ConnectedMainWindow
 from .actions import load_notes, load_ui_state, save_note, save_ui_state
-from .state import selectors
+from .state import selectors, initial_state
 from .reducers import reducer
 import logging
 import sys
-
-
-initial_state = {
-    'cache': {
-        'notes': [],
-    },
-    'current_note': {
-        'id': None,
-        'note_title': None,
-        'note_text': None,
-        'cursor_position': 0,
-        'needs_save': False,
-    },
-    'ui_state': {
-        'storage_uri': 'nete:notes',
-        'is_editing_title': False,
-        'is_editing_text': False,
-        'current_note_id': None,
-        'paned_position': 250,
-        'filter_term_entry_focus': False,
-        'filter_term': '',
-   },
-}
 
 
 class Application(Gtk.Application):
