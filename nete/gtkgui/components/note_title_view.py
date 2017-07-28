@@ -4,28 +4,6 @@ from nete.gtkgui.actions import (
 from fluous.gobject import connect
 
 
-def map_state_to_props(state):
-    return (
-        ('note_id', state['ui_state']['current_note_id']),
-        ('title', state['current_note']['note_title']),
-        ('mode', 'edit' if state['ui_state']['is_editing_title'] else 'view'),
-        ('text_edit_mode', 'edit' if state['ui_state']['is_editing_text'] else 'view'),
-    )
-
-
-def map_dispatch_to_props(dispatch):
-    return {
-        'title-changed': lambda  source, note_id, text:
-            dispatch(change_note_title(note_id, text)),
-        'finish-edit': lambda source, note_id:
-            dispatch(finish_edit_note_title()),
-        'toggle-edit-title': lambda source:
-            dispatch(toggle_edit_note_title()),
-        'toggle-edit-text': lambda source:
-            dispatch(toggle_edit_note_text()),
-    }
-
-
 class NoteTitleView(Gtk.Box):
 
     note_id = GObject.property(type=str, default='')
@@ -51,9 +29,8 @@ class NoteTitleView(Gtk.Box):
         self.connect('notify::mode', lambda source, param: self._on_notify_mode())
         self.connect('notify::text-edit-mode', lambda source, param: self._on_notify_text_edit_mode())
 
-        self._changed_title_handler = self.title_editor.connect(
-            'notify::text',
-            lambda source, param: self.emit('title-changed', self.note_id, self.title_editor.get_text()))
+        self.bind_property('title', self.title_editor, 'text', GObject.BindingFlags.BIDIRECTIONAL)
+        self.bind_property('title', self.title_view, 'label', GObject.BindingFlags.BIDIRECTIONAL)
 
         self.title_view_event_box.connect(
             'button-press-event',
@@ -75,12 +52,6 @@ class NoteTitleView(Gtk.Box):
             self.emit('toggle-edit-title')
         return False
 
-    def _on_notify_title(self):
-        if self.get_property('title') is None:
-            return
-
-        self.title_view.set_text(self.get_property('title'))
-
     def _on_edit_button_click(self):
         self.emit('toggle-edit-text')
 
@@ -88,8 +59,6 @@ class NoteTitleView(Gtk.Box):
         if self.get_property('mode') == 'view':
             self.title_stack.set_visible_child_name('view')
         elif self.get_property('mode') == 'edit':
-            with self.title_editor.handler_block(self._changed_title_handler):
-                self.title_editor.set_text(self.get_property('title'))
             self.title_editor.grab_focus()
             self.title_stack.set_visible_child_name('editor')
 
@@ -116,6 +85,28 @@ class NoteTitleView(Gtk.Box):
 
         self.pack_start(self.title_stack, True, True, 0)
         self.pack_end(self.edit_button, False, False, 2)
+
+
+def map_state_to_props(state):
+    return (
+        ('note_id', state['ui_state']['current_note_id']),
+        ('title', state['current_note']['note_title']),
+        ('mode', 'edit' if state['ui_state']['is_editing_title'] else 'view'),
+        ('text_edit_mode', 'edit' if state['ui_state']['is_editing_text'] else 'view'),
+    )
+
+
+def map_dispatch_to_props(dispatch):
+    return {
+        'notify::title': lambda source, param:
+            dispatch(change_note_title(source.get_property('note_id'), source.get_property('title'))),
+        'finish-edit': lambda source, note_id:
+            dispatch(finish_edit_note_title()),
+        'toggle-edit-title': lambda source:
+            dispatch(toggle_edit_note_title()),
+        'toggle-edit-text': lambda source:
+            dispatch(toggle_edit_note_text()),
+    }
 
 
 ConnectedNoteTitleView = connect(NoteTitleView, map_state_to_props, map_dispatch_to_props)
