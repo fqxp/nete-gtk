@@ -25,7 +25,6 @@ class NoteTitleView(Gtk.Box):
         self._connect_events()
 
     def _connect_events(self):
-        self.connect('notify::title', lambda source, param: self._on_notify_title())
         self.connect('notify::mode', lambda source, param: self._on_notify_mode())
         self.connect('notify::text-edit-mode', lambda source, param: self._on_notify_text_edit_mode())
 
