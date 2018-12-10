@@ -1,7 +1,9 @@
-from gi.repository import Gdk, Gtk, GObject, WebKit
-from nete.gtkgui.actions import change_note_text, change_cursor_position, finish_edit_note_title
+import gi
+gi.require_version('WebKit2', '4.0')
+from gi.repository import Gtk, GObject, WebKit2
+from nete.gtkgui.actions import change_note_text, change_cursor_position
 from fluous.gobject import connect
-import CommonMark
+import commonmark
 
 
 class NoteTextView(Gtk.Stack):
@@ -29,13 +31,13 @@ class NoteTextView(Gtk.Stack):
             return
 
         if self.get_property('mode') == 'view':
-            html_text = CommonMark.commonmark(self.get_property('text'))
-            self.web_view.load_html_string(html_text, 'file://.')
+            html_text = commonmark.commonmark(self.get_property('text'))
+            self.web_view.load_html(html_text, 'file://.')
 
     def _on_notify_mode(self):
         if self.get_property('mode') == 'view':
-            html_text = CommonMark.commonmark(self.get_property('text'))
-            self.web_view.load_html_string(html_text, 'file://.')
+            html_text = commonmark.commonmark(self.get_property('text'))
+            self.web_view.load_html(html_text, 'file://.')
             self.set_visible_child_name('view')
 
         elif self.get_property('mode') == 'edit':
@@ -54,7 +56,7 @@ class NoteTextView(Gtk.Stack):
     def _build_text_view(self):
         scrollable_text_view = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
 
-        self.web_view = WebKit.WebView()
+        self.web_view = WebKit2.WebView()
         scrollable_text_view.add(self.web_view)
 
         return scrollable_text_view
