@@ -24,7 +24,14 @@ nete will:
 ### On Debian jessie
 Install required Debian packages:
 
-    apt-get install python3
+    apt-get install python3 gir1.2-webkit2-4.0
+
+### On ArchLinux
+
+Install packages from AUR:
+
+* python
+* webkit2gtk
 
 ## Install nete
 
@@ -45,7 +52,7 @@ install development requirements:
 
 Activate the virtual environment and run setup:
 
-    ./venv/bin/activate:
+    ./venv/bin/activate
     python setup.py egg_info -b dev develop
 
 The `-b dev` adds the string `"dev"` to the version, which is important if you
@@ -65,7 +72,3 @@ Or you can run one of the clients using
 Run tests:
 
     (venv)$ nose2 -c nose2.cfg
-
-# Credits
-
-* Notepad icon: http://pixabay.com/en/notepad-editor-pencil-document-97841/
