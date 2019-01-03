@@ -1,11 +1,10 @@
 from pyrsistent import freeze
 
 
-def add_new(notes, note_id, title):
+def add_new(notes, note):
     return freeze(
         ordered(
-            notes.append(
-                build_entry({'id': note_id, 'title': title}))))
+            notes.append(note)))
 
 
 def without(notes, note_id):

@@ -2,16 +2,17 @@ from .action_types import ActionType
 from .selection import select_note
 from nete.gtkgui.state import note_list
 from nete.services.storage_factory import create_storage
-import uuid
 
 
 def create_note():
-    return {
-        'type': ActionType.CREATE_NOTE,
-        'id': str(uuid.uuid4()),
-        'title': 'New Note',
-        'text': '',
-    }
+    def create_note(dispatch, state):
+        storage = create_storage(state['ui_state']['storage_uri'])
+
+        return {
+            'type': ActionType.CREATE_NOTE,
+            'note': storage.create_note('New Note'),
+        }
+    return create_note
 
 
 def delete_note():

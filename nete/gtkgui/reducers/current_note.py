@@ -15,10 +15,10 @@ def reduce(state, action):
 
     elif action_type == ActionType.CREATE_NOTE:
         return state.update({
-            'id': action['id'],
-            'note_title': action['title'],
-            'note_text': action['text'],
-            'cursor_position': 0,
+            'id': action['note']['id'],
+            'note_title': action['note']['title'],
+            'note_text': action['note']['text'],
+            'cursor_position': action['note']['cursor_position'],
             'needs_save': True,
         })
 

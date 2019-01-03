@@ -20,6 +20,14 @@ class FilesystemNoteStorage(object):
             for list_entry in self._list_entries()
             if filter_term is None or filter_term.lower() in list_entry['title'].lower()]
 
+    def create_note(self, title):
+        return {
+            'id': str(uuid.uuid4()),
+            'title': title,
+            'text': '',
+            'cursor_position': 0,
+        }
+
     def load(self, note_id):
         with open(self._filename_from_id(note_id)) as fd:
             content = json.load(fd)
