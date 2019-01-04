@@ -89,7 +89,7 @@ class NoteTitleView(Gtk.Box):
 def map_state_to_props(state):
     return (
         ('note_id', state['ui_state']['current_note_id']),
-        ('title', state['current_note']['note_title']),
+        ('title', state['current_note']['title']),
         ('mode', 'edit' if state['ui_state']['is_editing_title'] else 'view'),
         ('text_edit_mode', 'edit' if state['ui_state']['is_editing_text'] else 'view'),
     )

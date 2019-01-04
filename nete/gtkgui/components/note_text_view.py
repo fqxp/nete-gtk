@@ -110,7 +110,7 @@ class TextEdit(Gtk.Box):
 def map_state_to_props(state):
     return (
         ('note_id', state['ui_state']['current_note_id']),
-        ('text', state['current_note']['note_text']),
+        ('text', state['current_note']['text']),
         ('cursor-position', state['current_note']['cursor_position']),
         ('mode', 'edit' if state['ui_state']['is_editing_text'] else 'view'),
     )

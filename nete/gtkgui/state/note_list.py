@@ -1,4 +1,5 @@
 from pyrsistent import freeze
+from .initial import Note
 
 
 def add_new(notes, note):
@@ -41,16 +42,17 @@ def previous_note_id(notes, current_note_id):
 
 
 def build_entry(note):
-    return freeze({
+    return Note.create({
         'id': note['id'],
         'title': note['title'],
     })
 
 
 def change_title(notes, note_id, title):
-    return freeze({
-        'id': note['id'],
-        'title': note['title'] if note['id'] != note_id else title}
+    return freeze(
+        Note.create({
+            'id': note['id'],
+            'title': note['title'] if note['id'] != note_id else title})
         for note in notes)
 
 

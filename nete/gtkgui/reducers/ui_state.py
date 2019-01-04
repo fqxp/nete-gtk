@@ -1,5 +1,5 @@
 from nete.gtkgui.actions.action_types import ActionType
-from pyrsistent import freeze, thaw
+from nete.gtkgui.state.initial import UiState
 
 
 def reduce(state, action):
@@ -56,7 +56,7 @@ def reduce(state, action):
         return state.set('paned_position', action['position'])
 
     elif action_type == ActionType.LOADED_UI_STATE:
-        return state.update(freeze(action['ui_state']))
+        return state.update(UiState.create(action['ui_state']))
 
     else:
         return state

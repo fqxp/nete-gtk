@@ -3,7 +3,8 @@ from inspect import getargspec
 
 def set_props(component, props):
     for key, value in props:
-        if component.get_property(key) != value:
+        property_value = component.get_property(key)
+        if property_value is None or property_value != value:
             component.set_property(key, value)
 
 

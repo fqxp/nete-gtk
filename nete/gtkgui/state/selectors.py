@@ -6,8 +6,8 @@ from pyrsistent import freeze
 def current_note(state):
     return freeze({
         'id': state['current_note']['id'],
-        'title': state['current_note']['note_title'],
-        'text': state['current_note']['note_text'],
+        'title': state['current_note']['title'],
+        'text': state['current_note']['text'],
         'cursor_position': state['current_note']['cursor_position'],
         'storage_uri': state['ui_state']['storage_uri'],
         'needs_save': state['current_note']['needs_save'],

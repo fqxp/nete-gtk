@@ -17,7 +17,7 @@ class HeaderBar(Gtk.HeaderBar):
 def map_state_to_props(state):
     return (
         ('title', '%s (nete%s)' % (
-            state['current_note']['note_title'],
+            state['current_note']['title'],
             '-DEVELOPMENT' if in_development_mode() else '',
         )),
     )

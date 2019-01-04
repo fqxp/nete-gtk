@@ -1,4 +1,5 @@
-from nete.gtkgui.application import reducer, initial_state
+from nete.gtkgui.application import initial_state
+from nete.gtkgui.reducers import reducer
 from nete.gtkgui.actions.action_types import ActionType
 from pyrsistent import freeze
 from nose2.tools import such
