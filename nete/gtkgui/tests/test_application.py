@@ -2,7 +2,6 @@ from nete.gtkgui.application import reducer, initial_state
 from nete.gtkgui.actions.action_types import ActionType
 from pyrsistent import freeze
 from nose2.tools import such
-import mock
 
 
 with such.A('reducer') as it:

@@ -1,3 +1,5 @@
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gio, GLib
 from fluous.store import Store
 from fluous.reducer_decorators import debug_reducer
