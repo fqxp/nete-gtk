@@ -8,7 +8,7 @@ __all__ = [
 ]
 
 
-def debug_reducer(print_diff=False, print_traceback=False):
+def debug_reducer(print_state=True, print_diff=False, print_traceback=False):
     from termcolor import cprint, colored
 
     def decorator(reducer):
@@ -16,15 +16,19 @@ def debug_reducer(print_diff=False, print_traceback=False):
             print()
             print(
                 colored('→ %s' % action['type'].value, 'magenta'))
-            cprint('before: %s' % _wrap_dict(thaw(state)), 'blue')
+            if print_state:
+                cprint('before: %s' % _wrap_dict(thaw(state)), 'blue')
             cprint('action: %s' % _wrap_dict(action), 'yellow')
+
             new_state = call_reducer(reducer, state, action)
-            cprint('after:  %s' % _wrap_dict(thaw(new_state)), 'green')
+
+            if print_state:
+                cprint('after:  %s' % _wrap_dict(thaw(new_state)), 'green')
 
             if print_diff:
                 import deepdiff
-                diff = deepdiff.DeepDiff(thaw(old_state), thaw(new_state))
-                print('  diff: %r' % diff)
+                diff = deepdiff.DeepDiff(thaw(state), thaw(new_state))
+                print('  diff: {}'.format(_wrap_dict(diff)))
 
             if print_traceback:
                 traceback.print_stack()
