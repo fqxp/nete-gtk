@@ -48,7 +48,7 @@ class Application(Gtk.Application):
             reducer = debug_reducer(
                 print_state=False,
                 print_diff=True,
-                print_traceback=True)(reducer)
+                print_traceback=False)(reducer)
         self.store = Store(reducer, initial_state)
 
         self.store.dispatch(load_notes())

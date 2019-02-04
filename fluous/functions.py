@@ -20,7 +20,10 @@ def call_reducer(reducer, state, action):
 def combine_reducers(reducers):
     def combined_reducer(state, action):
         for key, reducer in reducers.items():
-            state = state.set(key, reducer(state[key], action))
+            if key == '':
+                state = state.set(key, reducer(state, action))
+            else:
+                state = state.set(key, reducer(state[key], action))
 
         return state
 

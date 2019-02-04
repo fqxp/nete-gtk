@@ -1,20 +1,18 @@
-import gi
-gi.require_version('WebKit2', '4.0')
-from gi.repository import Gtk, GObject, WebKit2
-from nete.gtkgui.actions import change_note_text, change_cursor_position
 from fluous.gobject import connect
+from gi.repository import Gtk, GObject, WebKit2
 import commonmark
+
+from ..actions import change_cursor_position, change_note_text
 
 
 class NoteTextView(Gtk.Stack):
 
-    note_id = GObject.property(type=str, default='')
     text = GObject.property(type=str, default='')
-    cursor_position = GObject.property(type=int, default=3)
+    cursor_position = GObject.property(type=int, default=0)
     mode = GObject.property(type=str, default='view')
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
         self._build_ui()
         self._connect_events()
@@ -97,7 +95,7 @@ class TextEdit(Gtk.Box):
         self.pack_start(self._build_text_editor(), True, True, 0)
 
     def _build_text_editor(self):
-        scrollable_text_editor = Gtk.ScrolledWindow( hexpand=True, vexpand=True)
+        scrollable_text_editor = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
 
         self.text_editor = Gtk.TextView(wrap_mode=Gtk.WrapMode.WORD_CHAR)
         self.text_editor.get_buffer()
@@ -109,10 +107,9 @@ class TextEdit(Gtk.Box):
 
 def map_state_to_props(state):
     return (
-        ('note_id', state['ui_state']['current_note_id']),
-        ('text', state['current_note']['text']),
-        ('cursor-position', state['current_note']['cursor_position']),
-        ('mode', 'edit' if state['ui_state']['is_editing_text'] else 'view'),
+        ('text', state['current_note']['text'] if state['current_note'] else None),
+        ('cursor-position', state['current_note']['cursor_position'] if state['current_note'] else 0),
+        ('mode', 'edit' if state['ui']['is_editing_text'] else 'view'),
     )
 
 
@@ -120,7 +117,7 @@ def map_dispatch_to_props(dispatch):
     return {
         'notify::text': lambda source, param:
             dispatch(
-                change_note_text(source.get_property('note_id'), source.get_property('text'))),
+                change_note_text(source.get_property('text'))),
         'notify::cursor-position': lambda source, param:
             dispatch(change_cursor_position(source.get_property('cursor-position'))),
     }

@@ -1,3 +1,4 @@
+from nete.services.storage_factory import create_storage
 from .action_types import ActionType
 
 
@@ -7,10 +8,9 @@ def toggle_edit_note_text():
     }
 
 
-def change_note_text(note_id, text):
+def change_note_text(text):
     return {
         'type': ActionType.CHANGE_NOTE_TEXT,
-        'note_id': note_id,
         'text': text,
     }
 
@@ -34,15 +34,25 @@ def toggle_edit_note_title():
     }
 
 
-def change_note_title(note_id, title):
-    return {
-        'type': ActionType.CHANGE_NOTE_TITLE,
-        'note_id': note_id,
-        'title': title,
-    }
+
+def finish_edit_note_title(new_title):
+    def finish_edit_note_title(dispatch, state):
+        old_title = state['current_note']['title']
+        current_note_collection_id = state['ui']['current_note_collection_id']
+        note_collection = state['note_collections'][current_note_collection_id]
+        storage = create_storage(note_collection)
+        storage.move(old_title, new_title)
+
+        return {
+            'type': ActionType.FINISH_EDIT_NOTE_TITLE,
+            'old_title': old_title,
+            'new_title': new_title,
+        }
+
+    return finish_edit_note_title
 
 
-def finish_edit_note_title():
+def cancel_edit_note_title():
     return {
-        'type': ActionType.FINISH_EDIT_NOTE_TITLE,
+        'type': ActionType.CANCEL_EDIT_NOTE_TITLE,
     }

@@ -1,12 +1,11 @@
-from nete.utils import in_development_mode
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk
 from fluous.gobject import connect
 
 
 class HeaderBar(Gtk.HeaderBar):
 
-    def __init__(self):
-        Gtk.HeaderBar.__init__(self)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
         self._build_ui()
 
@@ -15,10 +14,10 @@ class HeaderBar(Gtk.HeaderBar):
 
 
 def map_state_to_props(state):
+    note_title = state['current_note']['title'] if state['current_note'] else 'No note loaded'
     return (
         ('title', '%s (nete%s)' % (
-            state['current_note']['title'],
-            '-DEVELOPMENT' if in_development_mode() else '',
+            note_title, '-DEVELOPMENT' if state['development_mode'] else '',
         )),
     )
 

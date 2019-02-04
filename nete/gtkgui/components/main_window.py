@@ -1,14 +1,15 @@
-from gi.repository import Gtk, Gdk, GObject
+from fluous.gobject import connect
+from gi.repository import Gdk, Gtk, GObject
+import logging
+import pkg_resources
+
 from nete.gtkgui.actions import (
     toggle_edit_note_text, toggle_edit_note_title, select_next,
     select_previous, create_note, delete_note, move_paned_position,
     set_filter_term_entry_focus)
-from fluous.gobject import connect
 from .header_bar import ConnectedHeaderBar
 from .note_list_view import ConnectedNoteListView
-from .note_view import NoteView
-import logging
-import pkg_resources
+from .note_view import ConnectedNoteView
 
 
 logger = logging.getLogger(__name__)
@@ -31,8 +32,8 @@ class MainWindow(Gtk.Window):
         'reset': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
     }
 
-    def __init__(self, build_component):
-        Gtk.Window.__init__(self)
+    def __init__(self, build_component, **kwargs):
+        super().__init__(**kwargs)
 
         self.set_name('main-window')
 
@@ -67,14 +68,14 @@ class MainWindow(Gtk.Window):
         self.header_bar = build_component(ConnectedHeaderBar)
         self.set_titlebar(self.header_bar)
 
-        self.paned = Gtk.HPaned()
+        self.paned = Gtk.HPaned(position=self.paned_position)
         self.add(self.paned)
 
         self.note_list_view = build_component(ConnectedNoteListView)
         self.paned.add1(self.note_list_view)
         self.paned.child_set_property(self.note_list_view, 'shrink', False)
 
-        self.note_view = build_component(NoteView)
+        self.note_view = build_component(ConnectedNoteView)
         self.paned.add2(self.note_view)
 
         self._add_accelerators()
@@ -116,11 +117,6 @@ class MainWindow(Gtk.Window):
                              ord('F'),
                              Gdk.ModifierType.CONTROL_MASK,
                              Gtk.AccelFlags.VISIBLE)
-        self.add_accelerator('reset',
-                             self.accel_group,
-                             Gdk.KEY_Escape,
-                             0,
-                             Gtk.AccelFlags.VISIBLE)
         self.add_accelerator('quit',
                              self.accel_group,
                              ord('Q'),
@@ -139,7 +135,7 @@ class MainWindow(Gtk.Window):
 
 def map_state_to_props(state):
     return (
-        ('paned-position', state['ui_state']['paned_position']),
+        ('paned_position', state['ui']['paned_position']),
     )
 
 

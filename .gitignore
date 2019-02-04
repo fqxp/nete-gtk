@@ -7,10 +7,6 @@ debian/nete-gtk/
 debian/source/
 debian/files
 debian/nete-gtk.debhelper.log
-.pybuild/
-core
-Session.vim
 venv/
 config/
-NERD_tree_1
-.ropeproject/
+tmp/

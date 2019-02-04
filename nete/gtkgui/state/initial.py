@@ -1,52 +1,26 @@
-from pyrsistent import PRecord, field, pvector_field
+from nete.utils import in_development_mode
+from .models import NoteList, Note, Ui, State, NoteCollection
 
 
-class Note(PRecord):
-    id = field(type=(str, type(None)))
-    title = field(type=(str, type(None)))
-    text = field(type=(str, type(None)))
-    cursor_position = field(type=int)
-    needs_save = field(type=bool)
-
-
-class Cache(PRecord):
-    notes = pvector_field(Note)
-
-
-class UiState(PRecord):
-    storage_uri = field(type=(str, type(None)))
-    is_editing_title = field(type=bool)
-    is_editing_text = field(type=bool)
-    current_note_id = field(type=(str, type(None)))
-    paned_position = field(type=int)
-    filter_term_entry_focus = field(type=bool)
-    filter_term = field(type=str)
-
-
-class State(PRecord):
-    cache = field(type=Cache)
-    current_note = field(type=(Note, type(None)))
-    ui_state = field(type=UiState)
-
-
-initial_state = State.create({
-    'cache': Cache.create({
-        'notes': [],
-    }),
-    'current_note': Note.create({
-        'id': None,
-        'title': None,
-        'text': None,
-        'cursor_position': 0,
-        'needs_save': False,
-    }),
-    'ui_state': UiState.create({
-        'storage_uri': 'nete:notes',
-        'is_editing_title': False,
-        'is_editing_text': False,
-        'current_note_id': None,
-        'paned_position': 250,
-        'filter_term_entry_focus': False,
-        'filter_term': '',
-    }),
-})
+initial_state = State(
+    note_collections={
+        '630415b9-290e-4b3e-94d3-c96bca7b9694': NoteCollection(
+            id='630415b9-290e-4b3e-94d3-c96bca7b9694',
+            name='Personal',
+            directory='/home/frank/devel/nete/markdown-notes/notes',
+            ),
+    },
+    note_list=NoteList(
+        notes=[],
+        filter_term='',
+        ),
+    current_note=None,
+    ui=Ui(
+        current_note_collection_id='630415b9-290e-4b3e-94d3-c96bca7b9694',
+        is_editing_title=False,
+        is_editing_text=False,
+        paned_position=250,
+        filter_term_entry_focus=False,
+        ),
+    development_mode=in_development_mode(),
+    )

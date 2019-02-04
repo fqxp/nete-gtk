@@ -1,10 +1,9 @@
 from fluous.functions import combine_reducers
-from . import current_note, ui_state, cache
+from . import current_note, ui, note_list
 
 
 reducer = combine_reducers({
     'current_note': current_note.reduce,
-    'ui_state': ui_state.reduce,
-    'cache': cache.reduce,
+    'ui': ui.reduce,
+    'note_list': note_list.reduce,
 })
-

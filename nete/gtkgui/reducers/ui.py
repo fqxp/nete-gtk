@@ -1,5 +1,5 @@
 from nete.gtkgui.actions.action_types import ActionType
-from nete.gtkgui.state.initial import UiState
+from nete.gtkgui.state.initial import Ui
 
 
 def reduce(state, action):
@@ -7,15 +7,7 @@ def reduce(state, action):
 
     if action_type == ActionType.SELECT_NOTE:
         return state.update({
-            'current_note_id': action['id'],
             'is_editing_title': False,
-            'is_editing_text': False,
-        })
-
-    elif action_type == ActionType.CREATE_NOTE:
-        return state.update({
-            'current_note_id': action['note']['id'],
-            'is_editing_title': True,
             'is_editing_text': False,
         })
 
@@ -31,11 +23,6 @@ def reduce(state, action):
                 'filter_term_entry_focus': False,
             })
 
-    elif action_type == ActionType.CHANGE_FILTER_TERM:
-        return state.update({
-            'filter_term': action['filter_term'],
-        })
-
     elif action_type == ActionType.TOGGLE_EDIT_NOTE_TEXT:
         return state.update({
             'is_editing_text': not state['is_editing_text'],
@@ -49,6 +36,9 @@ def reduce(state, action):
     elif action_type == ActionType.FINISH_EDIT_NOTE_TITLE:
         return state.set('is_editing_title', False)
 
+    elif action_type == ActionType.CANCEL_EDIT_NOTE_TITLE:
+        return state.set('is_editing_title', False)
+
     elif action_type == ActionType.FINISH_EDIT_NOTE_TEXT:
         return state.set('is_editing_text', False)
 
@@ -56,7 +46,7 @@ def reduce(state, action):
         return state.set('paned_position', action['position'])
 
     elif action_type == ActionType.LOADED_UI_STATE:
-        return state.update(UiState.create(action['ui_state']))
+        return state.update(Ui.create(action['ui']))
 
     else:
         return state

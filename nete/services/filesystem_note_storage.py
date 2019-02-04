@@ -1,99 +1,99 @@
+from nete.gtkgui.state.models import Note, NoteListItem
+from nete.gtkgui.state.utils.note_list import is_visible
+import datetime
 import glob
-import json
 import logging
 import os
 import os.path
-import uuid
 
 logger = logging.getLogger(__name__)
 
 
 class FilesystemNoteStorage(object):
 
-    def __init__(self, context):
-        self._context = context
-        logger.debug('Using directory %s' % self.note_dir())
+    def __init__(self, note_collection):
+        self._note_collection = note_collection
+        logger.debug('Using directory {}'.format(self.note_dir()))
 
     def list(self, filter_term=None):
         return [
-            list_entry
-            for list_entry in self._list_entries()
-            if filter_term is None or filter_term.lower() in list_entry['title'].lower()]
+            NoteListItem(
+                title=title,
+                visible=is_visible(title, filter_term))
+            for title in self._list_entries()]
 
-    def create_note(self, title):
-        return {
-            'id': str(uuid.uuid4()),
-            'title': title,
-            'text': '',
-            'cursor_position': 0,
-        }
+    def create_note(self):
+        note = Note(
+            note_collection_id=self._note_collection.id,
+            title=self._find_title('New Note'),
+            text='',
+            cursor_position=0,
+            needs_save=False,
+        )
 
-    def load(self, note_id):
-        with open(self._filename_from_id(note_id)) as fd:
-            content = json.load(fd)
-            return {
-                'id': note_id,
-                'title': content.get('title', '<no title>'),
-                'text': content.get('text', ''),
-                'cursor_position': content.get('cursor_position', 0),
-            }
+        self.save(note)
+
+        return note
+
+    def load(self, note_title):
+        with open(self._filename_from_title(note_title)) as fd:
+            content = fd.read()
+            return Note(
+                note_collection_id=self._note_collection.id,
+                title=note_title,
+                text=content,
+                cursor_position=0,
+                needs_save=False,
+            )
 
     def save(self, note):
         self._ensure_dir_exists(self.note_dir())
 
-        if note.get('id') is None:
-            raise Exception('Cannot save note - note has no id')
         if note.get('title') is None:
             raise Exception('Cannot save note - title is not set')
         if note.get('text') is None:
             raise Exception('Cannot save note - text is not set')
 
-        filename = self._filename_from_id(note['id'])
-        logger.debug('Saving note in %s' % filename)
+        filename = self._filename_from_title(note['title'])
+        logger.debug('Saving note in {}'.format(filename))
 
         with open(filename, 'w') as fd:
-            content = {
-                'id': note['id'],
-                'title': note['title'],
-                'text': note['text'],
-                'cursor_position': note['cursor_position'],
-            }
-            json.dump(content, fd)
+            fd.write(note['text'])
 
-    def delete(self, note_id):
-        logger.debug('Deleting note %s' % (note_id,))
-        os.unlink(self._filename_from_id(note_id))
+    def delete(self, note_title):
+        logger.debug('Deleting note {}'.format(note_title))
+        os.unlink(self._filename_from_title(note_title))
+
+    def move(self, old_title, new_title):
+        old_filename = self._filename_from_title(old_title)
+        new_filename = self._filename_from_title(new_title)
+
+        if os.path.exists(new_filename):
+            raise Exception('Cannot rename note »{}« because target title »{}« exists'.format(
+                old_filename, new_filename))
+
+        os.rename(old_filename, new_filename)
 
     def note_dir(self):
-        if 'NETE_DIR' in os.environ:
-            basedir = os.environ['NETE_DIR']
-        elif 'XDG_DATA_HOME' in os.environ:
-            basedir = os.path.join(os.environ['XDG_DATA_HOME'], 'nete')
-        else:
-            basedir = os.path.join(os.path.expanduser('~'), '.local', 'share', 'nete')
-
-        return os.path.join(basedir, self._context)
+        return self._note_collection.directory
 
     def _list_entries(self):
-        return [
-            self._fetch_list_entry(self._id_from_filename(os.path.basename(filename)))
-            for filename in glob.glob(os.path.join(self.note_dir(), '*.json'))
+        entries = [
+            self._title_from_filename(os.path.basename(filename))
+            for filename in glob.glob(os.path.join(self.note_dir(), '*.md'))
         ]
-
-    def _fetch_list_entry(self, note_id):
-        note = self.load(note_id)
-        return {
-            'id': note['id'],
-            'title': note['title'],
-        }
+        return entries
 
     def _ensure_dir_exists(self, note_dir):
         if not os.path.isdir(note_dir):
             os.makedirs(note_dir)
 
-    def _filename_from_id(self, id):
-        return os.path.join(self.note_dir(), '%s.json' % id)
+    def _filename_from_title(self, title):
+        return os.path.join(self.note_dir(), '%s.md' % title)
 
-    def _id_from_filename(self, filename):
-        return os.path.splitext(os.path.basename(filename))[0]
+    def _title_from_filename(self, filename):
+        title, extension = os.path.splitext(os.path.basename(filename))
+        return title
 
+    def _find_title(self, prefix):
+        return '{} {}'.format(prefix, datetime.datetime.now())

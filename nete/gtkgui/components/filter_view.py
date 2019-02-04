@@ -8,13 +8,13 @@ class FilterView(Gtk.Box):
     has_focus = GObject.property(type=bool, default=False)
     filter_term = GObject.property(type=str, default='')
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self._build_ui()
         self._connect_events()
 
     def _build_ui(self):
-        self.filter_term_entry = Gtk.Entry()
+        self.filter_term_entry = Gtk.Entry(text=self.filter_term)
         self.pack_start(self.filter_term_entry, True, True, 2)
 
     def _connect_events(self):
@@ -24,8 +24,8 @@ class FilterView(Gtk.Box):
 
 def map_state_to_props(state):
     return (
-        ('filter-term', state['ui_state']['filter_term']),
-        ('has-focus', state['ui_state']['filter_term_entry_focus']),
+        ('filter-term', state['note_list']['filter_term']),
+        ('has-focus', state['ui']['filter_term_entry_focus']),
     )
 
 

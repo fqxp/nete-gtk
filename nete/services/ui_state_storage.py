@@ -15,11 +15,15 @@ logger = logging.getLogger(__name__)
 
 def load_ui_state():
     config = ConfigParser()
+
+    if not os.path.exists(config_filename()):
+        return {}
+
     with open(config_filename()) as f:
         config.read_file(f)
 
-    general = config['general']
     result = {}
+    general = config['general']
     if 'current_note_id' in general:
         result['current_note_id'] = general['current_note_id']
     if 'paned-position' in general:
@@ -32,7 +36,6 @@ def save_ui_state(ui_state):
     config = ConfigParser()
 
     config['general'] = {}
-    config['general']['current_note_id'] = ui_state['current_note_id'] or ''
     config['general']['paned-position'] = str(ui_state['paned_position'])
 
     os.makedirs(os.path.dirname(config_filename()), exist_ok=True)
