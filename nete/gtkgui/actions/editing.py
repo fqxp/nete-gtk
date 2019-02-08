@@ -34,20 +34,24 @@ def toggle_edit_note_title():
     }
 
 
-
 def finish_edit_note_title(new_title):
     def finish_edit_note_title(dispatch, state):
         old_title = state['current_note']['title']
-        current_note_collection_id = state['ui']['current_note_collection_id']
-        note_collection = state['note_collections'][current_note_collection_id]
-        storage = create_storage(note_collection)
-        storage.move(old_title, new_title)
 
-        return {
-            'type': ActionType.FINISH_EDIT_NOTE_TITLE,
-            'old_title': old_title,
-            'new_title': new_title,
-        }
+        if old_title == new_title:
+            return cancel_edit_note_title()
+
+        else:
+            current_note_collection_id = state['ui']['current_note_collection_id']
+            note_collection = state['note_collections'][current_note_collection_id]
+            storage = create_storage(note_collection)
+            storage.move(old_title, new_title)
+
+            return {
+                'type': ActionType.FINISH_EDIT_NOTE_TITLE,
+                'old_title': old_title,
+                'new_title': new_title,
+            }
 
     return finish_edit_note_title
 
