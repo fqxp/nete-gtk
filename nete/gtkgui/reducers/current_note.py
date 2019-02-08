@@ -1,35 +1,29 @@
+from fluous import create_reducer
 from nete.gtkgui.actions.action_types import ActionType
 
 
-def reduce(state, action):
-    action_type = action['type']
+reduce = create_reducer({
+    ActionType.SELECT_NOTE: lambda state, action:
+        action['note'] if state is None else state.update(action['note']),
 
-    if action_type == ActionType.SELECT_NOTE:
-        if state is None:
-            return action['note']
-        else:
-            return state.update(action['note'])
-
-    elif action_type == ActionType.CHANGE_NOTE_TEXT:
-        return state.update({
+    ActionType.CHANGE_NOTE_TEXT: lambda state, action:
+        state.update({
             'text': action['text'],
             'needs_save': True,
-        })
+        }),
 
-    elif action_type == ActionType.FINISH_EDIT_NOTE_TITLE:
-        return state.update({
+    ActionType.FINISH_EDIT_NOTE_TITLE: lambda state, action:
+        state.update({
             'title': action['new_title'],
-        })
+        }),
 
-    elif action_type == ActionType.CHANGE_CURSOR_POSITION:
-        return state.update({
+    ActionType.CHANGE_CURSOR_POSITION: lambda state, action:
+        state.update({
             'cursor_position': action['cursor_position'],
-        })
+        }),
 
-    elif action_type == ActionType.NOTE_SAVED:
-        return state.update({
+    ActionType.NOTE_SAVED: lambda state, action:
+        state.update({
             'needs_save': False,
-        })
-
-    else:
-        return state
+        }),
+})

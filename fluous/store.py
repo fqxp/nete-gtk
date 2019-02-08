@@ -1,3 +1,8 @@
+__all__ = (
+    'Store',
+)
+
+
 class Store:
     def __init__(self, reducer, initial_state):
         self._reducer = reducer

@@ -1,7 +1,9 @@
 from inspect import getargspec
 from contextlib import contextmanager
 
-__all__ = ('connect', )
+__all__ = (
+    'connect',
+)
 
 silenced_notify_signals = []
 

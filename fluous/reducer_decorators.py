@@ -2,10 +2,9 @@ from pyrsistent import thaw
 from .functions import call_reducer
 import traceback
 
-
-__all__ = [
+__all__ = (
     'debug_reducer',
-]
+)
 
 
 def debug_reducer(print_state=True, print_diff=False, print_traceback=False):
