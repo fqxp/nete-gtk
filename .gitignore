@@ -10,3 +10,4 @@ debian/nete-gtk.debhelper.log
 venv/
 config/
 tmp/
+.ropeproject/
