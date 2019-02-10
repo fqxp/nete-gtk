@@ -4,9 +4,6 @@ from .filter_view import ConnectedFilterView
 from fluous.gobject import connect
 
 
-COLUMN_NOTE_TITLE = 0
-
-
 class NoteListView(Gtk.Grid):
 
     notes = GObject.property(type=GObject.TYPE_PYOBJECT)
@@ -61,7 +58,7 @@ class NoteListView(Gtk.Grid):
         model, treeiter = selection.get_selected()
         if treeiter is None:
             return None
-        return model[treeiter][COLUMN_NOTE_TITLE]
+        return model[treeiter][model.COLUMN_NOTE_TITLE]
 
     def _list_model(self):
         return self.tree_view.get_model()
@@ -78,10 +75,14 @@ class NoteListView(Gtk.Grid):
             can_focus=False)
         self.attach(self.scrollable_treelist, 0, 1, 1, 1)
 
-        self.tree_view = Gtk.TreeView(model, headers_visible=False, can_focus=False)
-        title_renderer = Gtk.CellRendererText()
-        title_renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
-        column = Gtk.TreeViewColumn('title', title_renderer, text=0)
+        self.tree_view = Gtk.TreeView(
+            model,
+            headers_visible=False,
+            can_focus=True)
+        title_renderer = Gtk.CellRendererText(
+            ellipsize=Pango.EllipsizeMode.END
+        )
+        column = Gtk.TreeViewColumn('title', title_renderer, markup=model.COLUMN_NOTE_TITLE)
         self.tree_view.append_column(column)
 
         self.scrollable_treelist.add(self.tree_view)
@@ -97,6 +98,9 @@ class NoteListView(Gtk.Grid):
 
 
 class NoteListModel(Gtk.ListStore):
+
+    COLUMN_NOTE_TITLE = 0
+
     def __init__(self):
         super().__init__(str)
 
@@ -116,18 +120,18 @@ class NoteListModel(Gtk.ListStore):
         rows_to_delete = [
             row
             for row in self
-            if row[COLUMN_NOTE_TITLE] not in notes_by_title]
+            if row[self.COLUMN_NOTE_TITLE] not in notes_by_title]
 
         for row in rows_to_delete:
             self.remove(row.iter)
 
     def _update_rows(self, notes_by_title):
         for row in self:
-            note = notes_by_title[row[COLUMN_NOTE_TITLE]]
-            row[COLUMN_NOTE_TITLE] = note['title']
+            note = notes_by_title[row[self.COLUMN_NOTE_TITLE]]
+            row[self.COLUMN_NOTE_TITLE] = note['title']
 
     def _append_rows(self, note_list):
-        row_titles = [row[COLUMN_NOTE_TITLE] for row in self]
+        row_titles = [row[self.COLUMN_NOTE_TITLE] for row in self]
         rows_to_append = [
             (note['title'],)
             for note in note_list
@@ -138,7 +142,7 @@ class NoteListModel(Gtk.ListStore):
             self.append(row)
 
     def _sync_order(self, note_list):
-        row_titles = [row[COLUMN_NOTE_TITLE] for row in self]
+        row_titles = [row[self.COLUMN_NOTE_TITLE] for row in self]
         new_order = [
             row_titles.index(note['title'])
             for note in note_list
@@ -150,7 +154,7 @@ class NoteListModel(Gtk.ListStore):
         tree_iter = self.get_iter_first()
 
         while tree_iter is not None:
-            if self[tree_iter][COLUMN_NOTE_TITLE] == note_title:
+            if self[tree_iter][self.COLUMN_NOTE_TITLE] == note_title:
                 return tree_iter
             tree_iter = self.iter_next(tree_iter)
 
