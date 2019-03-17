@@ -1,5 +1,5 @@
 #main-window {
-  background-color: #aa0000;
+  /* background-color: #aa0000; */
 }
 
 GtkTreeView {
@@ -15,4 +15,3 @@ GtkTreeView row:selected {
   color: #000000;
   background-color: #eeeeee;
 }
-

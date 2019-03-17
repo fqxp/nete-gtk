@@ -4,11 +4,16 @@ import logging
 import pkg_resources
 
 from nete.gtkgui.actions import (
-    toggle_edit_note_text, toggle_edit_note_title, select_next,
-    select_previous, create_note, delete_note, move_paned_position,
-    set_filter_term_entry_focus)
+    create_note,
+    delete_note,
+    move_paned_position,
+    select_next,
+    select_previous,
+    focus_filter_term_entry,
+    toggle_edit_note_text,
+    toggle_edit_note_title)
 from .header_bar import ConnectedHeaderBar
-from .note_list_view import ConnectedNoteListView
+from .note_chooser import ConnectedNoteChooser
 from .note_view import ConnectedNoteView
 
 
@@ -71,9 +76,9 @@ class MainWindow(Gtk.Window):
         self.paned = Gtk.HPaned(position=self.paned_position)
         self.add(self.paned)
 
-        self.note_list_view = build_component(ConnectedNoteListView)
-        self.paned.add1(self.note_list_view)
-        self.paned.child_set_property(self.note_list_view, 'shrink', False)
+        self.note_chooser = build_component(ConnectedNoteChooser)
+        self.paned.add1(self.note_chooser)
+        self.paned.child_set_property(self.note_chooser, 'shrink', False)
 
         self.note_view = build_component(ConnectedNoteView)
         self.paned.add2(self.note_view)
@@ -147,7 +152,7 @@ def map_dispatch_to_props(dispatch):
         'prev-note': lambda source: dispatch(select_previous()),
         'create-note': lambda source: dispatch(create_note()),
         'delete-note': lambda source: dispatch(delete_note()),
-        'focus-filter-term-entry': lambda source, s1: dispatch(set_filter_term_entry_focus(True)),
+        'focus-filter-term-entry': lambda source, s1: dispatch(focus_filter_term_entry()),
         'move-paned': lambda source, position: dispatch(move_paned_position(position)),
     }
 

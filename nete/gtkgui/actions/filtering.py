@@ -1,10 +1,9 @@
 from nete.gtkgui.actions.action_types import ActionType
 
 
-def set_filter_term_entry_focus(has_focus):
+def focus_filter_term_entry():
     return {
         'type': ActionType.FOCUS_FILTER_TERM_ENTRY,
-        'has_focus': has_focus,
     }
 
 

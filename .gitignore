@@ -11,3 +11,4 @@ venv/
 config/
 tmp/
 .ropeproject/
+NERD_tree_*

@@ -23,14 +23,22 @@ class NoteListItem(PRecord):
 class NoteList(PRecord):
     notes = pvector_field(NoteListItem)
     filter_term = field(type=str)
+    preselected_note_title = field(type=(str, type(None)))
 
 
 class Ui(PRecord):
-    is_editing_title = field(type=bool)
-    is_editing_text = field(type=bool)
     paned_position = field(type=int)
-    filter_term_entry_focus = field(type=bool)
     current_note_collection_id = field(type=str)
+    focus = field(type=(str, type(None)),
+                  invariant=lambda value: (
+                      value in (
+                          None,
+                          'note_view',
+                          'note_editor',
+                          'note_title_editor',
+                          'filter_term'
+                      ), None)
+                  )
 
 
 class State(PRecord):

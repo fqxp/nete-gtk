@@ -1,12 +1,28 @@
-from gi.repository import Gtk, GObject
-from nete.gtkgui.actions import change_filter_term, set_filter_term_entry_focus
-from fluous.gobject import connect
+from gi.repository import Gdk, Gtk, GObject
 
 
-class FilterView(Gtk.Box):
+class FilterView(Gtk.Bin):
 
     has_focus = GObject.property(type=bool, default=False)
     filter_term = GObject.property(type=str, default='')
+
+    __gsignals__ = {
+        'filter-term-changed': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
+                                None,
+                                (str,)),
+        'focused': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
+                    None,
+                    tuple()),
+        'keyboard-down': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
+                          None,
+                          tuple()),
+        'keyboard-up': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
+                        None,
+                        tuple()),
+        'select-preselected-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
+                                    None,
+                                    tuple()),
+    }
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -15,27 +31,32 @@ class FilterView(Gtk.Box):
 
     def _build_ui(self):
         self.filter_term_entry = Gtk.Entry(text=self.filter_term)
-        self.pack_start(self.filter_term_entry, True, True, 2)
+        self.add(self.filter_term_entry)
 
     def _connect_events(self):
-        self.bind_property('filter-term', self.filter_term_entry, 'text', GObject.BindingFlags.BIDIRECTIONAL)
-        self.bind_property('has-focus', self.filter_term_entry, 'has-focus', GObject.BindingFlags.BIDIRECTIONAL)
+        self.bind_property('filter-term',
+                           self.filter_term_entry,
+                           'text',
+                           GObject.BindingFlags.DEFAULT)
+        self.bind_property('has-focus',
+                           self.filter_term_entry,
+                           'has-focus',
+                           GObject.BindingFlags.DEFAULT)
 
+        self.filter_term_entry.connect('activate', lambda source: (
+            self.emit('select-preselected-note')))
+        self.filter_term_entry.connect('changed', lambda source: (
+            self.emit('filter-term-changed', source.get_property('text'))))
+        self.filter_term_entry.connect('focus-in-event', lambda source, direction: (
+            self.emit('focused')))
+        self.filter_term_entry.connect('key-press-event', self.on_key_press_event)
 
-def map_state_to_props(state):
-    return (
-        ('filter-term', state['note_list']['filter_term']),
-        ('has-focus', state['ui']['filter_term_entry_focus']),
-    )
-
-
-def map_dispatch_to_props(dispatch):
-    return {
-        'notify::filter-term': lambda source, param:
-            dispatch(change_filter_term(source.get_property('filter-term'))),
-        'notify::has-focus': lambda source, param:
-            dispatch(set_filter_term_entry_focus(source.get_property('has_focus'))),
-    }
-
-
-ConnectedFilterView = connect(FilterView, map_state_to_props, map_dispatch_to_props)
+    def on_key_press_event(self, source, event_key):
+        if event_key.keyval == Gdk.KEY_Down:
+            self.emit('keyboard-down')
+            return True
+        elif event_key.keyval == Gdk.KEY_Up:
+            self.emit('keyboard-up')
+            return True
+        else:
+            return False

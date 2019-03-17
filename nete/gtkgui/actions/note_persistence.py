@@ -1,19 +1,19 @@
 from .action_types import ActionType
-from .selection import select_note
+from .selection import load_note
 from .editing import toggle_edit_note_title
-from nete.gtkgui.state.utils import note_list
+from nete.gtkgui.state.selectors import (
+    current_note, current_note_collection, note_list_next, note_list_previous)
 from nete.services.storage_factory import create_storage
 
 
 def create_note():
     def create_note(dispatch, state):
-        current_note_collection_id = state['ui']['current_note_collection_id']
-        note_collection = state['note_collections'][current_note_collection_id]
+        note_collection = current_note_collection(state)
         storage = create_storage(note_collection)
         note = storage.create_note()
 
         dispatch(created_note(note))
-        dispatch(select_note(note['title']))
+        dispatch(load_note(note['title']))
         dispatch(toggle_edit_note_title())
 
     return create_note
@@ -28,18 +28,17 @@ def created_note(note):
 
 def delete_note():
     def delete_note(dispatch, state):
-        if state['current_note'] is None:
+        if current_note(state) is None:
             return
 
-        current_note_collection_id = state['ui']['current_note_collection_id']
-        note_collection = state['note_collections'][current_note_collection_id]
+        note_collection = current_note_collection(state)
         storage = create_storage(note_collection)
-        current_note_title = state['current_note']['title']
+        current_note_title = current_note(state)['title']
         next_note_title = (
-            note_list.next_note_title(state['note_list']['notes'], current_note_title) or
-            note_list.previous_note_title(state['note_list']['notes'], current_note_title)
+            note_list_next(state, current_note_title) or
+            note_list_previous(state, current_note_title)
         )
-        dispatch(select_note(next_note_title))
+        dispatch(load_note(next_note_title))
 
         storage.delete(current_note_title)
 
@@ -55,8 +54,7 @@ def save_note(note):
         if not note['needs_save']:
             return
 
-        current_note_collection_id = state['ui']['current_note_collection_id']
-        note_collection = state['note_collections'][current_note_collection_id]
+        note_collection = current_note_collection(state)
         storage = create_storage(note_collection)
         storage.save(note)
         dispatch(saved_note())
@@ -72,8 +70,7 @@ def saved_note():
 
 def load_notes(filter_term=None):
     def load_notes(dispatch, state):
-        current_note_collection_id = state['ui']['current_note_collection_id']
-        note_collection = state['note_collections'][current_note_collection_id]
+        note_collection = current_note_collection(state)
         storage = create_storage(note_collection)
         dispatch(loaded_notes(storage.list()))
 

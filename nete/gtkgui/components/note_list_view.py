@@ -1,110 +1,119 @@
 from gi.repository import Gtk, GObject, Pango
-from nete.gtkgui.actions import select_note, create_note
-from .filter_view import ConnectedFilterView
-from fluous.gobject import connect
 
 
-class NoteListView(Gtk.Grid):
+class NoteListView(Gtk.TreeView):
 
     notes = GObject.property(type=GObject.TYPE_PYOBJECT)
     current_note_title = GObject.property(type=str, default='')
+    preselected_note_title = GObject.property(type=str, default='')
 
     __gsignals__ = {
-        'selected-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (str,)),
-        'create-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, ()),
+        'preselect-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
+                           None,
+                           (str,)),
+        'select-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
+                        None,
+                        (str,)),
     }
 
-    def __init__(self, build_component, **kwargs):
-        super().__init__(**kwargs)
-
-        self.set_name('note-list-view')
-
-        self._build_ui(build_component)
-        self._connect_events()
-        self._on_notify_notes()
-
-    def _connect_events(self):
-        self.connect(
-            'notify::notes',
-            lambda source, param: self._on_notify_notes())
-        self.connect(
-            'notify::current-note-title',
-            lambda source, param:
-                self._select_note(source.get_property('current-note-title')))
-        self._changed_selection_handler = self.tree_view.get_selection().connect(
-            'changed',
-            lambda selection:
-                self.emit('selected-note', self._selected_note_title(selection)))
-        self.create_button.connect(
-            'clicked',
-            lambda source: self.emit('create-note'))
-
-    def _on_notify_notes(self):
-        self._list_model().update(self.get_property('notes'))
-        self._select_note(self.get_property('current-note-title'))
-
-    def _select_note(self, note_title):
-        if note_title is None:
-            return
-        treeiter = self._list_model().get_treeiter_by_note_title(note_title)
-        if treeiter is None:
-            return
-
-        with self.tree_view.get_selection().handler_block(self._changed_selection_handler):
-            self.tree_view.get_selection().select_iter(treeiter)
-        self._scroll_current_cell_into_view(treeiter)
-
-    def _selected_note_title(self, selection):
-        model, treeiter = selection.get_selected()
-        if treeiter is None:
-            return None
-        return model[treeiter][model.COLUMN_NOTE_TITLE]
-
-    def _list_model(self):
-        return self.tree_view.get_model()
-
-    def _build_ui(self, build_component):
-        filter_view = build_component(ConnectedFilterView)
-        self.attach(filter_view, 0, 0, 1, 1)
-
-        model = NoteListModel()
-
-        self.scrollable_treelist = Gtk.ScrolledWindow(
-            hexpand=True,
-            vexpand=True,
-            can_focus=False)
-        self.attach(self.scrollable_treelist, 0, 1, 1, 1)
-
-        self.tree_view = Gtk.TreeView(
-            model,
+    def __init__(self, **kwargs):
+        super().__init__(
+            model=NoteListModel(),
             headers_visible=False,
-            can_focus=True)
+            can_focus=False,
+            **kwargs)
+
+        self._build_ui()
+        self._connect_events()
+        self.set_activate_on_single_click(True)
+
+        self.get_model().update(self.get_property('notes'), self.get_property('current_note_title'))
+
+    def _build_ui(self):
         title_renderer = Gtk.CellRendererText(
             ellipsize=Pango.EllipsizeMode.END
         )
-        column = Gtk.TreeViewColumn('title', title_renderer, markup=model.COLUMN_NOTE_TITLE)
-        self.tree_view.append_column(column)
+        column = Gtk.TreeViewColumn(
+            'title',
+            title_renderer,
+            text=self.get_model().COLUMN_NOTE_TITLE)
+        column.add_attribute(title_renderer, 'background', self.get_model().COLUMN_NOTE_BGCOLOR)
+        self.append_column(column)
 
-        self.scrollable_treelist.add(self.tree_view)
+    def _connect_events(self):
+        self.connect('notify::notes', self.on_notify_notes)
+        self.connect('notify::current-note-title', self.on_notify_current_note_title)
+        self.connect('row_activated', self.on_row_activated)
+        self._changed_selection_handler = self.get_selection().connect(
+            'changed',
+            self.on_changed_selection)
+        self._notify_preselected_note_title_handler = self.connect(
+            'notify::preselected-note-title',
+            self.on_notify_preselected_note_title)
 
-        self.create_button = Gtk.Button('New Note')
-        self.attach(self.create_button, 0, 2, 1, 1)
+    def on_notify_notes(self, source, param):
+        self.get_model().update(self.get_property('notes'), self.get_property('current_note_title'))
+        self.update_selection()
 
-        self.set_focus_chain([])
+    def on_notify_current_note_title(self, source, param):
+        self.get_model().update(self.get_property('notes'), self.get_property('current_note_title'))
 
-    def _scroll_current_cell_into_view(self, treeiter):
-        tree_path = self._list_model().get_path(treeiter)
-        self.tree_view.scroll_to_cell(tree_path)
+    def on_row_activated(self, source, path, column):
+        index = path.get_indices()[0]
+        note_title = self.get_property('notes')[index]['title']
+        self.emit('select-note', note_title)
+
+    def on_changed_selection(self, selection):
+        model, treeiter = self.get_selection().get_selected()
+
+        note_title = (
+            model[treeiter][NoteListModel.COLUMN_NOTE_TITLE]
+            if treeiter is not None
+            else None
+        )
+
+        with self.handler_block(self._notify_preselected_note_title_handler):
+            self.emit('preselect-note', note_title)
+
+    def on_notify_preselected_note_title(self, source, param):
+        self.update_selection()
+
+    def update_selection(self):
+        if self.get_property('preselected_note_title') is None:
+            self.get_selection().unselect_all()
+            return
+
+        treeiter = self.get_model().get_treeiter_by_note_title(self.get_property('preselected_note_title'))
+
+        if treeiter is None:
+            return
+
+        self.get_selection().select_iter(treeiter)
+
+        self.scroll_note_into_view(treeiter)
+
+    def preselected_note(self):
+        model, treeiter = self.get_selection().get_selected()
+
+        if treeiter is None:
+            return None
+
+        return model[treeiter][model.COLUMN_NOTE_TITLE]
+
+    def scroll_note_into_view(self, treeiter):
+        tree_path = self.get_model().get_path(treeiter)
+        self.scroll_to_cell(tree_path)
 
 
 class NoteListModel(Gtk.ListStore):
 
     COLUMN_NOTE_TITLE = 0
+    COLUMN_NOTE_BGCOLOR = 1
 
     def __init__(self):
-        super().__init__(str)
+        super().__init__(str, str)
 
-    def update(self, note_list):
+    def update(self, note_list, current_note_title):
         visible_note_list = [note
                      for note in note_list
                      if note['visible']]
@@ -112,8 +121,8 @@ class NoteListModel(Gtk.ListStore):
                           for note in visible_note_list}
 
         self._delete_rows(notes_by_title)
-        self._update_rows(notes_by_title)
-        self._append_rows(visible_note_list)
+        self._update_rows(notes_by_title, current_note_title)
+        self._append_rows(visible_note_list, current_note_title)
         self._sync_order(visible_note_list)
 
     def _delete_rows(self, notes_by_title):
@@ -125,15 +134,19 @@ class NoteListModel(Gtk.ListStore):
         for row in rows_to_delete:
             self.remove(row.iter)
 
-    def _update_rows(self, notes_by_title):
+    def _update_rows(self, notes_by_title, current_note_title):
         for row in self:
             note = notes_by_title[row[self.COLUMN_NOTE_TITLE]]
             row[self.COLUMN_NOTE_TITLE] = note['title']
+            row[self.COLUMN_NOTE_BGCOLOR] = self._background_color(note['title'], current_note_title)
 
-    def _append_rows(self, note_list):
+    def _append_rows(self, note_list, current_note_title):
         row_titles = [row[self.COLUMN_NOTE_TITLE] for row in self]
         rows_to_append = [
-            (note['title'],)
+            [
+                note['title'],
+                self._background_color(note['title'], current_note_title)
+            ]
             for note in note_list
             if note['title'] not in row_titles
         ]
@@ -160,19 +173,5 @@ class NoteListModel(Gtk.ListStore):
 
         return None
 
-
-def map_state_to_props(state):
-    return (
-        ('notes', state['note_list']['notes']),
-        ('current-note-title', state['current_note']['title'] if state['current_note'] else None),
-    )
-
-
-def map_dispatch_to_props(dispatch):
-    return {
-        'selected-note': lambda source, note_id: dispatch(select_note(note_id)),
-        'create-note': lambda source: dispatch(create_note()),
-    }
-
-
-ConnectedNoteListView = connect(NoteListView, map_state_to_props, map_dispatch_to_props)
+    def _background_color(self, note_title, current_note_title):
+        return '#aaaaaa' if note_title == current_note_title else '#ffffff'
