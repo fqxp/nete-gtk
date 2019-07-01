@@ -96,7 +96,7 @@ def preselect_note(title):
 
 def preselect_next():
     def preselect_next(dispatch, state):
-        if len(state['note_list']['notes']) == None:
+        if len(state['note_list']['notes']) is None:
             return
 
         preselected_note_title = state['note_list']['preselected_note_title']
@@ -112,7 +112,7 @@ def preselect_next():
 
 def preselect_previous():
     def preselect_previous(dispatch, state):
-        if len(state['note_list']['notes']) == None:
+        if len(state['note_list']['notes']) is None:
             return
 
         preselected_note_title = state['note_list']['preselected_note_title']

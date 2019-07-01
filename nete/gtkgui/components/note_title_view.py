@@ -14,10 +14,14 @@ class NoteTitleView(Gtk.Box):
     title = GObject.property(type=str, default='')
 
     __gsignals__ = {
-        'finish-edit': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, (str, )),
-        'cancel-edit': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, tuple()),
-        'toggle-edit-text': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, tuple()),
-        'toggle-edit-title': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION, None, tuple()),
+        'finish-edit':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str, )),
+        'cancel-edit':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+        'toggle-edit-text':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+        'toggle-edit-title':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
     }
 
     def __init__(self, **kwargs):
@@ -27,13 +31,28 @@ class NoteTitleView(Gtk.Box):
         self._connect_events()
 
     def _connect_events(self):
-        self.connect('notify::mode', lambda source, param: self._on_notify_mode())
-        self.connect('notify::text-edit-mode', lambda source, param: self._on_notify_text_edit_mode())
+        self.connect(
+            'notify::mode',
+            lambda source, param: self._on_notify_mode())
+        self.connect(
+            'notify::text-edit-mode',
+            lambda source, param: self._on_notify_text_edit_mode())
 
-        self.bind_property('title', self.title_editor, 'text', GObject.BindingFlags.BIDIRECTIONAL)
-        self.bind_property('title', self.title_view, 'label', GObject.BindingFlags.BIDIRECTIONAL)
+        self.bind_property(
+            'title',
+            self.title_editor,
+            'text',
+            GObject.BindingFlags.BIDIRECTIONAL)
+        self.bind_property(
+            'title',
+            self.title_view,
+            'label',
+            GObject.BindingFlags.BIDIRECTIONAL)
 
-        self.title_view_event_box.connect('button-press-event', self._on_title_view_button_press)
+        self.title_view_event_box.connect(
+            'button-press-event',
+            self._on_title_view_button_press)
+
         self.title_editor.connect('activate', self._on_entry_activate)
         self.title_editor.connect('focus-out-event', self._on_entry_focus_out)
         self.title_editor.connect('key-press-event', self._on_key_press_event)
@@ -91,9 +110,18 @@ class NoteTitleView(Gtk.Box):
 
 def map_state_to_props(state):
     return (
-        ('title', state['current_note']['title'] if state['current_note'] else None),
-        ('mode', 'edit' if state['ui']['focus'] == 'note_title_editor' else 'view'),
-        ('text_edit_mode', 'edit' if state['ui']['focus'] == 'note_editor' else 'view'),
+        ('title', (
+            state['current_note']['title']
+            if state['current_note']
+            else None)),
+        ('mode', (
+            'edit'
+            if state['ui']['focus'] == 'note_title_editor'
+            else 'view')),
+        ('text_edit_mode', (
+            'edit'
+            if state['ui']['focus'] == 'note_editor'
+            else 'view')),
     )
 
 
@@ -110,4 +138,7 @@ def map_dispatch_to_props(dispatch):
     }
 
 
-ConnectedNoteTitleView = connect(NoteTitleView, map_state_to_props, map_dispatch_to_props)
+ConnectedNoteTitleView = connect(
+    NoteTitleView,
+    map_state_to_props,
+    map_dispatch_to_props)

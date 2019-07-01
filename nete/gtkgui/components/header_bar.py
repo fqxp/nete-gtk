@@ -14,7 +14,9 @@ class HeaderBar(Gtk.HeaderBar):
 
 
 def map_state_to_props(state):
-    note_title = state['current_note']['title'] if state['current_note'] else 'No note loaded'
+    note_title = (state['current_note']['title']
+                  if state['current_note']
+                  else 'No note loaded')
     return (
         ('title', '%s (nete%s)' % (
             note_title, '-DEVELOPMENT' if state['development_mode'] else '',
@@ -26,4 +28,7 @@ def map_dispatch_to_props(dispatch):
     return {}
 
 
-ConnectedHeaderBar = connect(HeaderBar, map_state_to_props, map_dispatch_to_props)
+ConnectedHeaderBar = connect(
+    HeaderBar,
+    map_state_to_props,
+    map_dispatch_to_props)

@@ -7,21 +7,16 @@ class FilterView(Gtk.Bin):
     filter_term = GObject.property(type=str, default='')
 
     __gsignals__ = {
-        'filter-term-changed': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                                None,
-                                (str,)),
-        'focused': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                    None,
-                    tuple()),
-        'keyboard-down': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                          None,
-                          tuple()),
-        'keyboard-up': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                        None,
-                        tuple()),
-        'select-preselected-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                                    None,
-                                    tuple()),
+        'filter-term-changed':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str,)),
+        'focused':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+        'keyboard-down':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+        'keyboard-up':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+        'select-preselected-note':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
     }
 
     def __init__(self, **kwargs):
@@ -43,13 +38,19 @@ class FilterView(Gtk.Bin):
                            'has-focus',
                            GObject.BindingFlags.DEFAULT)
 
-        self.filter_term_entry.connect('activate', lambda source: (
-            self.emit('select-preselected-note')))
-        self.filter_term_entry.connect('changed', lambda source: (
-            self.emit('filter-term-changed', source.get_property('text'))))
-        self.filter_term_entry.connect('focus-in-event', lambda source, direction: (
-            self.emit('focused')))
-        self.filter_term_entry.connect('key-press-event', self.on_key_press_event)
+        self.filter_term_entry.connect(
+            'activate',
+            lambda source: (self.emit('select-preselected-note')))
+        self.filter_term_entry.connect(
+            'changed',
+            lambda source: (
+                self.emit('filter-term-changed', source.get_property('text'))))
+        self.filter_term_entry.connect(
+            'focus-in-event',
+            lambda source, direction: (self.emit('focused')))
+        self.filter_term_entry.connect(
+            'key-press-event',
+            self.on_key_press_event)
 
     def on_key_press_event(self, source, event_key):
         if event_key.keyval == Gdk.KEY_Down:

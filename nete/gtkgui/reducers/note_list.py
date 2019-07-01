@@ -1,6 +1,12 @@
 from fluous import create_reducer
 from nete.gtkgui.actions.action_types import ActionType
-from nete.gtkgui.state.utils.note_list import change_title, ordered, add_new, is_visible, without
+from nete.gtkgui.state.utils.note_list import (
+    change_title,
+    ordered,
+    add_new,
+    is_visible,
+    without
+)
 from nete.gtkgui.state.models import NoteListItem
 from functools import lru_cache
 
@@ -57,7 +63,9 @@ reduce = create_reducer({
             if not state['preselected_note_title']
             else (
                 state['preselected_note_title']
-                if is_visible(state['preselected_note_title'], action['filter_term'])
+                if is_visible(
+                    state['preselected_note_title'],
+                    action['filter_term'])
                 else first_visible_note(state))))),
 
     ActionType.LOADED_NOTES: lambda state, action: (

@@ -8,12 +8,10 @@ class NoteListView(Gtk.TreeView):
     preselected_note_title = GObject.property(type=str, default='')
 
     __gsignals__ = {
-        'preselect-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                           None,
-                           (str,)),
-        'select-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                        None,
-                        (str,)),
+        'preselect-note':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str,)),
+        'select-note':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str,)),
     }
 
     def __init__(self, **kwargs):
@@ -27,7 +25,9 @@ class NoteListView(Gtk.TreeView):
         self._connect_events()
         self.set_activate_on_single_click(True)
 
-        self.get_model().update(self.get_property('notes'), self.get_property('current_note_title'))
+        self.get_model().update(
+            self.get_property('notes'),
+            self.get_property('current_note_title'))
 
     def _build_ui(self):
         title_renderer = Gtk.CellRendererText(
@@ -37,26 +37,37 @@ class NoteListView(Gtk.TreeView):
             'title',
             title_renderer,
             text=self.get_model().COLUMN_NOTE_TITLE)
-        column.add_attribute(title_renderer, 'background', self.get_model().COLUMN_NOTE_BGCOLOR)
+        column.add_attribute(
+            title_renderer,
+            'background',
+            self.get_model().COLUMN_NOTE_BGCOLOR)
         self.append_column(column)
 
     def _connect_events(self):
         self.connect('notify::notes', self.on_notify_notes)
-        self.connect('notify::current-note-title', self.on_notify_current_note_title)
+        self.connect(
+            'notify::current-note-title',
+            self.on_notify_current_note_title)
         self.connect('row_activated', self.on_row_activated)
+
         self._changed_selection_handler = self.get_selection().connect(
             'changed',
             self.on_changed_selection)
+
         self._notify_preselected_note_title_handler = self.connect(
             'notify::preselected-note-title',
             self.on_notify_preselected_note_title)
 
     def on_notify_notes(self, source, param):
-        self.get_model().update(self.get_property('notes'), self.get_property('current_note_title'))
+        self.get_model().update(
+            self.get_property('notes'),
+            self.get_property('current_note_title'))
         self.update_selection()
 
     def on_notify_current_note_title(self, source, param):
-        self.get_model().update(self.get_property('notes'), self.get_property('current_note_title'))
+        self.get_model().update(
+            self.get_property('notes'),
+            self.get_property('current_note_title'))
 
     def on_row_activated(self, source, path, column):
         index = path.get_indices()[0]
@@ -83,7 +94,8 @@ class NoteListView(Gtk.TreeView):
             self.get_selection().unselect_all()
             return
 
-        treeiter = self.get_model().get_treeiter_by_note_title(self.get_property('preselected_note_title'))
+        treeiter = self.get_model().get_treeiter_by_note_title(
+            self.get_property('preselected_note_title'))
 
         if treeiter is None:
             return
@@ -114,11 +126,13 @@ class NoteListModel(Gtk.ListStore):
         super().__init__(str, str)
 
     def update(self, note_list, current_note_title):
-        visible_note_list = [note
-                     for note in note_list
-                     if note['visible']]
-        notes_by_title = {note['title']: note
-                          for note in visible_note_list}
+        visible_note_list = [
+            note
+            for note in note_list
+            if note['visible']]
+        notes_by_title = {
+            note['title']: note
+            for note in visible_note_list}
 
         self._delete_rows(notes_by_title)
         self._update_rows(notes_by_title, current_note_title)
@@ -138,7 +152,9 @@ class NoteListModel(Gtk.ListStore):
         for row in self:
             note = notes_by_title[row[self.COLUMN_NOTE_TITLE]]
             row[self.COLUMN_NOTE_TITLE] = note['title']
-            row[self.COLUMN_NOTE_BGCOLOR] = self._background_color(note['title'], current_note_title)
+            row[self.COLUMN_NOTE_BGCOLOR] = self._background_color(
+                note['title'],
+                current_note_title)
 
     def _append_rows(self, note_list, current_note_title):
         row_titles = [row[self.COLUMN_NOTE_TITLE] for row in self]

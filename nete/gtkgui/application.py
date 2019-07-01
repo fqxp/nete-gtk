@@ -1,5 +1,3 @@
-import gi
-gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gio, GLib
 from fluous.store import Store
 from fluous.reducer_decorators import debug_reducer
@@ -56,10 +54,12 @@ class Application(Gtk.Application):
 
         self.window = ConnectedMainWindow(self.store)
 
-        self.store.subscribe(lambda note, dispatch:
-                dispatch(save_note(note)), selectors.current_note)
-        self.store.subscribe(lambda ui_state, dispatch:
-                dispatch(save_ui_state(ui_state)), selectors.ui_state)
+        self.store.subscribe(
+            lambda note, dispatch: (
+                dispatch(save_note(note)), selectors.current_note))
+        self.store.subscribe(
+            lambda ui_state, dispatch: (
+                dispatch(save_ui_state(ui_state)), selectors.ui_state))
 
         self.window.show_all()
 

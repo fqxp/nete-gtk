@@ -69,8 +69,10 @@ class FilesystemNoteStorage(object):
         new_filename = self._filename_from_title(new_title)
 
         if os.path.exists(new_filename):
-            raise Exception('Cannot rename note »{}« because target title »{}« exists'.format(
-                old_filename, new_filename))
+            raise Exception(
+                'Cannot rename note »{}«'
+                'because target title »{}« exists'.format(
+                    old_filename, new_filename))
 
         os.rename(old_filename, new_filename)
 

@@ -27,13 +27,25 @@ class NoteTextView(Gtk.Stack):
         self.connect('notify::mode', lambda source, param: self._update_view())
         self.connect('notify::text', lambda source, param: self._update_view())
 
-        self.bind_property('text', self.text_editor, 'text', GObject.BindingFlags.DEFAULT)
-        self.bind_property('cursor-position', self.text_editor, 'cursor-position', GObject.BindingFlags.DEFAULT)
+        self.bind_property(
+            'text',
+            self.text_editor,
+            'text',
+            GObject.BindingFlags.DEFAULT)
+        self.bind_property(
+            'cursor-position',
+            self.text_editor,
+            'cursor-position',
+            GObject.BindingFlags.DEFAULT)
 
-        self.text_editor.connect('text-changed', lambda source, text: (
-            self.emit('text-changed', text)))
-        self.text_editor.connect('cursor-position-changed', lambda source, cursor_position: (
-            self.emit('cursor-position-changed', cursor_position)))
+        self.text_editor.connect(
+            'text-changed',
+            lambda source, text: (
+                self.emit('text-changed', text)))
+        self.text_editor.connect(
+            'cursor-position-changed',
+            lambda source, cursor_position: (
+                self.emit('cursor-position-changed', cursor_position)))
 
     def _update_view(self):
         if self.get_property('mode') == 'view':
@@ -97,12 +109,18 @@ class TextEdit(Gtk.Box):
         self.text_editor.grab_focus()
 
     def _connect_events(self):
-        self._text_buffer_changed_handler = self.text_buffer.connect('changed', self._on_text_buffer_changed)
+        self._text_buffer_changed_handler = self.text_buffer.connect(
+            'changed',
+            self._on_text_buffer_changed)
         self.connect('notify::text', self._on_notify_text)
 
-        self._text_buffer_notify_cursor_position_handler = self.text_buffer.connect(
-            'notify::cursor-position', self._on_text_buffer_notify_cursor_position)
-        self.connect('notify::cursor-position', self._on_notify_cursor_position)
+        self._text_buffer_notify_cursor_position_handler = (
+            self.text_buffer.connect(
+                'notify::cursor-position',
+                self._on_text_buffer_notify_cursor_position))
+        self.connect(
+            'notify::cursor-position',
+            self._on_notify_cursor_position)
 
     def _on_text_buffer_changed(self, source):
         self.emit('text-changed', source.get_property('text'))
@@ -115,13 +133,18 @@ class TextEdit(Gtk.Box):
             self.text_buffer.set_property('text', self.get_property('text'))
 
     def _on_text_buffer_notify_cursor_position(self, source, param):
-        self.emit('cursor-position-changed', self.text_buffer.get_property('cursor-position'))
+        self.emit(
+            'cursor-position-changed',
+            self.text_buffer.get_property('cursor-position'))
 
     def _on_notify_cursor_position(self, source, param):
-        if self.text_buffer.get_property('cursor-position') == self.get_property('cursor-position'):
+        if (self.text_buffer.get_property('cursor-position') ==
+                self.get_property('cursor-position')):
             return
 
-        with self.text_buffer.handler_block(self._text_buffer_notify_cursor_position_handler):
+        with self.text_buffer.handler_block(
+            self._text_buffer_notify_cursor_position_handler
+        ):
             self.text_buffer.place_cursor(
                 self.text_buffer.get_iter_at_offset(
                     self.get_property('cursor-position')))
@@ -143,8 +166,13 @@ class TextEdit(Gtk.Box):
 
 def map_state_to_props(state):
     return (
-        ('text', state['current_note']['text'] if state['current_note'] else None),
-        ('cursor-position', state['current_note']['cursor_position'] if state['current_note'] else 0),
+        ('text', (state['current_note']['text']
+                  if state['current_note']
+                  else None)),
+        ('cursor-position', (
+            state['current_note']['cursor_position']
+            if state['current_note']
+            else 0)),
         ('mode', 'edit' if state['ui']['focus'] == 'note_editor' else 'view'),
     )
 
@@ -157,4 +185,7 @@ def map_dispatch_to_props(dispatch):
     }
 
 
-ConnectedNoteTextView = connect(NoteTextView, map_state_to_props, map_dispatch_to_props)
+ConnectedNoteTextView = connect(
+    NoteTextView,
+    map_state_to_props,
+    map_dispatch_to_props)

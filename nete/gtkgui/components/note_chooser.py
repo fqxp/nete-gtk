@@ -1,6 +1,5 @@
 from fluous.gobject import connect
 from gi.repository import Gtk, GObject
-
 from .filter_view import FilterView
 from .note_list_view import NoteListView
 from ..actions import (
@@ -11,7 +10,8 @@ from ..actions import (
     preselect_note,
     preselect_next,
     preselect_previous,
-    load_note)
+    load_note
+)
 
 
 class NoteChooser(Gtk.Grid):
@@ -23,30 +23,22 @@ class NoteChooser(Gtk.Grid):
     preselected_note_title = GObject.property(type=str, default='')
 
     __gsignals__ = {
-        'select-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                        None,
-                        (str,)),
-        'create-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                        None,
-                        ()),
-        'filter-term-changed': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                                None,
-                                (str,)),
-        'filter-term-entry-focused': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                                      None,
-                                      tuple()),
-        'preselect-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                           None,
-                           (str,)),
-        'preselect-next-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                                None,
-                                tuple()),
-        'preselect-previous-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                                    None,
-                                    tuple()),
-        'select-preselected-note': (GObject.SIGNAL_RUN_FIRST|GObject.SIGNAL_ACTION,
-                                    None,
-                                    tuple()),
+        'select-note':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str,)),
+        'create-note':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, ()),
+        'filter-term-changed':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str,)),
+        'filter-term-entry-focused':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+        'preselect-note':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str,)),
+        'preselect-next-note':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+        'preselect-previous-note':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+        'select-preselected-note':
+            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
     }
 
     def __init__(self, build_component, **kwargs):
@@ -103,7 +95,6 @@ class NoteChooser(Gtk.Grid):
                            self.note_list_view,
                            'preselected-note-title',
                            GObject.BindingFlags.DEFAULT)
-
         self.bind_property('filter-term',
                            self.filter_view,
                            'filter-term',
@@ -112,25 +103,36 @@ class NoteChooser(Gtk.Grid):
                            self.filter_view,
                            'has-focus',
                            GObject.BindingFlags.DEFAULT)
-        self.filter_view.connect('filter-term-changed', lambda source, filter_term: (
-            self.emit('filter-term-changed', filter_term)))
-        self.filter_view.connect('focused', lambda source: (
-            self.emit('filter-term-entry-focused')))
-        self.filter_view.connect('keyboard-down', lambda source: (
-            self.emit('preselect-next-note')))
-        self.filter_view.connect('keyboard-up', lambda source: (
-            self.emit('preselect-previous-note')))
-        self.filter_view.connect('select-preselected-note', lambda source: (
-            self.emit('select-preselected-note')))
+
+        self.filter_view.connect(
+            'filter-term-changed',
+            lambda source, filter_term: (
+                self.emit('filter-term-changed', filter_term)))
+        self.filter_view.connect(
+            'focused', lambda source: (
+                self.emit('filter-term-entry-focused')))
+        self.filter_view.connect(
+            'keyboard-down', lambda source: (
+                self.emit('preselect-next-note')))
+        self.filter_view.connect(
+            'keyboard-up', lambda source: (
+                self.emit('preselect-previous-note')))
+        self.filter_view.connect(
+            'select-preselected-note', lambda source: (
+                self.emit('select-preselected-note')))
 
 
 def map_state_to_props(state):
     return (
         ('notes', state['note_list']['notes']),
-        ('current-note-title', state['current_note']['title'] if state['current_note'] else None),
+        ('current-note-title', (
+            state['current_note']['title']
+            if state['current_note']
+            else None)),
         ('filter-term', state['note_list']['filter_term']),
         ('has-focus', state['ui']['focus'] == 'filter_term'),
-        ('preselected-note-title', state['note_list']['preselected_note_title']),
+        ('preselected-note-title', (
+            state['note_list']['preselected_note_title'])),
     )
 
 
@@ -155,4 +157,7 @@ def map_dispatch_to_props(dispatch):
     }
 
 
-ConnectedNoteChooser = connect(NoteChooser, map_state_to_props, map_dispatch_to_props)
+ConnectedNoteChooser = connect(
+    NoteChooser,
+    map_state_to_props,
+    map_dispatch_to_props)

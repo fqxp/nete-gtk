@@ -56,6 +56,7 @@ def note_list_previous(state, current_note_title):
             return notes[i-1]['title'] if i > 0 else None
     return None
 
+
 @lru_cache()
 def ui_state(state):
     return state['ui']
