@@ -22,8 +22,8 @@ class NoteListItem(PRecord):
 
 class NoteList(PRecord):
     notes = pvector_field(NoteListItem)
-    filter_term = field(type=str)
-    preselected_note_title = field(type=(str, type(None)))
+    filter_term = field(type=str, mandatory=True)
+    preselected_note_title = field(type=(str, type(None)), mandatory=True)
 
 
 class Ui(PRecord):

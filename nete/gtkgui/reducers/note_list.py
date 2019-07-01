@@ -22,12 +22,24 @@ def created_note(state, action):
     return state.set('notes', add_new(state['notes'], note_list_item))
 
 
-def first_visible_note(state):
+def first_visible_note(notes, filter_term):
     return next(
         (note['title']
-         for note in state['notes']
-         if is_visible(note['title'], state['filter_term'])),
+         for note in notes
+         if is_visible(note['title'], filter_term)),
         None)
+
+
+def preselected_note(state, filter_term):
+    return (
+        first_visible_note(state['notes'], filter_term)
+        if not state['preselected_note_title']
+        else (
+            state['preselected_note_title']
+            if is_visible(
+                state['preselected_note_title'],
+                action['filter_term'])
+            else first_visible_note(state['notes'], filter_term)))
 
 
 reduce = create_reducer({
@@ -49,7 +61,7 @@ reduce = create_reducer({
 
     ActionType.FOCUS_FILTER_TERM_ENTRY: lambda state, action: (
         state.set('preselected_note_title',
-                  first_visible_note(state))),
+                  first_visible_note(state['notes'], state['filter_term']))),
 
     ActionType.CHANGE_FILTER_TERM: lambda state, action: (
         state
@@ -58,15 +70,8 @@ reduce = create_reducer({
                      is_visible(note['title'], action['filter_term']))
             for note in state['notes']])
         .set('filter_term', action['filter_term'])
-        .set('preselected_note_title', (
-            first_visible_note(state)
-            if not state['preselected_note_title']
-            else (
-                state['preselected_note_title']
-                if is_visible(
-                    state['preselected_note_title'],
-                    action['filter_term'])
-                else first_visible_note(state))))),
+        .set('preselected_note_title',
+             preselected_note(state, action['filter_term']))),
 
     ActionType.LOADED_NOTES: lambda state, action: (
         state.set('notes', ordered(action['notes']))),
