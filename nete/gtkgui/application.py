@@ -55,11 +55,11 @@ class Application(Gtk.Application):
         self.window = ConnectedMainWindow(self.store)
 
         self.store.subscribe(
-            lambda note, dispatch: (
-                dispatch(save_note(note)), selectors.current_note))
+            lambda note, dispatch: dispatch(save_note(note)),
+            selectors.current_note)
         self.store.subscribe(
-            lambda ui_state, dispatch: (
-                dispatch(save_ui_state(ui_state)), selectors.ui_state))
+            lambda ui_state, dispatch: dispatch(save_ui_state(ui_state)),
+            selectors.ui_state)
 
         self.window.show_all()
 
