@@ -21,31 +21,31 @@ logger = logging.getLogger(__name__)
 
 
 class MainWindow(Gtk.Window):
-    paned_position = GObject.property(type=int)
+    paned_position = GObject.Property(type=int)
 
     __gsignals__ = {
         'next-note':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, ()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'prev-note':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, ()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'toggle-edit-mode':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, ()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'toggle-edit-title-mode':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, ()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'create-note':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, ()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'delete-note':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, ()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'focus-filter-term-entry':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, ()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'quit':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, ()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'move-paned':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (int,)),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, (int,)),
         'print-marker':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, ()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'reset':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, ()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
     }
 
     def __init__(self, build_component, **kwargs):

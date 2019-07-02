@@ -1,3 +1,4 @@
+from . import gi_versions
 from gi.repository import Gtk, Gio, GLib
 from fluous.store import Store
 from fluous.reducer_decorators import debug_reducer

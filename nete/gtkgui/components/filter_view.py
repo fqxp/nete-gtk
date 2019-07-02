@@ -3,20 +3,20 @@ from gi.repository import Gdk, Gtk, GObject
 
 class FilterView(Gtk.Bin):
 
-    has_focus = GObject.property(type=bool, default=False)
-    filter_term = GObject.property(type=str, default='')
+    has_focus = GObject.Property(type=bool, default=False)
+    filter_term = GObject.Property(type=str, default='')
 
     __gsignals__ = {
         'filter-term-changed':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str,)),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, (str,)),
         'focused':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
         'keyboard-down':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
         'keyboard-up':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
         'select-preselected-note':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
     }
 
     def __init__(self, **kwargs):
