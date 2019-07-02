@@ -12,3 +12,4 @@ config/
 tmp/
 .ropeproject/
 NERD_tree_*
+nete.conf
