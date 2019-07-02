@@ -2,12 +2,13 @@ from nose2.tools import such
 from nete.gtkgui.reducers.note_list import reduce
 from nete.gtkgui.state.models import NoteList, NoteListItem, Note
 from nete.gtkgui.actions.action_types import ActionType
+import unittest
 
 
-with such.A('reduce') as it:
-    @it.has_test_setup
-    def setup():
-        it.state = NoteList(
+class NoteListTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.state = NoteList(
             filter_term='',
             notes=[
                 NoteListItem(title='FOO', visible=True),
@@ -15,7 +16,7 @@ with such.A('reduce') as it:
             ],
             preselected_note_title=None,
         )
-        it.note = Note(
+        self.note = Note(
             note_collection_id='NOTE COLLECTION ID',
             title='TITLE',
             text='TEXT',
@@ -23,125 +24,100 @@ with such.A('reduce') as it:
             cursor_position=0
         )
 
-    with it.having('a CREATED_NOTE action'):
-        @it.should('add an empty note')
-        def test():
-            result = reduce(it.state, {
-                'type': ActionType.CREATED_NOTE,
-                'note': it.note,
-            })
+    def test_adds_an_empty_note_on_created_note_action(self):
+        result = reduce(self.state, {
+            'type': ActionType.CREATED_NOTE,
+            'note': self.note,
+        })
 
-            titles = sorted(note['title'] for note in result['notes'])
-            it.assertEqual(titles, ['BAR', 'FOO', 'TITLE'])
+        titles = sorted(note['title'] for note in result['notes'])
+        self.assertEqual(titles, ['BAR', 'FOO', 'TITLE'])
 
-        @it.should('set visibility according to current filter')
-        def test():
-            state = it.state.set('filter_term', 'FO')
-            result = reduce(state, {
-                'type': ActionType.CREATED_NOTE,
-                'note': it.note,
-            })
+    def test_sets_visibility_according_to_current_filter_on_created_note_action(self):
+        state = self.state.set('filter_term', 'FO')
+        result = reduce(state, {
+            'type': ActionType.CREATED_NOTE,
+            'note': self.note,
+        })
 
-            titles = sorted(note['title']
-                            for note in result['notes']
-                            if note['visible'])
-            it.assertNotIn('TITLE', titles)
+        titles = sorted(note['title']
+                        for note in result['notes']
+                        if note['visible'])
+        self.assertNotIn('TITLE', titles)
 
-    with it.having('a DELETE_NOTE action'):
-        @it.should('delete a note')
-        def test():
-            result = reduce(it.state, {
-                'type': ActionType.DELETE_NOTE,
-                'note_title': 'FOO'
-            })
+    def test_deletes_note_on_deleted_note_action(self):
+        result = reduce(self.state, {
+            'type': ActionType.DELETE_NOTE,
+            'note_title': 'FOO'
+        })
 
-            it.assertEqual(len(result['notes']), 1)
-            it.assertEqual(result['notes'][0]['title'], 'BAR')
+        self.assertEqual(len(result['notes']), 1)
+        self.assertEqual(result['notes'][0]['title'], 'BAR')
 
-    with it.having('a FINISH_EDIT_NOTE_TITLE action'):
-        @it.should('change the note title')
-        def test():
-            result = reduce(it.state, {
-                'type': ActionType.FINISH_EDIT_NOTE_TITLE,
-                'old_title': 'FOO',
-                'new_title': 'NEW TITLE',
-            })
+    def test_changes_note_title_on_finish_edit_note_title_action(self):
+        result = reduce(self.state, {
+            'type': ActionType.FINISH_EDIT_NOTE_TITLE,
+            'old_title': 'FOO',
+            'new_title': 'NEW TITLE',
+        })
 
-            titles = sorted(note['title'] for note in result['notes'])
-            it.assertEqual(titles, ['BAR', 'NEW TITLE'])
+        titles = sorted(note['title'] for note in result['notes'])
+        self.assertEqual(titles, ['BAR', 'NEW TITLE'])
 
-    with it.having('a CHANGE_FILTER_TERM action'):
-        @it.should('set the filter term')
-        def test():
-            result = reduce(it.state, {
-                'type': ActionType.CHANGE_FILTER_TERM,
-                'filter_term': 'FO',
-            })
+    def test_sets_filter_term_on_change_filter_term_action(self):
+        result = reduce(self.state, {
+            'type': ActionType.CHANGE_FILTER_TERM,
+            'filter_term': 'FO',
+        })
 
-            it.assertEqual(result['filter_term'], 'FO')
+        self.assertEqual(result['filter_term'], 'FO')
 
-        @it.should('filter notes')
-        def test():
-            result = reduce(it.state, {
-                'type': ActionType.CHANGE_FILTER_TERM,
-                'filter_term': 'FO',
-            })
+    def test_filters_notes_on_change_filter_term_action(self):
+        result = reduce(self.state, {
+            'type': ActionType.CHANGE_FILTER_TERM,
+            'filter_term': 'FO',
+        })
 
-            titles = sorted(note['title']
-                            for note in result['notes']
-                            if note['visible'])
-            it.assertEqual(titles, ['FOO'])
+        titles = sorted(note['title']
+                        for note in result['notes']
+                        if note['visible'])
+        self.assertEqual(titles, ['FOO'])
 
-        with it.having('no preselected note'):
-            @it.has_test_setup
-            def setup():
-                it.state.set('preselected_note_title', None)
+    def test_preselect_first_visible_note_on_change_filter_term_action(self):
+        self.state.set('preselected_note_title', None)
+        result = reduce(self.state, {
+            'type': ActionType.CHANGE_FILTER_TERM,
+            'filter_term': 'FO',
+        })
 
-            @it.should('preselect the first visible note')
-            def test():
-                result = reduce(it.state, {
-                    'type': ActionType.CHANGE_FILTER_TERM,
-                    'filter_term': 'FO',
-                })
+        self.assertEqual(result['preselected_note_title'], 'FOO')
 
-                it.assertEqual(result['preselected_note_title'], 'FOO')
+    def test_doesnt_preselect_if_currently_preselected_note_visible(self):
+        self.state.set('preselected_note_title', 'FOO')
+        result = reduce(self.state, {
+            'type': ActionType.CHANGE_FILTER_TERM,
+            'filter_term': 'FO',
+        })
 
-        with it.having('a preselected note'):
-            @it.has_test_setup
-            def setup():
-                it.state.set('preselected_note_title', 'FOO')
+        self.assertEqual(result['preselected_note_title'], 'FOO')
 
-            @it.should('leave the preselection as it is if filter matches')
-            def test():
-                result = reduce(it.state, {
-                    'type': ActionType.CHANGE_FILTER_TERM,
-                    'filter_term': 'FO',
-                })
+    def test_preselects_first_visible_note_if_current_one_not_visible(self):
+        result = reduce(self.state, {
+            'type': ActionType.CHANGE_FILTER_TERM,
+            'filter_term': 'BA',
+        })
 
-                it.assertEqual(result['preselected_note_title'], 'FOO')
+        self.assertEqual(result['preselected_note_title'], 'BAR')
 
-            @it.should('preselect first visible note otherwise')
-            def test():
-                result = reduce(it.state, {
-                    'type': ActionType.CHANGE_FILTER_TERM,
-                    'filter_term': 'BA',
-                })
+    def test_sets_the_note_list_on_loaded_notes_action(self):
+        result = reduce(self.state, {
+            'type': ActionType.LOADED_NOTES,
+            'notes': [
+                NoteListItem(title='NEW NOTE 1', visible=True),
+                NoteListItem(title='NEW NOTE 2', visible=True),
+            ]})
 
-                it.assertEqual(result['preselected_note_title'], 'BAR')
-
-    with it.having('a LOADED_NOTES action'):
-        @it.should('set the note list on LOADED_NOTES action')
-        def test():
-            result = reduce(it.state, {
-                'type': ActionType.LOADED_NOTES,
-                'notes': [
-                    NoteListItem(title='NEW NOTE 1', visible=True),
-                    NoteListItem(title='NEW NOTE 2', visible=True),
-                ]})
-
-            titles = sorted(note['title']
-                            for note in result['notes']
-                            if note['visible'])
-            it.assertEqual(titles, ['NEW NOTE 1', 'NEW NOTE 2'])
-
-    it.createTests(globals())
+        titles = sorted(note['title']
+                        for note in result['notes']
+                        if note['visible'])
+        self.assertEqual(titles, ['NEW NOTE 1', 'NEW NOTE 2'])

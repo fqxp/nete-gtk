@@ -51,6 +51,7 @@ class SelectorsTestCase(unittest.TestCase):
         )
 
     def test_current_note_collection(self):
+        """ current_note_collection returns current note collection """
         result = selectors.current_note_collection(self.state)
 
         self.assertIsInstance(result, NoteCollection)
