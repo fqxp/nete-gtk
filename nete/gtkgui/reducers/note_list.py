@@ -38,7 +38,7 @@ def preselected_note(state, filter_term):
             state['preselected_note_title']
             if is_visible(
                 state['preselected_note_title'],
-                action['filter_term'])
+                filter_term)
             else first_visible_note(state['notes'], filter_term)))
 
 
