@@ -9,19 +9,19 @@ from nete.gtkgui.actions import (
 
 class NoteTitleView(Gtk.Box):
 
-    mode = GObject.property(type=str, default='view')
-    text_edit_mode = GObject.property(type=str, default='view')
-    title = GObject.property(type=str, default='')
+    mode = GObject.Property(type=str, default='view')
+    text_edit_mode = GObject.Property(type=str, default='view')
+    title = GObject.Property(type=str, default='')
 
     __gsignals__ = {
         'finish-edit':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str, )),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, (str, )),
         'cancel-edit':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
         'toggle-edit-text':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
         'toggle-edit-title':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
     }
 
     def __init__(self, **kwargs):

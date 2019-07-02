@@ -6,8 +6,8 @@ from .note_title_view import ConnectedNoteTitleView
 
 class NoteView(Gtk.Box):
 
-    is_note_selected = GObject.property(type=bool, default=False)
-    widget = GObject.property(type=GObject.TYPE_PYOBJECT, default=None)
+    is_note_selected = GObject.Property(type=bool, default=False)
+    widget = GObject.Property(type=GObject.TYPE_PYOBJECT, default=None)
 
     def __init__(self, build_component, **kwargs):
         super().__init__(**kwargs)

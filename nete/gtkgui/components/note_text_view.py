@@ -7,13 +7,13 @@ from ..actions import change_cursor_position, change_note_text
 
 class NoteTextView(Gtk.Stack):
 
-    text = GObject.property(type=str, default='')
-    cursor_position = GObject.property(type=int, default=0)
-    mode = GObject.property(type=str, default='view')
+    text = GObject.Property(type=str, default='')
+    cursor_position = GObject.Property(type=int, default=0)
+    mode = GObject.Property(type=str, default='view')
 
     __gsignals__ = {
-        'text-changed': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
-        'cursor-position-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+        'text-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,)),
+        'cursor-position-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
     }
 
     def __init__(self, **kwargs):
@@ -70,7 +70,7 @@ class NoteTextView(Gtk.Stack):
 
 class TextView(Gtk.ScrolledWindow):
 
-    text = GObject.property(type=str, default='')
+    text = GObject.Property(type=str, default='')
 
     def __init__(self, **kwargs):
         super().__init__(hexpand=True, vexpand=True, **kwargs)
@@ -92,12 +92,12 @@ class TextView(Gtk.ScrolledWindow):
 
 class TextEdit(Gtk.Box):
 
-    cursor_position = GObject.property(type=int, default=0)
-    text = GObject.property(type=str, default='')
+    cursor_position = GObject.Property(type=int, default=0)
+    text = GObject.Property(type=str, default='')
 
     __gsignals__ = {
-        'cursor-position-changed': (GObject.SIGNAL_RUN_FIRST, None, (int, )),
-        'text-changed': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
+        'cursor-position-changed': (GObject.SignalFlags.RUN_FIRST, None, (int, )),
+        'text-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
 
     def __init__(self, **kwargs):

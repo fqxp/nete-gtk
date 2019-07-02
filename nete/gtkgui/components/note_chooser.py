@@ -16,29 +16,29 @@ from ..actions import (
 
 class NoteChooser(Gtk.Grid):
 
-    notes = GObject.property(type=GObject.TYPE_PYOBJECT)
-    current_note_title = GObject.property(type=str, default='')
-    filter_term = GObject.property(type=str, default='')
-    has_focus = GObject.property(type=bool, default=False)
-    preselected_note_title = GObject.property(type=str, default='')
+    notes = GObject.Property(type=GObject.TYPE_PYOBJECT)
+    current_note_title = GObject.Property(type=str, default='')
+    filter_term = GObject.Property(type=str, default='')
+    has_focus = GObject.Property(type=bool, default=False)
+    preselected_note_title = GObject.Property(type=str, default='')
 
     __gsignals__ = {
         'select-note':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str,)),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, (str,)),
         'create-note':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, ()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'filter-term-changed':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str,)),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, (str,)),
         'filter-term-entry-focused':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
         'preselect-note':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str,)),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, (str,)),
         'preselect-next-note':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
         'preselect-previous-note':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
         'select-preselected-note':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, tuple()),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
     }
 
     def __init__(self, build_component, **kwargs):

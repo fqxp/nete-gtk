@@ -3,15 +3,15 @@ from gi.repository import Gtk, GObject, Pango
 
 class NoteListView(Gtk.TreeView):
 
-    notes = GObject.property(type=GObject.TYPE_PYOBJECT)
-    current_note_title = GObject.property(type=str, default='')
-    preselected_note_title = GObject.property(type=str, default='')
+    notes = GObject.Property(type=GObject.TYPE_PYOBJECT)
+    current_note_title = GObject.Property(type=str, default='')
+    preselected_note_title = GObject.Property(type=str, default='')
 
     __gsignals__ = {
         'preselect-note':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str,)),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, (str,)),
         'select-note':
-            (GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, None, (str,)),
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, (str,)),
     }
 
     def __init__(self, **kwargs):
