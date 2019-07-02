@@ -2,33 +2,28 @@ from nete.gtkgui.application import initial_state
 from nete.gtkgui.reducers import reducer
 from nete.gtkgui.actions.action_types import ActionType
 from pyrsistent import freeze
-from nose2.tools import such
+import unittest
 
 
-with such.A('reducer') as it:
+class ApplicationTestCase(unittest.TestCase):
 
-    @it.has_setup
-    def setup():
-        it.state = freeze(initial_state)
+    def setUp(self):
+        self.state = freeze(initial_state)
 
-    @it.should('update the UI state on LOADED_UI_STATE action')
-    def test():
-        result = reducer(it.state, {
+    def test_reducer_updates_ui_state_on_loaded_ui_state_action(self):
+        result = reducer(self.state, {
             'type': ActionType.LOADED_UI_STATE,
             'ui': {
                 'paned_position': 222,
             }
         })
 
-        it.assertEqual(result['ui']['paned_position'], 222)
+        self.assertEqual(result['ui']['paned_position'], 222)
 
-    @it.should('change the paned position on MOVE_PANED_POSITION action')
-    def test():
-        result = reducer(it.state, {
+    def test_reducer_changes_paned_position_on_move_paned_position_action(self):
+        result = reducer(self.state, {
             'type': ActionType.MOVE_PANED_POSITION,
             'position': 666,
         })
 
-        it.assertEqual(result['ui']['paned_position'], 666)
-
-    it.createTests(globals())
+        self.assertEqual(result['ui']['paned_position'], 666)

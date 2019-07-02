@@ -1,13 +1,12 @@
-from nose2.tools import such
 from unittest.mock import Mock
 from fluous.functions import combine_reducers
 from pyrsistent import freeze
+import unittest
 
 
-with such.A('combine_reducers') as it:
+class CombineReducersTestCase(unittest.TestCase):
 
-    @it.should('return a function that combines the results of multiple reducers')
-    def test():
+    def test_returns_a_function_that_combines_results_of_multiple_reducers(self):
         foo_reducer_mock = Mock()
         foo_reducer_mock.configure_mock(return_value=freeze({'bar': 'BAR-STATE-AFTER'}))
         what_reducer_mock = Mock()
@@ -25,9 +24,7 @@ with such.A('combine_reducers') as it:
 
         foo_reducer_mock.assert_called_with(freeze({'bar': 'bar-state-before'}), 'SOME-ACTION')
         what_reducer_mock.assert_called_with(freeze({'ever': 'ever-state-before'}), 'SOME-ACTION')
-        it.assertEqual(new_state, freeze({
+        self.assertEqual(new_state, freeze({
             'foo': {'bar': 'BAR-STATE-AFTER'},
             'what': {'ever': 'EVER-STATE-AFTER'},
         }))
-
-    it.createTests(globals())
