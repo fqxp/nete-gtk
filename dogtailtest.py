@@ -13,7 +13,7 @@ config.fatalErrors = True
 config.runTimeout = 0
 config.runInterval = 0
 
-session = Session('/usr/bin/ratpoison')
+session = Session('/usr/bin/ratpoison', 'ratpoison')
 session.start()
 
 # TestString = TCString()
