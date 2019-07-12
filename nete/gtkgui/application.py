@@ -13,6 +13,7 @@ import sys
 
 class Application(Gtk.Application):
 
+    name = 'nete-gtk'
     debug_mode = False
 
     def __init__(self, *args, **kwargs):

@@ -20,7 +20,7 @@ from .note_view import ConnectedNoteView
 logger = logging.getLogger(__name__)
 
 
-class MainWindow(Gtk.Window):
+class MainWindow(Gtk.ApplicationWindow):
     paned_position = GObject.Property(type=int)
 
     __gsignals__ = {
