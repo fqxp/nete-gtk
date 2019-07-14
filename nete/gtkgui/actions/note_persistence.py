@@ -1,5 +1,5 @@
 from .action_types import ActionType
-from .selection import load_note
+from .selection import select_note
 from .editing import toggle_edit_note_title
 from nete.gtkgui.state.selectors import (
     current_note, current_note_collection, note_list_next, note_list_previous)
@@ -13,7 +13,7 @@ def create_note():
         note = storage.create_note()
 
         dispatch(created_note(note))
-        dispatch(load_note(note['title']))
+        dispatch(select_note(note['title']))
         dispatch(toggle_edit_note_title())
 
     return create_note
@@ -38,7 +38,7 @@ def delete_note():
             note_list_next(state, current_note_title) or
             note_list_previous(state, current_note_title)
         )
-        dispatch(load_note(next_note_title))
+        dispatch(select_note(next_note_title))
 
         storage.delete(current_note_title)
 

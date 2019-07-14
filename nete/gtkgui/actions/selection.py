@@ -10,11 +10,11 @@ from nete.gtkgui.state.selectors import (
     visible_notes)
 
 
-def load_note(note_title):
+def select_note(note_title):
     if note_title is None:
         return
 
-    def load_note(dispatch, state):
+    def select_note(dispatch, state):
         current_note_collection_id = state['ui']['current_note_collection_id']
         note_collection = state['note_collections'][current_note_collection_id]
         storage = create_storage(note_collection)
@@ -25,7 +25,7 @@ def load_note(note_title):
             'note': note,
         })
 
-    return load_note
+    return select_note
 
 
 def select_first():
@@ -35,7 +35,7 @@ def select_first():
         if first_note_title is None:
             return
 
-        return load_note(first_note_title)
+        return select_note(first_note_title)
 
     return select_first
 
@@ -46,7 +46,7 @@ def select_last():
         if last_note_title is None:
             return
 
-        return load_note(last_note_title)
+        return select_note(last_note_title)
 
     return select_last
 
@@ -64,7 +64,7 @@ def select_next():
 
         next_note_title = note_list_next(state, current_note_title)
         if next_note_title:
-            return load_note(next_note_title)
+            return select_note(next_note_title)
 
     return select_next
 
@@ -82,7 +82,7 @@ def select_previous():
 
         previous_note_title = note_list_previous(state, current_note_title)
         if previous_note_title is not None:
-            return load_note(previous_note_title)
+            return select_note(previous_note_title)
 
     return select_previous
 
@@ -133,6 +133,6 @@ def choose_preselected_note():
         if preselected_note_title is None:
             return
 
-        return load_note(preselected_note_title)
+        return select_note(preselected_note_title)
 
     return choose_preselected_note

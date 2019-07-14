@@ -10,7 +10,7 @@ from ..actions import (
     preselect_note,
     preselect_next,
     preselect_previous,
-    load_note
+    select_note
 )
 
 
@@ -139,7 +139,7 @@ def map_state_to_props(state):
 def map_dispatch_to_props(dispatch):
     return {
         'select-note': lambda source, note_title: (
-            dispatch(load_note(note_title))),
+            dispatch(select_note(note_title))),
         'create-note': lambda source: (
             dispatch(create_note())),
         'filter-term-changed': lambda source, filter_term: (
