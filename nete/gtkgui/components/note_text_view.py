@@ -1,6 +1,7 @@
 from fluous.gobject import connect
 from gi.repository import Gtk, GObject, WebKit2
 import commonmark
+import pkg_resources
 
 from ..actions import change_cursor_position, change_note_text
 
@@ -12,8 +13,10 @@ class NoteTextView(Gtk.Stack):
     mode = GObject.Property(type=str, default='view')
 
     __gsignals__ = {
-        'text-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,)),
-        'cursor-position-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'text-changed':
+            (GObject.SignalFlags.RUN_FIRST, None, (str,)),
+        'cursor-position-changed':
+            (GObject.SignalFlags.RUN_FIRST, None, (int,)),
     }
 
     def __init__(self, **kwargs):
@@ -82,12 +85,22 @@ class TextView(Gtk.ScrolledWindow):
         self.connect('notify::text', lambda source, params: self.update_view())
 
     def update_view(self):
-        html_text = commonmark.commonmark(self.get_property('text'))
-        self.web_view.load_html(html_text, 'file://.')
-        self.web_view.grab_focus()
+        self.web_view.load_html(
+            self.render_text(self.get_property('text')),
+            'file://.')
+        self.grab_focus()
 
     def grab_focus(self):
         self.web_view.grab_focus()
+
+    def render_text(self, text):
+        return pkg_resources.resource_string(
+            'nete.gtkgui', 'templates/document.html'
+        ).decode('utf-8').format(
+            style_sheet_url=pkg_resources.resource_filename(
+                'nete.gtkgui', 'style/document_style.css'),
+            body=commonmark.commonmark(self.get_property('text'))
+        )
 
 
 class TextEdit(Gtk.Box):
@@ -96,8 +109,10 @@ class TextEdit(Gtk.Box):
     text = GObject.Property(type=str, default='')
 
     __gsignals__ = {
-        'cursor-position-changed': (GObject.SignalFlags.RUN_FIRST, None, (int, )),
-        'text-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,)),
+        'cursor-position-changed':
+            (GObject.SignalFlags.RUN_FIRST, None, (int, )),
+        'text-changed':
+            (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
 
     def __init__(self, **kwargs):

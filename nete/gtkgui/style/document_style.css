@@ -1,0 +1,29 @@
+body {
+    padding: 25px;
+    background-color: #eeeeee;
+    display: flex;
+    justify-content: center;
+    font-family: Palatino, serif;
+}
+
+#content {
+    padding: 2em 2em;
+    background-color: #fdf6e3;
+    border: 1px solid #eee8d5;
+    box-shadow: 2px 2px 5px #93a1a1;
+    flex-grow: 1;
+    max-width: 60rem;
+    min-width: 15rem;
+}
+
+h1 {
+    text-align: center;
+}
+
+ul, ol, p {
+    line-height: 1.5;
+}
+
+li {
+    list-style: disc;
+}

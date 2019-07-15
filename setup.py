@@ -19,6 +19,7 @@ setup(
         '': ['*.png'],
         'nete.gtkgui': [
             'style/*.css',
+            'templates/*',
         ],
     },
     entry_points={
