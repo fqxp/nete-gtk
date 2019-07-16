@@ -5,7 +5,6 @@ from gi.repository import Gtk, Gio, GLib
 from fluous.store import Store
 from fluous.reducer_decorators import debug_reducer
 
-from nete.gui import gi_versions
 from nete.gui.actions import (
     load_notes,
     load_ui_state,
@@ -50,12 +49,11 @@ class Application(Gtk.Application):
         self.setup_logging(self.debug_mode)
 
         if self.debug_mode:
-            global reducer
-            reducer = debug_reducer(
+            actual_reducer = debug_reducer(
                 print_state=False,
                 print_diff=True,
                 print_traceback=False)(reducer)
-        self.store = Store(reducer, initial_state)
+        self.store = Store(actual_reducer, initial_state)
 
         self.store.dispatch(load_notes())
         self.store.dispatch(load_ui_state())

@@ -1,6 +1,6 @@
 import sys
 
-from nete.gui import gi_versions
+from nete.gui.gi_versions import assert_gi_versions
 from nete.gui.application import Application
 from nete.gui.resources import (
     sourceview_languages_dir,
@@ -21,6 +21,8 @@ def main():
 
 
 def setup_gtk():
+    assert_gi_versions()
+
     language_manager = GtkSource.LanguageManager.get_default()
     language_manager.set_search_path(
         language_manager.get_search_path() +

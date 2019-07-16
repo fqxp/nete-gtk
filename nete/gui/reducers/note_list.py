@@ -1,5 +1,3 @@
-from functools import lru_cache
-
 from fluous import create_reducer
 
 from nete.gui.actions.action_types import ActionType
