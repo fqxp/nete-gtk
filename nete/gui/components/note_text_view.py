@@ -189,6 +189,8 @@ class TextEdit(Gtk.Box):
             insert_spaces_instead_of_tabs=True,
             tab_width=2,
             highlight_current_line=True,
+            auto_indent=True,
+            wrap_mode=Gtk.WrapMode.CHAR,
         )
         scrollable_text_editor.add(self.text_editor)
         self.source_buffer.set_text(self.props.text)
