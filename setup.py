@@ -24,8 +24,5 @@ setup(
         'gui_scripts': [
             'nete-gtk = nete.gtkgui.main:main',
         ],
-        'console_scripts': [
-            'nete-cli = nete.cli.main:main',
-        ],
     },
 )
