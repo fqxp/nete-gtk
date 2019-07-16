@@ -19,27 +19,35 @@ nete will:
 
 # Installation
 
-## Install dependencies
+## Package dependencies
 
-### On Debian jessie
-Install required Debian packages:
+### Debian jessie
 
-    apt-get install python3 gir1.2-webkit2-4.0
+Install Debian packages:
 
-### On ArchLinux
+* python3
+* gir1.2-webkit2-4.0
+* libgtksourceview-4-0
+
+### ArchLinux
 
 Install packages from AUR:
 
 * python
 * webkit2gtk
+* gtksourceview4
 
-## Install nete
+## Install
 
-After having fulfilled the dependencies, simply install by using setuptools:
+Install using setuptools:
 
-    python setup.py install
+    ./setup.py install
 
-You should now have the scripts `nete-gtk` and `nete-cli` in your path.
+You should now have the script `nete-gtk` in your path.
+
+## Running the application
+
+Run `nete-gtk` to start the application.
 
 # Development
 First, set up a virtualenv to install required development packages into and
@@ -59,16 +67,12 @@ The `-b dev` adds the string `"dev"` to the version, which is important if you
 want to run an installed version of nete and a version you’re developing on at
 the same time.
 
-You can now run the tests like this:
+Run the application:
 
-    nosetests tests
-
-Or you can run one of the clients using
-
-    NETE_DIR=. nete-gtk
+    (venv)$ NETE_DIR=. nete-gtk
 
 ## Running tests
 
 Run tests:
 
-    (venv)$ nose2 -c nose2.cfg
+    (venv)$ pytest
