@@ -2,7 +2,7 @@ from fluous.gobject import connect
 from gi.repository import Gdk, Gtk, GObject
 import logging
 
-from nete.gtkgui.actions import (
+from nete.gui.actions import (
     create_note,
     delete_note,
     move_paned_position,
@@ -11,7 +11,7 @@ from nete.gtkgui.actions import (
     focus_filter_term_entry,
     toggle_edit_note_text,
     toggle_edit_note_title)
-from nete.gtkgui.resources import stylesheet_filename
+from nete.gui.resources import stylesheet_filename
 from .header_bar import ConnectedHeaderBar
 from .note_chooser import ConnectedNoteChooser
 from .note_view import ConnectedNoteView

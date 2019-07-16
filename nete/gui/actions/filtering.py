@@ -1,4 +1,4 @@
-from nete.gtkgui.actions.action_types import ActionType
+from nete.gui.actions.action_types import ActionType
 
 
 def focus_filter_term_entry():

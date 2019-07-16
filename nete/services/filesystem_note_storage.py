@@ -1,5 +1,5 @@
-from nete.gtkgui.state.models import Note, NoteListItem
-from nete.gtkgui.state.utils.note_list import is_visible
+from nete.gui.state.models import Note, NoteListItem
+from nete.gui.state.utils.note_list import is_visible
 import datetime
 import glob
 import logging

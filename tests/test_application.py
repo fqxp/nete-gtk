@@ -1,6 +1,6 @@
-from nete.gtkgui.application import initial_state
-from nete.gtkgui.reducers import reducer
-from nete.gtkgui.actions.action_types import ActionType
+from nete.gui.application import initial_state
+from nete.gui.reducers import reducer
+from nete.gui.actions.action_types import ActionType
 from pyrsistent import freeze
 import unittest
 

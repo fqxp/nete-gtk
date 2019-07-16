@@ -16,13 +16,13 @@ setup(
     ],
     packages=find_packages(exclude=['*.tests']),
     package_data={
-        'nete.gtkgui.resources': [
+        'nete.gui.resources': [
             '*',
         ],
     },
     entry_points={
         'gui_scripts': [
-            'nete-gtk = nete.gtkgui.main:main',
+            'nete-gtk = nete.gui.main:main',
         ],
     },
 )

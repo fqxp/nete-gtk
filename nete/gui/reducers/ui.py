@@ -1,6 +1,6 @@
 from fluous import create_reducer
-from nete.gtkgui.actions.action_types import ActionType
-from nete.gtkgui.state.initial import Ui
+from nete.gui.actions.action_types import ActionType
+from nete.gui.state.initial import Ui
 
 
 reduce = create_reducer({

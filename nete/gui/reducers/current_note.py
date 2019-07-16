@@ -1,5 +1,5 @@
 from fluous import create_reducer
-from nete.gtkgui.actions.action_types import ActionType
+from nete.gui.actions.action_types import ActionType
 
 
 reduce = create_reducer({

@@ -1,8 +1,8 @@
 import sys
 
-from nete.gtkgui import gi_versions
-from nete.gtkgui.application import Application
-from nete.gtkgui.resources import (
+from nete.gui import gi_versions
+from nete.gui.application import Application
+from nete.gui.resources import (
     sourceview_languages_dir,
     sourceview_styles_dir,
 )

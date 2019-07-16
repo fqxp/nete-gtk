@@ -1,7 +1,7 @@
 from .action_types import ActionType
 from .selection import select_note
 from .editing import toggle_edit_note_title
-from nete.gtkgui.state.selectors import (
+from nete.gui.state.selectors import (
     current_note, current_note_collection, note_list_next, note_list_previous)
 from nete.services.storage_factory import create_storage
 

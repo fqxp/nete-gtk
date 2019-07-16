@@ -1,13 +1,13 @@
 from fluous import create_reducer
-from nete.gtkgui.actions.action_types import ActionType
-from nete.gtkgui.state.utils.note_list import (
+from nete.gui.actions.action_types import ActionType
+from nete.gui.state.utils.note_list import (
     change_title,
     ordered,
     add_new,
     is_visible,
     without
 )
-from nete.gtkgui.state.models import NoteListItem
+from nete.gui.state.models import NoteListItem
 from functools import lru_cache
 
 

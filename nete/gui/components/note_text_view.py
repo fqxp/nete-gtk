@@ -2,8 +2,8 @@ from fluous.gobject import connect
 from gi.repository import Gtk, GtkSource, GObject, WebKit2
 import commonmark
 
-from nete.gtkgui.actions import change_cursor_position, change_note_text
-from nete.gtkgui.resources import (
+from nete.gui.actions import change_cursor_position, change_note_text
+from nete.gui.resources import (
     template_resource,
     stylesheet_filename,
 )

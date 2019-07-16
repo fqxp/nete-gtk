@@ -1,6 +1,6 @@
 from .action_types import ActionType
 from nete.services.storage_factory import create_storage
-from nete.gtkgui.state.selectors import (
+from nete.gui.state.selectors import (
     current_note,
     note_list_contains,
     note_list_first,

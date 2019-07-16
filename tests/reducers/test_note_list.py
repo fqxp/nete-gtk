@@ -1,6 +1,6 @@
-from nete.gtkgui.reducers.note_list import reduce
-from nete.gtkgui.state.models import NoteList, NoteListItem, Note
-from nete.gtkgui.actions.action_types import ActionType
+from nete.gui.reducers.note_list import reduce
+from nete.gui.state.models import NoteList, NoteListItem, Note
+from nete.gui.actions.action_types import ActionType
 import unittest
 
 

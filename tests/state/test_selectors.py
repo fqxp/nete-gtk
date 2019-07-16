@@ -1,4 +1,4 @@
-from nete.gtkgui.state.models import (
+from nete.gui.state.models import (
     Note,
     NoteCollection,
     NoteList,
@@ -6,7 +6,7 @@ from nete.gtkgui.state.models import (
     State,
     Ui,
 )
-from nete.gtkgui.state import selectors
+from nete.gui.state import selectors
 import unittest
 
 
