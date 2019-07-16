@@ -7,4 +7,4 @@ def version():
 
 
 def in_development_mode():
-    return version().endswith('dev')
+    return 'dev' in version()
