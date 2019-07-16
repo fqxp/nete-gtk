@@ -39,8 +39,8 @@ def delete_note():
         storage = create_storage(note_collection)
         current_note_title = current_note(state)['title']
         next_note_title = (
-            note_list_next(state, current_note_title) or
-            note_list_previous(state, current_note_title)
+            note_list_next(state, current_note_title)
+            or note_list_previous(state, current_note_title)
         )
         dispatch(select_note(next_note_title))
 

@@ -144,8 +144,8 @@ class TextEdit(Gtk.Box):
         self.emit('text-changed', source.get_property('text'))
 
     def _on_notify_text(self, source, param):
-        if (self.source_buffer.get_property('text') ==
-                self.get_property('text')):
+        if (self.source_buffer.get_property('text')
+                == self.get_property('text')):
             return
 
         with self.source_buffer.handler_block(
@@ -158,8 +158,8 @@ class TextEdit(Gtk.Box):
             self.source_buffer.get_property('cursor-position'))
 
     def _on_notify_cursor_position(self, source, param):
-        if (self.source_buffer.get_property('cursor-position') ==
-                self.get_property('cursor-position')):
+        if (self.source_buffer.get_property('cursor-position')
+                == self.get_property('cursor-position')):
             return
 
         with self.source_buffer.handler_block(

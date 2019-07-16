@@ -53,7 +53,7 @@ def note_list_next(state: State, note_title: str) -> Union[Note, None]:
     notes = visible_notes(state)
     for i, note in enumerate(notes):
         if note['title'] == note_title:
-            return notes[i+1]['title'] if i+1 < len(notes) else None
+            return notes[i + 1]['title'] if i + 1 < len(notes) else None
     return None
 
 
@@ -65,7 +65,7 @@ def note_list_previous(
     notes = visible_notes(state)
     for i, note in enumerate(notes):
         if note['title'] == current_note_title:
-            return notes[i-1]['title'] if i > 0 else None
+            return notes[i - 1]['title'] if i > 0 else None
     return None
 
 
