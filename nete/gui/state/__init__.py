@@ -1,1 +1,1 @@
-from .initial import initial_state
+from nete.gui.state.initial import initial_state

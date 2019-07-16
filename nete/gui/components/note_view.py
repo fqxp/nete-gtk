@@ -1,7 +1,7 @@
 from fluous.gobject import connect
 from gi.repository import Gtk, GObject
-from .note_text_view import ConnectedNoteTextView
-from .note_title_view import ConnectedNoteTitleView
+from nete.gui.components.note_text_view import ConnectedNoteTextView
+from nete.gui.components.note_title_view import ConnectedNoteTitleView
 
 
 class NoteView(Gtk.Box):

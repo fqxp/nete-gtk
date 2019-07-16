@@ -1,5 +1,5 @@
 from fluous.functions import combine_reducers
-from . import current_note, ui, note_list
+from nete.gui.reducers import current_note, ui, note_list
 
 
 reducer = combine_reducers({

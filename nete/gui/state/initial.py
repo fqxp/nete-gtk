@@ -1,5 +1,5 @@
+from nete.gui.state.models import NoteList, Ui, State, NoteCollection
 from nete.utils import in_development_mode
-from .models import NoteList, Ui, State, NoteCollection
 
 
 initial_state = State(

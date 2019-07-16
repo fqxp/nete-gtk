@@ -1,6 +1,7 @@
+import logging
+
 from fluous.gobject import connect
 from gi.repository import Gdk, Gtk, GObject
-import logging
 
 from nete.gui.actions import (
     create_note,

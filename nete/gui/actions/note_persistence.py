@@ -1,8 +1,12 @@
-from .action_types import ActionType
-from .selection import select_note
-from .editing import toggle_edit_note_title
+from nete.gui.actions.action_types import ActionType
+from nete.gui.actions.selection import select_note
+from nete.gui.actions.editing import toggle_edit_note_title
 from nete.gui.state.selectors import (
-    current_note, current_note_collection, note_list_next, note_list_previous)
+    current_note,
+    current_note_collection,
+    note_list_next,
+    note_list_previous,
+)
 from nete.services.storage_factory import create_storage
 
 

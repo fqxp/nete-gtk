@@ -1,14 +1,21 @@
-from . import gi_versions
+import logging
+import sys
+
 from gi.repository import Gtk, Gio, GLib
 from fluous.store import Store
 from fluous.reducer_decorators import debug_reducer
-from nete.utils import in_development_mode
-from .components.main_window import ConnectedMainWindow
-from .actions import load_notes, load_ui_state, save_note, save_ui_state
-from .state import selectors, initial_state
-from .reducers import reducer
-import logging
-import sys
+
+from nete.gui import gi_versions
+from nete.gui.actions import (
+    load_notes,
+    load_ui_state,
+    save_note,
+    save_ui_state,
+)
+from nete.gui.components.main_window import ConnectedMainWindow
+from nete.gui.reducers import reducer
+from nete.gui.state import selectors, initial_state
+from nete.utils import in_development_mode, version
 
 
 class Application(Gtk.Application):
@@ -30,7 +37,7 @@ class Application(Gtk.Application):
         options = command_line.get_options_dict()
 
         if options.contains('version'):
-            print('nete 0.0001 alpha')
+            print('nete {}'.format(version()))
             sys.exit(0)
         elif options.contains('debug'):
             self.debug_mode = True

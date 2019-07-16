@@ -1,4 +1,4 @@
-from .action_types import ActionType
+from nete.gui.actions.action_types import ActionType
 from nete.services.storage_factory import create_storage
 from nete.gui.state.selectors import (
     current_note,
@@ -7,7 +7,8 @@ from nete.gui.state.selectors import (
     note_list_last,
     note_list_next,
     note_list_previous,
-    visible_notes)
+    visible_notes,
+)
 
 
 def select_note(note_title):

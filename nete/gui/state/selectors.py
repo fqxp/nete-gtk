@@ -1,6 +1,7 @@
 from functools import lru_cache
 from typing import List, Union
-from .models import (
+
+from nete.gui.state.models import (
     Note,
     NoteCollection,
     NoteListItem,

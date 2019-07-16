@@ -1,6 +1,10 @@
 import pkg_resources
 
 
-def in_development_mode():
+def version():
     dist = pkg_resources.get_distribution('nete')
-    return dist.version.endswith('dev')
+    return dist.version
+
+
+def in_development_mode():
+    return version().endswith('dev')

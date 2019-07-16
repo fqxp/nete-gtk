@@ -4,7 +4,8 @@ from nete.gui.actions import (
     cancel_edit_note_title,
     finish_edit_note_title,
     toggle_edit_note_text,
-    toggle_edit_note_title)
+    toggle_edit_note_title,
+)
 
 
 class NoteTitleView(Gtk.Box):

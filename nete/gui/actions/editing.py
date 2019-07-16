@@ -1,5 +1,5 @@
+from nete.gui.actions.action_types import ActionType
 from nete.services.storage_factory import create_storage
-from .action_types import ActionType
 
 
 def toggle_edit_note_text():

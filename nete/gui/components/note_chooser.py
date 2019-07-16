@@ -1,8 +1,6 @@
 from fluous.gobject import connect
 from gi.repository import Gtk, GObject
-from .filter_view import FilterView
-from .note_list_view import NoteListView
-from ..actions import (
+from nete.gui.actions import (
     change_filter_term,
     choose_preselected_note,
     create_note,
@@ -12,6 +10,8 @@ from ..actions import (
     preselect_previous,
     select_note
 )
+from nete.gui.components.filter_view import FilterView
+from nete.gui.components.note_list_view import NoteListView
 
 
 class NoteChooser(Gtk.Grid):
