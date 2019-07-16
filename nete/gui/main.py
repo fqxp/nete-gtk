@@ -16,7 +16,10 @@ def main():
     app = Application()
     exit_status = app.run(sys.argv)
 
-    Gtk.main()
+    try:
+        Gtk.main()
+    except KeyboardInterrupt:
+        exit_status = 1
 
     sys.exit(exit_status)
 
