@@ -114,7 +114,7 @@ def map_state_to_props(state):
         ('title', (
             state['current_note']['title']
             if state['current_note']
-            else None)),
+            else '')),
         ('mode', (
             'edit'
             if state['ui']['focus'] == 'note_title_editor'

@@ -200,7 +200,7 @@ def map_state_to_props(state):
     return (
         ('text', (state['current_note']['text']
                   if state['current_note']
-                  else None)),
+                  else '')),
         ('cursor-position', (
             state['current_note']['cursor_position']
             if state['current_note']

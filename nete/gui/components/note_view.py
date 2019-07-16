@@ -4,7 +4,7 @@ from nete.gui.components.note_text_view import ConnectedNoteTextView
 from nete.gui.components.note_title_view import ConnectedNoteTitleView
 
 
-class NoteView(Gtk.Box):
+class NoteView(Gtk.Stack):
 
     is_note_selected = GObject.Property(type=bool, default=False)
     widget = GObject.Property(type=GObject.TYPE_PYOBJECT, default=None)
@@ -18,8 +18,8 @@ class NoteView(Gtk.Box):
         self._connect_events()
 
     def _build_ui(self):
-        self.box = Gtk.Box()
-        self.pack_start(self.box, expand=True, fill=True, padding=0)
+        self.add_named(self._build_no_note_label(), 'no-note-view')
+        self.add_named(self._build_note_grid(), 'note-view')
 
         self.show_all()
 
@@ -42,16 +42,10 @@ class NoteView(Gtk.Box):
                      lambda source, param: self._update_visibility())
 
     def _update_visibility(self):
-        if self.widget:
-            self.widget.destroy()
-
         if self.get_property('is-note-selected'):
-            self.widget = self._build_note_grid()
+            self.set_visible_child_name('note-view')
         else:
-            self.widget = self._build_no_note_label()
-
-        self.box.pack_start(self.widget, expand=True, fill=True, padding=0)
-        self.show_all()
+            self.set_visible_child_name('no-note-view')
 
 
 def map_state_to_props(state):

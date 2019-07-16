@@ -48,6 +48,7 @@ class Application(Gtk.Application):
     def do_activate(self):
         self.setup_logging(self.debug_mode)
 
+        actual_reducer = reducer
         if self.debug_mode:
             actual_reducer = debug_reducer(
                 print_state=False,
