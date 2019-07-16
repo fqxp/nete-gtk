@@ -16,10 +16,8 @@ setup(
     ],
     packages=find_packages(exclude=['*.tests']),
     package_data={
-        '': ['*.png'],
-        'nete.gtkgui': [
-            'style/*.css',
-            'templates/*',
+        'nete.gtkgui.resources': [
+            '*',
         ],
     },
     entry_points={

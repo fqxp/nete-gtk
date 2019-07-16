@@ -1,9 +1,12 @@
 from fluous.gobject import connect
-from gi.repository import Gtk, GObject, WebKit2
+from gi.repository import Gtk, GtkSource, GObject, WebKit2
 import commonmark
-import pkg_resources
 
-from ..actions import change_cursor_position, change_note_text
+from nete.gtkgui.actions import change_cursor_position, change_note_text
+from nete.gtkgui.resources import (
+    template_resource,
+    stylesheet_filename,
+)
 
 
 class NoteTextView(Gtk.Stack):
@@ -94,13 +97,12 @@ class TextView(Gtk.ScrolledWindow):
         self.web_view.grab_focus()
 
     def render_text(self, text):
-        return pkg_resources.resource_string(
-            'nete.gtkgui', 'templates/document.html'
-        ).decode('utf-8').format(
-            style_sheet_url=pkg_resources.resource_filename(
-                'nete.gtkgui', 'style/document_style.css'),
-            body=commonmark.commonmark(self.get_property('text'))
-        )
+        stylesheet_url = stylesheet_filename('document')
+        rendered_body = commonmark.commonmark(self.props.text)
+
+        return template_resource('document').format(
+            style_sheet_url=stylesheet_url,
+            body=rendered_body)
 
 
 class TextEdit(Gtk.Box):
@@ -117,6 +119,7 @@ class TextEdit(Gtk.Box):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
         self._build_ui()
         self._connect_events()
 
@@ -124,13 +127,13 @@ class TextEdit(Gtk.Box):
         self.text_editor.grab_focus()
 
     def _connect_events(self):
-        self._text_buffer_changed_handler = self.text_buffer.connect(
+        self._text_buffer_changed_handler = self.source_buffer.connect(
             'changed',
             self._on_text_buffer_changed)
         self.connect('notify::text', self._on_notify_text)
 
         self._text_buffer_notify_cursor_position_handler = (
-            self.text_buffer.connect(
+            self.source_buffer.connect(
                 'notify::cursor-position',
                 self._on_text_buffer_notify_cursor_position))
         self.connect(
@@ -141,40 +144,54 @@ class TextEdit(Gtk.Box):
         self.emit('text-changed', source.get_property('text'))
 
     def _on_notify_text(self, source, param):
-        if self.text_buffer.get_property('text') == self.get_property('text'):
+        if (self.source_buffer.get_property('text') ==
+                self.get_property('text')):
             return
 
-        with self.text_buffer.handler_block(self._text_buffer_changed_handler):
-            self.text_buffer.set_property('text', self.get_property('text'))
+        with self.source_buffer.handler_block(
+                self._text_buffer_changed_handler):
+            self.source_buffer.set_property('text', self.get_property('text'))
 
     def _on_text_buffer_notify_cursor_position(self, source, param):
         self.emit(
             'cursor-position-changed',
-            self.text_buffer.get_property('cursor-position'))
+            self.source_buffer.get_property('cursor-position'))
 
     def _on_notify_cursor_position(self, source, param):
-        if (self.text_buffer.get_property('cursor-position') ==
+        if (self.source_buffer.get_property('cursor-position') ==
                 self.get_property('cursor-position')):
             return
 
-        with self.text_buffer.handler_block(
-            self._text_buffer_notify_cursor_position_handler
-        ):
-            self.text_buffer.place_cursor(
-                self.text_buffer.get_iter_at_offset(
+        with self.source_buffer.handler_block(
+                self._text_buffer_notify_cursor_position_handler):
+            self.source_buffer.place_cursor(
+                self.source_buffer.get_iter_at_offset(
                     self.get_property('cursor-position')))
 
     def _build_ui(self):
         self.pack_start(self._build_text_editor(), True, True, 0)
 
     def _build_text_editor(self):
+        language_manager = GtkSource.LanguageManager.get_default()
+        style_scheme_manager = GtkSource.StyleSchemeManager.get_default()
+
         scrollable_text_editor = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
 
-        self.text_editor = Gtk.TextView(wrap_mode=Gtk.WrapMode.WORD_CHAR)
-        self.text_editor.get_buffer()
+        self.source_buffer = GtkSource.Buffer()
+        self.source_buffer.set_language(
+            language_manager.get_language('markdown-nete'))
+        self.source_buffer.set_style_scheme(
+            style_scheme_manager.get_scheme('classic-nete'))
+
+        self.text_editor = GtkSource.View(
+            buffer=self.source_buffer,
+            monospace=True,
+            insert_spaces_instead_of_tabs=True,
+            tab_width=2,
+            highlight_current_line=True,
+        )
         scrollable_text_editor.add(self.text_editor)
-        self.text_buffer = self.text_editor.get_buffer()
-        self.text_buffer.set_text(self.get_property('text'))
+        self.source_buffer.set_text(self.props.text)
 
         return scrollable_text_editor
 

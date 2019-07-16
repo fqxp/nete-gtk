@@ -1,7 +1,6 @@
 from fluous.gobject import connect
 from gi.repository import Gdk, Gtk, GObject
 import logging
-import pkg_resources
 
 from nete.gtkgui.actions import (
     create_note,
@@ -12,6 +11,7 @@ from nete.gtkgui.actions import (
     focus_filter_term_entry,
     toggle_edit_note_text,
     toggle_edit_note_title)
+from nete.gtkgui.resources import stylesheet_filename
 from .header_bar import ConnectedHeaderBar
 from .note_chooser import ConnectedNoteChooser
 from .note_view import ConnectedNoteView
@@ -79,8 +79,7 @@ class MainWindow(Gtk.Window):
         self.set_default_size(800, 600)
 
         css_provider = Gtk.CssProvider()
-        css_provider.load_from_path(
-            pkg_resources.resource_filename('nete.gtkgui', 'style/style.css'))
+        css_provider.load_from_path(stylesheet_filename('application'))
 
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
