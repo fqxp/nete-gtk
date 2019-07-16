@@ -1,10 +1,10 @@
-# What's nete?
+[![Build Status](https://travis-ci.org/fqxp/nete-gtk.svg?branch=master)](https://travis-ci.org/fqxp/nete-gtk)
 
-nete (pronounce: neat) will be a nice, useful note-taking application suite.
+# What is nete?
+
+nete (pronounce: neat) will be a nice, useful note-taking application.
 
 It's currently in alpha state.
-
-[![Build Status](https://travis-ci.org/fqxp/nete-gtk.svg?branch=master)](https://travis-ci.org/fqxp/nete-gtk)
 
 ## Plans
 
@@ -27,7 +27,7 @@ Install Debian packages:
 
 * python3
 * gir1.2-webkit2-4.0
-* libgtksourceview-4-0
+* gir1.2-gtksource-4
 
 ### ArchLinux
 
