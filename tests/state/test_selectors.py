@@ -1,4 +1,5 @@
 from nete.gui.state.models import (
+    Configuration,
     Note,
     NoteCollection,
     NoteList,
@@ -7,6 +8,7 @@ from nete.gui.state.models import (
     Ui,
 )
 from nete.gui.state import selectors
+from pyrsistent import s
 import unittest
 
 
@@ -14,13 +16,6 @@ class SelectorsTestCase(unittest.TestCase):
 
     def setUp(self):
         self.state = State(
-            note_collections={
-                'NOTE-COLLECTION-ID': NoteCollection(
-                    id='NOTE-COLLECTION-ID',
-                    name='NAME',
-                    directory='/tmp',
-                ),
-            },
             note_list=NoteList(
                 notes=[
                     NoteListItem(
@@ -46,6 +41,15 @@ class SelectorsTestCase(unittest.TestCase):
                 current_note_collection_id='NOTE-COLLECTION-ID',
                 focus=None,
                 paned_position=250,
+            ),
+            configuration=Configuration(
+                note_collections=s(
+                    NoteCollection(
+                        id='NOTE-COLLECTION-ID',
+                        name='NAME',
+                        directory='/tmp',
+                    ),
+                ),
             ),
             development_mode=True,
         )
@@ -101,7 +105,7 @@ class SelectorsTestCase(unittest.TestCase):
 
         self.assertTrue(result)
 
-    def test_note_list_contains_returns_true_if_note_is_contained(self):
+    def test_note_list_contains_returns_false_if_note_is_not_contained(self):
         result = selectors.note_list_contains(self.state, 'NOTE 3')
 
         self.assertFalse(result)

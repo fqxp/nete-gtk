@@ -1,7 +1,13 @@
-from pyrsistent import PRecord, field, pmap_field, pvector_field
+from pyrsistent import (
+    PClass,
+    PRecord,
+    field,
+    pset_field,
+    pvector_field,
+)
 
 
-class NoteCollection(PRecord):
+class NoteCollection(PClass):
     id = field(type=str, mandatory=True)
     name = field(type=str, mandatory=True)
     directory = field(type=str, mandatory=True)
@@ -41,9 +47,13 @@ class Ui(PRecord):
                   )
 
 
+class Configuration(PClass):
+    note_collections = pset_field(NoteCollection)
+
+
 class State(PRecord):
-    note_collections = pmap_field(str, NoteCollection)
     note_list = field(type=NoteList)
     current_note = field(type=(Note, type(None)))
+    configuration = field(type=(Configuration, type(None)))
     ui = field(type=Ui)
     development_mode = field(type=bool)

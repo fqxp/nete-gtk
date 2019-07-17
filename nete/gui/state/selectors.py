@@ -8,12 +8,16 @@ from nete.gui.state.models import (
     State,
     Ui,
 )
+from nete.utils import find
 
 
 @lru_cache()
 def current_note_collection(state: State) -> NoteCollection:
     current_note_collection_id = state['ui']['current_note_collection_id']
-    return state['note_collections'][current_note_collection_id]
+    return find(
+        state['configuration'].note_collections,
+        lambda note_collection: (note_collection.id
+                                 == current_note_collection_id))
 
 
 @lru_cache()

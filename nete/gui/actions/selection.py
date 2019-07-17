@@ -2,6 +2,7 @@ from nete.gui.actions.action_types import ActionType
 from nete.services.storage_factory import create_storage
 from nete.gui.state.selectors import (
     current_note,
+    current_note_collection,
     note_list_contains,
     note_list_first,
     note_list_last,
@@ -16,9 +17,7 @@ def select_note(note_title):
         return
 
     def select_note(dispatch, state):
-        current_note_collection_id = state['ui']['current_note_collection_id']
-        note_collection = state['note_collections'][current_note_collection_id]
-        storage = create_storage(note_collection)
+        storage = create_storage(current_note_collection(state))
         note = storage.load(note_title)
 
         dispatch({

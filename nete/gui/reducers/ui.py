@@ -35,5 +35,11 @@ reduce = create_reducer({
         state.set('paned_position', action['position'])),
 
     ActionType.LOADED_UI_STATE: lambda state, action: (
-        state.update(Ui.create(action['ui'])))
+        state.update(Ui.create(action['ui']))),
+
+    ActionType.LOAD_CONFIGURATION: lambda state, action: (
+        state.set(
+            'current_note_collection_id',
+            list(action['configuration'].note_collections)[0].id
+        )),
 })

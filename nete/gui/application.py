@@ -6,6 +6,7 @@ from fluous.store import Store
 from fluous.reducer_decorators import debug_reducer
 
 from nete.gui.actions import (
+    load_configuration,
     load_notes,
     load_ui_state,
     save_note,
@@ -56,6 +57,7 @@ class Application(Gtk.Application):
                 print_traceback=False)(reducer)
         self.store = Store(actual_reducer, initial_state)
 
+        self.store.dispatch(load_configuration())
         self.store.dispatch(load_notes())
         self.store.dispatch(load_ui_state())
 
