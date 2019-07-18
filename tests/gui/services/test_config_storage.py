@@ -48,20 +48,7 @@ def test_config_to_state(config, config_state):
 
     result = config_storage.config_to_state(config_parser)
 
-    assert result == Configuration(
-        note_collections=s(
-            NoteCollection(
-                id='be69fde3-afd7-48b7-9117-c6d34cbe3d1d',
-                name='COLLECTION 1',
-                directory='/tmp/collection1'
-            ),
-            NoteCollection(
-                id='f6c15221-84c6-45c3-8b7a-30c243994401',
-                name='COLLECTION 2',
-                directory='/tmp/collection2'
-            ),
-        )
-    )
+    assert result == config_state
 
 
 def test_state_to_config(config_state, config):
