@@ -21,6 +21,7 @@ from nete.utils import in_development_mode, version
 class Application(Gtk.Application):
 
     debug_mode = False
+    traceback = False
 
     def __init__(self, *args, **kwargs):
         super().__init__(
@@ -39,8 +40,9 @@ class Application(Gtk.Application):
         if options.contains('version'):
             print('nete {}'.format(version()))
             sys.exit(0)
-        elif options.contains('debug'):
-            self.debug_mode = True
+
+        self.debug_mode = options.contains('debug')
+        self.traceback = options.contains('traceback')
 
         self.activate()
 
@@ -54,7 +56,7 @@ class Application(Gtk.Application):
             actual_reducer = debug_reducer(
                 print_state=False,
                 print_diff=True,
-                print_traceback=False)(reducer)
+                print_traceback=self.traceback)(reducer)
         self.store = Store(actual_reducer, initial_state)
 
         self.store.dispatch(load_configuration())
@@ -93,6 +95,13 @@ class Application(Gtk.Application):
         option.long_name = 'debug'
         option.short_name = ord('D')
         option.description = 'Enable debug mode'
+        options.append(option)
+
+        option = GLib.OptionEntry()
+        option.long_name = 'traceback'
+        option.description = (
+            'Enable traceback mode '
+            '(when debug mode is also enabled)')
         options.append(option)
 
         self.add_main_option_entries(options)
