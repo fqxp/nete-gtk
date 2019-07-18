@@ -143,3 +143,9 @@ def choose_preselected_note():
         return select_note(preselected_note_title)
 
     return choose_preselected_note
+
+
+def close_note():
+    return {
+        'type': ActionType.CLOSE_NOTE,
+    }

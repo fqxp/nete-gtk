@@ -29,4 +29,6 @@ reduce = create_reducer({
         state.update({
             'needs_save': False,
         }),
+
+    ActionType.CLOSE_NOTE: lambda state, action: None,
 })

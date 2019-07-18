@@ -6,6 +6,7 @@ from gi.repository import Gdk, Gtk, GObject
 from nete.gui.actions import (
     create_note,
     delete_note,
+    close_note,
     move_paned_position,
     select_next,
     select_previous,
@@ -36,6 +37,8 @@ class MainWindow(Gtk.Window):
         'create-note':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'delete-note':
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
+        'close-note':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'focus-filter-term-entry':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
@@ -141,6 +144,12 @@ class MainWindow(Gtk.Window):
             Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK,
             Gtk.AccelFlags.VISIBLE)
         self.add_accelerator(
+            'close-note',
+            self.accel_group,
+            ord('W'),
+            Gdk.ModifierType.CONTROL_MASK,
+            Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator(
             'focus-filter-term-entry',
             self.accel_group,
             ord('F'),
@@ -184,6 +193,8 @@ def map_dispatch_to_props(dispatch):
             lambda source: dispatch(create_note()),
         'delete-note':
             lambda source: dispatch(delete_note()),
+        'close-note':
+            lambda source: dispatch(close_note()),
         'focus-filter-term-entry':
             lambda source, s1: dispatch(focus_filter_term_entry()),
         'move-paned':
