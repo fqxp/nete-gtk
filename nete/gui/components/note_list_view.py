@@ -69,6 +69,10 @@ class NoteListView(Gtk.TreeView):
             self.get_property('notes'),
             self.get_property('current_note_title'))
 
+        treeiter = self.get_model().get_treeiter_by_note_title(
+            self.get_property('current_note_title'))
+        self.scroll_note_into_view(treeiter)
+
     def on_row_activated(self, source, path, column):
         index = path.get_indices()[0]
         note_title = self.get_property('notes')[index]['title']
@@ -114,7 +118,7 @@ class NoteListView(Gtk.TreeView):
 
     def scroll_note_into_view(self, treeiter):
         tree_path = self.get_model().get_path(treeiter)
-        self.scroll_to_cell(tree_path)
+        self.scroll_to_cell(tree_path, use_align=False)
 
 
 class NoteListModel(Gtk.ListStore):
