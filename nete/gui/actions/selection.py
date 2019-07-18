@@ -28,6 +28,13 @@ def select_note(note_title):
     return select_note
 
 
+def select_none():
+    return {
+        'type': ActionType.SELECT_NOTE,
+        'note': None,
+    }
+
+
 def select_first():
     def select_first(dispatch, state):
         first_note_title = note_list_first(state)['title']

@@ -2,6 +2,8 @@ from enum import Enum
 
 
 class ActionType(Enum):
+    SELECT_NOTE_COLLECTION = 'SELECT_NOTE_COLLECTION'
+
     SELECT_NOTE = 'SELECT_NOTE'
     CREATED_NOTE = 'CREATED_NOTE'
     DELETE_NOTE = 'DELETE_NOTE'

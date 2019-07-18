@@ -1,5 +1,5 @@
 from nete.gui.actions.action_types import ActionType
-from nete.gui.actions.selection import select_note
+from nete.gui.actions.selection import select_note, select_none
 from nete.gui.actions.editing import toggle_edit_note_title
 from nete.gui.state.selectors import (
     current_note,
@@ -55,7 +55,7 @@ def delete_note():
 
 def save_note(note):
     def save_note(dispatch, state):
-        if not note['needs_save']:
+        if note is None or not note['needs_save']:
             return
 
         note_collection = current_note_collection(state)
@@ -72,11 +72,12 @@ def saved_note():
     }
 
 
-def load_notes(filter_term=None):
+def load_notes():
     def load_notes(dispatch, state):
         note_collection = current_note_collection(state)
         storage = create_storage(note_collection)
         dispatch(loaded_notes(storage.list()))
+        dispatch(select_none())
 
     return load_notes
 

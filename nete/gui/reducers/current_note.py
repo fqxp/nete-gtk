@@ -4,7 +4,10 @@ from nete.gui.actions.action_types import ActionType
 
 reduce = create_reducer({
     ActionType.SELECT_NOTE: lambda state, action:
-        action['note'] if state is None else state.update(action['note']),
+        (state.update(action['note'])
+         if state and action['note']
+         else action['note']
+         ),
 
     ActionType.CHANGE_NOTE_TEXT: lambda state, action:
         state.update({
@@ -20,7 +23,7 @@ reduce = create_reducer({
     ActionType.CHANGE_CURSOR_POSITION: lambda state, action:
         state.update({
             'cursor_position': action['cursor_position'],
-        }),
+        }) if state else None,
 
     ActionType.NOTE_SAVED: lambda state, action:
         state.update({

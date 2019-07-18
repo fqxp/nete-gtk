@@ -1,6 +1,6 @@
 from nete.gui.actions.action_types import ActionType
 from nete.services.storage_factory import create_storage
-from nete.gui.state.selectors import current_note_collection
+from nete.gui.state.selectors import current_note, current_note_collection
 
 
 def toggle_edit_note_text():
@@ -37,7 +37,10 @@ def toggle_edit_note_title():
 
 def finish_edit_note_title(new_title):
     def finish_edit_note_title(dispatch, state):
-        old_title = state['current_note']['title']
+        if current_note(state) is None:
+            return
+
+        old_title = current_note(state)['title']
 
         if old_title == new_title:
             return cancel_edit_note_title()

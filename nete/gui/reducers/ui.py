@@ -4,6 +4,9 @@ from nete.gui.state.initial import Ui
 
 
 reduce = create_reducer({
+    ActionType.SELECT_NOTE_COLLECTION: lambda state, action: (
+        state.set('current_note_collection_id', action['collection_id'])),
+
     ActionType.SELECT_NOTE: lambda state, action: (
         state.set('focus', 'note_view')),
 
