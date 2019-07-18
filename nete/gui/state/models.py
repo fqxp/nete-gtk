@@ -2,7 +2,6 @@ from pyrsistent import (
     PClass,
     PRecord,
     field,
-    pset_field,
     pvector_field,
 )
 
@@ -48,7 +47,7 @@ class Ui(PRecord):
 
 
 class Configuration(PClass):
-    note_collections = pset_field(NoteCollection)
+    note_collections = pvector_field(NoteCollection)
 
 
 class State(PRecord):

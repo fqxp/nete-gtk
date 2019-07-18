@@ -3,7 +3,7 @@ import os
 import os.path
 from configparser import ConfigParser
 
-from pyrsistent import PSet, s
+from pyrsistent import pvector
 
 from nete.gui.state.models import Configuration, NoteCollection
 from nete.utils import config_filename
@@ -43,7 +43,7 @@ def save_configuration(configuration):
 
 def config_to_state(config):
     return Configuration(
-        note_collections=PSet(
+        note_collections=pvector(
             NoteCollection(
                 id=collection_id,
                 name=collection_config['name'],
@@ -74,7 +74,7 @@ def state_to_config(state):
 
 
 def default_configuration():
-    note_collections = s(
+    note_collections = pvector([
         NoteCollection(
             id='630415b9-290e-4b3e-94d3-c96bca7b9694',
             name='Personal',
@@ -83,7 +83,7 @@ def default_configuration():
                 'Notes'
             )
         ),
-    )
+    ])
 
     return Configuration(
         note_collections=note_collections,

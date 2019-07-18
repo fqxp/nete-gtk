@@ -1,7 +1,7 @@
 from configparser import ConfigParser
 
 import pytest
-from pyrsistent import s
+from pyrsistent import pvector
 
 from nete.gui.services import config_storage
 from nete.gui.state.models import (
@@ -27,7 +27,7 @@ def config():
 @pytest.fixture
 def config_state():
     return Configuration(
-        note_collections=s(
+        note_collections=pvector([
             NoteCollection(
                 id='be69fde3-afd7-48b7-9117-c6d34cbe3d1d',
                 name='COLLECTION 1',
@@ -38,7 +38,7 @@ def config_state():
                 name='COLLECTION 2',
                 directory='/tmp/collection2'
             ),
-        )
+        ])
     )
 
 
