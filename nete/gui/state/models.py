@@ -33,7 +33,9 @@ class NoteList(PRecord):
 
 class Ui(PRecord):
     paned_position = field(type=int)
-    current_note_collection_id = field(type=str)
+    current_note_collection_id = field(
+        type=(str, type(None)),
+        mandatory=True)
     focus = field(type=(str, type(None)),
                   invariant=lambda value: (
                       value in (

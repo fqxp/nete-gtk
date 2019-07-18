@@ -13,7 +13,7 @@ from nete.gui.actions import (
     save_ui_state,
 )
 from nete.gui.components.main_window import ConnectedMainWindow
-from nete.gui.reducers import reducer
+from nete.gui.reducer import reduce
 from nete.gui.state import selectors, initial_state
 from nete.utils import in_development_mode, version
 
@@ -51,13 +51,13 @@ class Application(Gtk.Application):
     def do_activate(self):
         self.setup_logging(self.debug_mode)
 
-        actual_reducer = reducer
+        actual_reduce = reduce
         if self.debug_mode:
-            actual_reducer = debug_reducer(
+            actual_reduce = debug_reducer(
                 print_state=False,
                 print_diff=True,
-                print_traceback=self.traceback)(reducer)
-        self.store = Store(actual_reducer, initial_state)
+                print_traceback=self.traceback)(actual_reduce)
+        self.store = Store(actual_reduce, initial_state)
 
         self.store.dispatch(load_configuration())
         self.store.dispatch(initialize())

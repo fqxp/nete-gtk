@@ -15,7 +15,7 @@ initial_state = State(
     current_note=None,
     configuration=None,
     ui=Ui(
-        current_note_collection_id='630415b9-290e-4b3e-94d3-c96bca7b9694',
+        current_note_collection_id=None,
         focus=None,
         paned_position=250,
     ),
