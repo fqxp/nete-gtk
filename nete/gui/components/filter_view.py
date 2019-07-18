@@ -17,6 +17,8 @@ class FilterView(Gtk.Bin):
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
         'select-preselected-note':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
+        'reset':
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
     }
 
     def __init__(self, **kwargs):
@@ -51,6 +53,9 @@ class FilterView(Gtk.Bin):
         self.filter_term_entry.connect(
             'key-press-event',
             self.on_key_press_event)
+        self.filter_term_entry.connect(
+            'key-release-event',
+            self.on_key_release_event)
 
     def on_key_press_event(self, source, event_key):
         if event_key.keyval == Gdk.KEY_Down:
@@ -58,6 +63,13 @@ class FilterView(Gtk.Bin):
             return True
         elif event_key.keyval == Gdk.KEY_Up:
             self.emit('keyboard-up')
+            return True
+        else:
+            return False
+
+    def on_key_release_event(self, source, event_key):
+        if event_key.keyval == Gdk.KEY_Escape:
+            self.emit('reset')
             return True
         else:
             return False

@@ -1,8 +1,11 @@
 from nete.gui.actions.action_types import ActionType
-from nete.gui.actions.filtering import change_filter_term
 from nete.gui.actions.selection import select_first
-from nete.gui.actions.note_persistence import load_notes
+from nete.gui.state.selectors import (
+    current_note_collection,
+    note_collection_by_id,
+)
 from nete.services import ui_state_storage
+from nete.services.storage_factory import create_storage
 
 
 def move_paned_position(position):
@@ -12,14 +15,34 @@ def move_paned_position(position):
     }
 
 
+def focus_note_collection_chooser():
+    return {
+        'type': ActionType.FOCUS_NOTE_COLLECTION_CHOOSER,
+    }
+
+
+def initialize():
+    def initialize(dispatch, state):
+        note_collection = current_note_collection(state)
+        dispatch(select_collection(note_collection.id))
+    return initialize
+
+
+def reset():
+    return {
+        'type': ActionType.RESET,
+    }
+
+
 def select_collection(collection_id):
     def select_collection(dispatch, state):
+        note_collection = note_collection_by_id(state, collection_id)
+        storage = create_storage(note_collection)
         dispatch({
             'type': ActionType.SELECT_NOTE_COLLECTION,
             'collection_id': collection_id,
+            'notes': storage.list(),
         })
-        dispatch(load_notes())
-        dispatch(change_filter_term(''))
     return select_collection
 
 

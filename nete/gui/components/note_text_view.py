@@ -14,6 +14,7 @@ class NoteTextView(Gtk.Stack):
     text = GObject.Property(type=str, default='')
     cursor_position = GObject.Property(type=int, default=0)
     mode = GObject.Property(type=str, default='view')
+    focus = GObject.Property(type=bool, default=False)
 
     __gsignals__ = {
         'text-changed':
@@ -32,6 +33,7 @@ class NoteTextView(Gtk.Stack):
     def _connect_events(self):
         self.connect('notify::mode', lambda source, param: self._update_view())
         self.connect('notify::text', lambda source, param: self._update_view())
+        self.connect('notify::focus', self._on_notify_focus)
 
         self.bind_property(
             'text',
@@ -72,6 +74,15 @@ class NoteTextView(Gtk.Stack):
         self.add_named(self.text_view, 'view')
 
         self.set_visible_child_name('view')
+
+    def _on_notify_focus(self, source, param):
+        if not self.get_property('focus'):
+            return
+
+        if self.get_property('mode') == 'view':
+            self.text_view.grab_focus()
+        elif self.get_property('mode') == 'edit':
+            self.text_editor.grab_focus()
 
 
 class TextView(Gtk.ScrolledWindow):
@@ -208,6 +219,7 @@ def map_state_to_props(state):
             if state['current_note']
             else 0)),
         ('mode', 'edit' if state['ui']['focus'] == 'note_editor' else 'view'),
+        ('focus', state['ui']['focus'] in ('note_view', 'note_editor')),
     )
 
 

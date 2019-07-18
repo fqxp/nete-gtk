@@ -41,7 +41,8 @@ class Ui(PRecord):
                           'note_view',
                           'note_editor',
                           'note_title_editor',
-                          'filter_term'
+                          'filter_term',
+                          'note_collection_chooser',
                       ), None)
                   )
 

@@ -8,6 +8,7 @@ from nete.gui.actions import (
     preselect_note,
     preselect_next,
     preselect_previous,
+    reset,
     select_note
 )
 from nete.gui.components.filter_view import FilterView
@@ -38,6 +39,8 @@ class NoteChooser(Gtk.Grid):
         'preselect-previous-note':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
         'select-preselected-note':
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
+        'reset':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
     }
 
@@ -118,6 +121,9 @@ class NoteChooser(Gtk.Grid):
             'keyboard-up', lambda source: (
                 self.emit('preselect-previous-note')))
         self.filter_view.connect(
+            'reset', lambda source: (
+                self.emit('reset')))
+        self.filter_view.connect(
             'select-preselected-note', lambda source: (
                 self.emit('select-preselected-note')))
 
@@ -154,6 +160,8 @@ def map_dispatch_to_props(dispatch):
             dispatch(preselect_previous())),
         'select-preselected-note': lambda source: (
             dispatch(choose_preselected_note())),
+        'reset': lambda source: (
+            dispatch(reset())),
     }
 
 

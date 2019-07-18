@@ -31,4 +31,6 @@ reduce = create_reducer({
         }),
 
     ActionType.CLOSE_NOTE: lambda state, action: None,
+
+    ActionType.SELECT_NOTE_COLLECTION: lambda state, action: None,
 })

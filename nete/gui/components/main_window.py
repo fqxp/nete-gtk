@@ -7,10 +7,12 @@ from nete.gui.actions import (
     create_note,
     delete_note,
     close_note,
+    focus_filter_term_entry,
+    focus_note_collection_chooser,
     move_paned_position,
+    reset,
     select_next,
     select_previous,
-    focus_filter_term_entry,
     toggle_edit_note_text,
     toggle_edit_note_title)
 from nete.gui.resources import stylesheet_filename
@@ -42,6 +44,8 @@ class MainWindow(Gtk.Window):
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'focus-filter-term-entry':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
+        'focus-note-collection-chooser':
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'quit':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'move-paned':
@@ -63,7 +67,6 @@ class MainWindow(Gtk.Window):
     def _connect_events(self):
         self.connect('delete-event', lambda source, param: self.do_quit())
         self.connect('print-marker', lambda source: print('*' * 80))
-        self.connect('reset', lambda source: logger.debug('RESET' * 80))
         self.paned.connect('notify::position', self._on_paned_moved)
         self._notify_paned_position_handler = self.connect(
             'notify::paned-position',
@@ -156,6 +159,18 @@ class MainWindow(Gtk.Window):
             Gdk.ModifierType.CONTROL_MASK,
             Gtk.AccelFlags.VISIBLE)
         self.add_accelerator(
+            'focus-note-collection-chooser',
+            self.accel_group,
+            ord('K'),
+            Gdk.ModifierType.CONTROL_MASK,
+            Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator(
+            'reset',
+            self.accel_group,
+            Gdk.KEY_Escape,
+            0,
+            Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator(
             'quit',
             self.accel_group,
             ord('Q'),
@@ -197,8 +212,12 @@ def map_dispatch_to_props(dispatch):
             lambda source: dispatch(close_note()),
         'focus-filter-term-entry':
             lambda source, s1: dispatch(focus_filter_term_entry()),
+        'focus-note-collection-chooser':
+            lambda source, _: dispatch(focus_note_collection_chooser()),
         'move-paned':
             lambda source, position: dispatch(move_paned_position(position)),
+        'reset':
+            lambda source: dispatch(reset()),
     }
 
 

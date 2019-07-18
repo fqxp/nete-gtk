@@ -73,9 +73,14 @@ reduce = create_reducer({
         .set('preselected_note_title',
              preselected_note(state, action['filter_term']))),
 
-    ActionType.LOADED_NOTES: lambda state, action: (
-        state.set('notes', ordered(action['notes']))),
-
     ActionType.PRESELECT_NOTE: lambda state, action: (
         state.set('preselected_note_title', action['note_title'])),
+
+    ActionType.RESET: lambda state, action:  (
+        state.set('preselected_note_title', None)),
+
+    ActionType.SELECT_NOTE_COLLECTION: lambda state, action: (
+        state
+        .set('preselected_note_title', None)
+        .set('notes', ordered(action['notes']))),
 })

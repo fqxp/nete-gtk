@@ -21,6 +21,17 @@ def current_note_collection(state: State) -> NoteCollection:
 
 
 @lru_cache()
+def note_collection_by_id(
+    state: State,
+    note_collection_id: str
+) -> NoteCollection:
+    return find(
+        state['configuration'].note_collections,
+        lambda note_collection: (note_collection.id
+                                 == note_collection_id))
+
+
+@lru_cache()
 def current_note(state: State) -> Union[Note, None]:
     return state.get('current_note')
 

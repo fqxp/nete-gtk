@@ -8,6 +8,7 @@ class HeaderBar(Gtk.HeaderBar):
 
     current_note_collection_id = GObject.Property(type=str)
     note_collections = GObject.Property(type=GObject.TYPE_PYOBJECT)
+    note_collection_chooser_has_focus = GObject.Property(type=bool, default=False)
 
     __gsignals__ = {
         'collection-selected':
@@ -23,7 +24,9 @@ class HeaderBar(Gtk.HeaderBar):
     def _build_ui(self):
         self.set_show_close_button(True)
 
-        self.collection_chooser = Gtk.ComboBoxText()
+        self.collection_chooser = Gtk.ComboBoxText(
+            focus_on_click=False,
+        )
         for i, note_collection in enumerate(self.note_collections):
             self.collection_chooser.append(
                 note_collection.id,
@@ -44,6 +47,13 @@ class HeaderBar(Gtk.HeaderBar):
             'changed',
             lambda source: self.emit(
                 'collection-selected', source.get_active_id()))
+        self.connect(
+            'notify::note-collection-chooser-has-focus',
+            self._on_notify_note_collection_chooser_has_focus)
+
+    def _on_notify_note_collection_chooser_has_focus(self, source, param):
+        if self.get_property('note-collection-chooser-has-focus'):
+            self.collection_chooser.popup()
 
 
 def map_state_to_props(state):
@@ -61,6 +71,8 @@ def map_state_to_props(state):
          )),
         ('current_note_collection_id',
             state['ui']['current_note_collection_id']),
+        ('note-collection-chooser-has-focus',
+            state['ui']['focus'] == 'note_collection_chooser'),
     )
 
 
