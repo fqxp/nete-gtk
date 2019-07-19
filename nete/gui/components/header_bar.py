@@ -9,6 +9,7 @@ class HeaderBar(Gtk.HeaderBar):
     current_note_collection_id = GObject.Property(type=str)
     note_collections = GObject.Property(type=GObject.TYPE_PYOBJECT)
     note_collection_chooser_has_focus = GObject.Property(type=bool, default=False)
+    focus = GObject.Property(type=str, default='')
 
     __gsignals__ = {
         'collection-selected':
@@ -16,7 +17,7 @@ class HeaderBar(Gtk.HeaderBar):
     }
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(can_focus=False, **kwargs)
 
         self._build_ui()
         self._connect_events()
@@ -24,8 +25,12 @@ class HeaderBar(Gtk.HeaderBar):
     def _build_ui(self):
         self.set_show_close_button(True)
 
+        self.focus_label = Gtk.Label()
+        self.pack_start(self.focus_label)
+
         self.collection_chooser = Gtk.ComboBoxText(
-            focus_on_click=False,
+            name='note_collection_chooser',
+            can_focus=True,
         )
         for i, note_collection in enumerate(self.note_collections):
             self.collection_chooser.append(
@@ -42,11 +47,17 @@ class HeaderBar(Gtk.HeaderBar):
             self.collection_chooser,
             'active-id',
             GObject.BindingFlags.DEFAULT)
+        self.bind_property(
+            'focus',
+            self.focus_label,
+            'label',
+            GObject.BindingFlags.DEFAULT)
 
         self.collection_chooser.connect(
             'changed',
             lambda source: self.emit(
                 'collection-selected', source.get_active_id()))
+        self.collection_chooser.connect('notify::popup-shown', self._on_notify_collection_chooser_popup_shown)
         self.connect(
             'notify::note-collection-chooser-has-focus',
             self._on_notify_note_collection_chooser_has_focus)
@@ -54,6 +65,10 @@ class HeaderBar(Gtk.HeaderBar):
     def _on_notify_note_collection_chooser_has_focus(self, source, param):
         if self.get_property('note-collection-chooser-has-focus'):
             self.collection_chooser.popup()
+
+    def _on_notify_collection_chooser_popup_shown(self, source, param):
+        if not self.collection_chooser.get_property('popup-shown'):
+            self.emit('collection-selected', source.get_active_id())
 
 
 def map_state_to_props(state):
@@ -73,6 +88,7 @@ def map_state_to_props(state):
             state['ui']['current_note_collection_id']),
         ('note-collection-chooser-has-focus',
             state['ui']['focus'] == 'note_collection_chooser'),
+        ('focus', state['ui']['focus']),
     )
 
 

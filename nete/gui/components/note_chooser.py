@@ -4,7 +4,6 @@ from nete.gui.actions import (
     change_filter_term,
     choose_preselected_note,
     create_note,
-    focus_filter_term_entry,
     preselect_note,
     preselect_next,
     preselect_previous,
@@ -20,7 +19,6 @@ class NoteChooser(Gtk.Grid):
     notes = GObject.Property(type=GObject.TYPE_PYOBJECT)
     current_note_title = GObject.Property(type=str, default='')
     filter_term = GObject.Property(type=str, default='')
-    has_focus = GObject.Property(type=bool, default=False)
     preselected_note_title = GObject.Property(type=str, default='')
 
     __gsignals__ = {
@@ -30,8 +28,6 @@ class NoteChooser(Gtk.Grid):
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'filter-term-changed':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, (str,)),
-        'filter-term-entry-focused':
-            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
         'preselect-note':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, (str,)),
         'preselect-next-note':
@@ -69,7 +65,7 @@ class NoteChooser(Gtk.Grid):
         )
         self.scrollable_treelist.add(self.note_list_view)
 
-        self.create_button = Gtk.Button('New Note')
+        self.create_button = Gtk.Button('New Note', can_focus=False)
         self.attach(self.create_button, 0, 2, 1, 1)
 
         self.set_focus_chain([])
@@ -102,18 +98,11 @@ class NoteChooser(Gtk.Grid):
                            self.filter_view,
                            'filter-term',
                            GObject.BindingFlags.DEFAULT)
-        self.bind_property('has-focus',
-                           self.filter_view,
-                           'has-focus',
-                           GObject.BindingFlags.DEFAULT)
 
         self.filter_view.connect(
             'filter-term-changed',
             lambda source, filter_term: (
                 self.emit('filter-term-changed', filter_term)))
-        self.filter_view.connect(
-            'focused', lambda source: (
-                self.emit('filter-term-entry-focused')))
         self.filter_view.connect(
             'keyboard-down', lambda source: (
                 self.emit('preselect-next-note')))
@@ -136,7 +125,6 @@ def map_state_to_props(state):
             if state['current_note']
             else None)),
         ('filter-term', state['note_list']['filter_term']),
-        ('has-focus', state['ui']['focus'] == 'filter_term'),
         ('preselected-note-title', (
             state['note_list']['preselected_note_title'])),
     )
@@ -150,8 +138,6 @@ def map_dispatch_to_props(dispatch):
             dispatch(create_note())),
         'filter-term-changed': lambda source, filter_term: (
             dispatch(change_filter_term(filter_term))),
-        'filter-term-entry-focused': lambda source: (
-            dispatch(focus_filter_term_entry())),
         'preselect-note': lambda source, note_title: (
             dispatch(preselect_note(note_title))),
         'preselect-next-note': lambda source: (

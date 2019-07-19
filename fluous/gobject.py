@@ -16,8 +16,10 @@ def connect(Component, map_state_to_props=lambda state: tuple(), map_dispatch_to
         component_kwargs = {**initial_properties, **kwargs}
 
         if 'build_component' in getargspec(Component).args:
-            build_component = lambda ChildComponent: ChildComponent(
-                store=store)
+            build_component = lambda ChildComponent, *args, **kwargs: ChildComponent(
+                *args,
+                store=store,
+                **kwargs)
             component = Component(*args, build_component=build_component, **component_kwargs)
         else:
             component = Component(*args, **component_kwargs)

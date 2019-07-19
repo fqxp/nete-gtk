@@ -55,6 +55,10 @@ reduce = create_reducer({
                 change_title(state['note_list']['notes'],
                              action['old_title'],
                              action['new_title'])),
+            ['note_list', 'notes', ny], (
+                lambda note: note.set(
+                    'visible',
+                    is_visible(note['title'], state['note_list']['filter_term']))),
         ) if state['current_note'] else state,
 
     ActionType.CANCEL_EDIT_NOTE_TITLE: lambda state, action: (
@@ -77,28 +81,32 @@ reduce = create_reducer({
         state.transform(
             ['current_note'], None,
             ['ui', 'current_note_collection_id'], action['collection_id'],
+            ['ui', 'focus'], 'filter_term_entry',
             ['note_list', 'preselected_note_title'], None,
             ['note_list', 'notes'], ordered(action['notes']),
+            ['ui', 'focus'], 'filter_term_entry',
         ),
 
-    ActionType.FOCUS_FILTER_TERM_ENTRY: lambda state, action:
+    ActionType.FOCUS: lambda state, action:
         state.transform(
-            ['ui', 'focus'], 'filter_term',
-            ['note_list', 'preselected_note_title'], (
-                first_visible_note(
-                    state['note_list']['notes'],
-                    state['note_list']['filter_term']))
+            ['ui', 'focus'], action['widget_name'],
         ),
 
-    ActionType.FOCUS_NOTE_COLLECTION_CHOOSER: lambda state, action: (
-        state.transform(['ui', 'focus'], 'note_collection_chooser')),
+    # ActionType.FOCUS_FILTER_TERM_ENTRY: lambda state, action:
+    #     state.transform(
+    #         ['ui', 'focus'], 'filter_term_entry',
+    #         ['note_list', 'preselected_note_title'], (
+    #             first_visible_note(
+    #                 state['note_list']['notes'],
+    #                 state['note_list']['filter_term']))
+    #     ),
 
     ActionType.TOGGLE_EDIT_NOTE_TEXT: lambda state, action:
         state.transform(
             ['ui', 'focus'], (
                 'note_editor' if state['ui']['focus'] != 'note_editor'
                 else 'note_view')
-        ),
+        ) if state['current_note'] is not None else state,
 
     ActionType.FINISH_EDIT_NOTE_TEXT: lambda state, action: (
         state.transform(['ui', 'focus'], 'note_view')),
@@ -108,7 +116,7 @@ reduce = create_reducer({
             ['ui', 'focus'], (
                 'note_title_editor' if state['ui']['focus'] != 'note_title_editor'
                 else 'note_view')
-        ),
+        ) if state['current_note'] is not None else state,
 
     ActionType.MOVE_PANED_POSITION: lambda state, action: (
         state.transform(['ui', 'paned_position'], action['position'])),
