@@ -15,9 +15,10 @@ def move_paned_position(position):
     }
 
 
-def focus_note_collection_chooser():
+def focus(widget_name):
     return {
-        'type': ActionType.FOCUS_NOTE_COLLECTION_CHOOSER,
+        'type': ActionType.FOCUS,
+        'widget_name': widget_name,
     }
 
 

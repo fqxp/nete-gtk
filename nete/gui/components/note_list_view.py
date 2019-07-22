@@ -69,6 +69,9 @@ class NoteListView(Gtk.TreeView):
             self.get_property('notes'),
             self.get_property('current_note_title'))
 
+        if self.get_property('current_note_title') is None:
+            return
+
         treeiter = self.get_model().get_treeiter_by_note_title(
             self.get_property('current_note_title'))
         self.scroll_note_into_view(treeiter)

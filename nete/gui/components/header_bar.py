@@ -16,7 +16,7 @@ class HeaderBar(Gtk.HeaderBar):
     }
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(can_focus=False, **kwargs)
 
         self._build_ui()
         self._connect_events()
@@ -25,7 +25,8 @@ class HeaderBar(Gtk.HeaderBar):
         self.set_show_close_button(True)
 
         self.collection_chooser = Gtk.ComboBoxText(
-            focus_on_click=False,
+            name='note_collection_chooser',
+            can_focus=True,
         )
         for i, note_collection in enumerate(self.note_collections):
             self.collection_chooser.append(

@@ -9,6 +9,7 @@ from nete.gui.actions import (
     initialize,
     load_configuration,
     load_ui_state,
+    reset,
     save_note,
     save_ui_state,
 )
@@ -62,6 +63,7 @@ class Application(Gtk.Application):
         self.store.dispatch(load_configuration())
         self.store.dispatch(initialize())
         self.store.dispatch(load_ui_state())
+        self.store.dispatch(reset())
 
         self.window = ConnectedMainWindow(self.store)
 

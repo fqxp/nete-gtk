@@ -3,14 +3,11 @@ from gi.repository import Gdk, Gtk, GObject
 
 class FilterView(Gtk.Bin):
 
-    has_focus = GObject.Property(type=bool, default=False)
     filter_term = GObject.Property(type=str, default='')
 
     __gsignals__ = {
         'filter-term-changed':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, (str,)),
-        'focused':
-            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
         'keyboard-down':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
         'keyboard-up':
@@ -27,17 +24,17 @@ class FilterView(Gtk.Bin):
         self._connect_events()
 
     def _build_ui(self):
-        self.filter_term_entry = Gtk.Entry(text=self.filter_term)
+        self.filter_term_entry = Gtk.Entry(
+            name='filter_term_entry',
+            text=self.filter_term,
+            placeholder_text='Filter notes (Ctrl-F) ...'
+        )
         self.add(self.filter_term_entry)
 
     def _connect_events(self):
         self.bind_property('filter-term',
                            self.filter_term_entry,
                            'text',
-                           GObject.BindingFlags.DEFAULT)
-        self.bind_property('has-focus',
-                           self.filter_term_entry,
-                           'has-focus',
                            GObject.BindingFlags.DEFAULT)
 
         self.filter_term_entry.connect(
@@ -47,9 +44,6 @@ class FilterView(Gtk.Bin):
             'changed',
             lambda source: (
                 self.emit('filter-term-changed', source.get_property('text'))))
-        self.filter_term_entry.connect(
-            'focus-in-event',
-            lambda source, direction: (self.emit('focused')))
         self.filter_term_entry.connect(
             'key-press-event',
             self.on_key_press_event)

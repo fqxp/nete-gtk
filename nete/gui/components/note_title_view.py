@@ -81,7 +81,6 @@ class NoteTitleView(Gtk.Box):
         if self.get_property('mode') == 'view':
             self.title_stack.set_visible_child_name('view')
         elif self.get_property('mode') == 'edit':
-            self.title_editor.grab_focus()
             self.title_stack.set_visible_child_name('editor')
 
     def _on_notify_text_edit_mode(self):
@@ -96,14 +95,16 @@ class NoteTitleView(Gtk.Box):
         self.title_view_event_box = Gtk.EventBox()
         self.title_view_event_box.add(self.title_view)
 
-        self.title_editor = Gtk.Entry(text=self.title)
+        self.title_editor = Gtk.Entry(
+            name='note_title_editor',
+            text=self.title)
 
         self.title_stack = Gtk.Stack()
         self.title_stack.add_named(self.title_view_event_box, 'view')
         self.title_stack.add_named(self.title_editor, 'editor')
         self.title_stack.set_visible_child_name('view')
 
-        self.edit_button = Gtk.Button.new_with_label('Edit')
+        self.edit_button = Gtk.Button('Edit', can_focus=False)
 
         self.pack_start(self.title_stack, True, True, 0)
         self.pack_end(self.edit_button, False, False, 2)

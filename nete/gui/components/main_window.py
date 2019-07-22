@@ -7,8 +7,7 @@ from nete.gui.actions import (
     create_note,
     delete_note,
     close_note,
-    focus_filter_term_entry,
-    focus_note_collection_chooser,
+    focus,
     move_paned_position,
     reset,
     select_next,
@@ -16,6 +15,7 @@ from nete.gui.actions import (
     toggle_edit_note_text,
     toggle_edit_note_title)
 from nete.gui.resources import stylesheet_filename
+from nete.gui.components.focus_manager import FocusManager
 from .header_bar import ConnectedHeaderBar
 from .note_chooser import ConnectedNoteChooser
 from .note_view import ConnectedNoteView
@@ -25,6 +25,8 @@ logger = logging.getLogger(__name__)
 
 
 class MainWindow(Gtk.Window):
+
+    focus = GObject.Property(type=str)
     paned_position = GObject.Property(type=int)
 
     __gsignals__ = {
@@ -61,6 +63,7 @@ class MainWindow(Gtk.Window):
 
         self.set_name('main-window')
 
+        self.focus_manager = FocusManager(self)
         self._build_ui(build_component)
         self._connect_events()
 
@@ -72,6 +75,16 @@ class MainWindow(Gtk.Window):
             'notify::paned-position',
             self._on_notify_paned_position
         )
+        self.bind_property(
+            'focus',
+            self.header_bar,
+            'subtitle',
+            GObject.BindingFlags.DEFAULT)
+        self.bind_property(
+            'focus',
+            self.focus_manager,
+            'focus',
+            GObject.BindingFlags.DEFAULT)
 
     def _on_paned_moved(self, source, param):
         with self.handler_block(self._notify_paned_position_handler):
@@ -93,7 +106,10 @@ class MainWindow(Gtk.Window):
             css_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-        self.header_bar = build_component(ConnectedHeaderBar)
+        self.header_bar = build_component(
+            ConnectedHeaderBar,
+            has_subtitle=True,
+        )
         self.set_titlebar(self.header_bar)
 
         self.paned = Gtk.HPaned(position=self.paned_position)
@@ -182,6 +198,12 @@ class MainWindow(Gtk.Window):
             ord('P'),
             Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK,
             Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator(
+            'test',
+            self.accel_group,
+            ord('T'),
+            Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK,
+            Gtk.AccelFlags.VISIBLE)
         self.add_accel_group(self.accel_group)
 
     def do_quit(self):
@@ -191,6 +213,7 @@ class MainWindow(Gtk.Window):
 def map_state_to_props(state):
     return (
         ('paned_position', state['ui']['paned_position']),
+        ('focus', state['ui']['focus']),
     )
 
 
@@ -211,9 +234,9 @@ def map_dispatch_to_props(dispatch):
         'close-note':
             lambda source: dispatch(close_note()),
         'focus-filter-term-entry':
-            lambda source, s1: dispatch(focus_filter_term_entry()),
+            lambda source, s1: dispatch(focus('filter_term_entry')),
         'focus-note-collection-chooser':
-            lambda source, _: dispatch(focus_note_collection_chooser()),
+            lambda source, _: dispatch(focus('note_collection_chooser')),
         'move-paned':
             lambda source, position: dispatch(move_paned_position(position)),
         'reset':
