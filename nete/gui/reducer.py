@@ -4,7 +4,6 @@ from pyrsistent import ny
 from nete.gui.actions.action_types import ActionType
 from nete.gui.state.utils.note_list import (
     add_new,
-    change_title,
     is_visible,
     ordered,
     without
@@ -49,17 +48,24 @@ reduce = create_reducer({
 
     ActionType.FINISH_EDIT_NOTE_TITLE: lambda state, action:
         state.transform(
-            ['current_note', 'title'], action['new_title'],
-            ['ui', 'focus'], 'note_view',
-            ['note_list', 'notes'], ordered(
-                change_title(state['note_list']['notes'],
-                             action['old_title'],
-                             action['new_title'])),
-            ['note_list', 'notes', ny], (
+            ['current_note'], (
                 lambda note: note.set(
+                    'title',
+                    action['new_title']) if note else note
+            ),
+            ['ui', 'focus'], 'note_view',
+            ['note_list', 'notes', ny, 'title'], (
+                lambda title: action['new_title']
+                if title == action['old_title']
+                else title
+            ),
+            ['note_list', 'notes', ny], (
+                lambda note_list_item: note_list_item.set(
                     'visible',
-                    is_visible(note['title'], state['note_list']['filter_term']))),
-        ) if state['current_note'] else state,
+                    is_visible(note_list_item['title'],
+                               state['note_list']['filter_term']))
+            ),
+        ),
 
     ActionType.CANCEL_EDIT_NOTE_TITLE: lambda state, action: (
         state.transform(['ui', 'focus'], 'note_view')),
@@ -141,7 +147,8 @@ reduce = create_reducer({
         state.transform(
             ['note_list', 'notes', ny], (
                 lambda note: note.set('visible',
-                                      is_visible(note['title'], action['filter_term']))),
+                                      is_visible(note['title'],
+                                                 action['filter_term']))),
             ['note_list', 'filter_term'], action['filter_term'],
             ['note_list', 'preselected_note_title'], (
                 preselected_note(state['note_list'], action['filter_term']))),

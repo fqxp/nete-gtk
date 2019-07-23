@@ -42,7 +42,7 @@ def config_state():
     )
 
 
-def test_config_to_state(config, config_state):
+def test__config_to_state__converts_parsed_config_to_state_object(config, config_state):
     config_parser = ConfigParser()
     config_parser.read_dict(config)
 
@@ -51,7 +51,7 @@ def test_config_to_state(config, config_state):
     assert result == config_state
 
 
-def test_state_to_config(config_state, config):
+def test__state_to_config__converts_state_object_to_config_object(config_state, config):
     result = config_storage.state_to_config(config_state)
 
     assert result == config

@@ -1,6 +1,7 @@
 FROM debian:bullseye
 
 ENV LANG C.UTF-8
+ENV PYTHONPATH /app
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
     gir1.2-gtk-3.0 \
