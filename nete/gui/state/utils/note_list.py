@@ -12,13 +12,6 @@ def without(notes, title):
         ))
 
 
-def change_title(notes, old_title, new_title):
-    return freeze(
-        note.set('title', new_title) if note['title'] == old_title
-        else note
-        for note in notes)
-
-
 def ordered(notes):
     return freeze(
         sorted(
