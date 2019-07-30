@@ -1,2 +1,1 @@
-commonmark==0.8.1
-pyrsistent==0.14.7
+.

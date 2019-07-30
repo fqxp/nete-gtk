@@ -1,23 +1,29 @@
 [![Build Status](https://travis-ci.org/fqxp/nete-gtk.svg?branch=master)](https://travis-ci.org/fqxp/nete-gtk)
 
+# NOTE: THIS IS NOT FOR PUBLIC USE YET
+
 # What is nete?
 
-nete (pronounce: neat) will be a nice, useful note-taking application.
+nete (pronounce: neat) will be a easy-to-use, useful note-taking
+application.
 
-It's currently in alpha state.
+It's currently in pre-alpha state.
 
 ## Plans
 
-nete will:
+nete possibly will:
 * be easy to use
 * have a clean interface
 * never forget anything you typed
 * have multiple interfaces, like graphical, command line, or HTTP/AJAX
-* encrypt notes using GnuPG if wanted
-* synchronize notes using a central server or client-to-client
-* ...
+* encrypt notes using GnuPG if desired
+* synchronize notes using an external tool like SyncThing, OwnCloud/Nextcloud or
+  the like
+* and a few more
 
 # Installation
+
+Assume `$PROJECT_DIR` is the directory you cloned this repository into.
 
 ## Package dependencies
 
@@ -25,54 +31,60 @@ nete will:
 
 Install Debian packages:
 
-* python3
-* gir1.2-webkit2-4.0
-* gir1.2-gtksource-4
+    $ sudo apt-get install python3 gir1.2-webkit2-4.0 \
+      gir1.2-gtksource-4
 
 ### ArchLinux
 
-Install packages from AUR:
+Install packages:
 
-* python
-* webkit2gtk
-* gtksourceview4
+    $ sudo pacman -S python webkit2gtk gtksourceview4
 
 ## Install
 
-Install using setuptools:
+Change into project directory and install using setuptools:
 
-    ./setup.py install
+    $ cd $PROJECT_DIR
+    $ ./setup.py install --user
 
-You should now have the script `nete-gtk` in your path.
-
-## Running the application
-
-Run `nete-gtk` to start the application.
+You should now have the script `nete-gtk` in your path. Run it!
 
 # Development
-First, set up a virtualenv to install required development packages into and
-install development requirements:
 
-    cd $PROJECT_DIR
-    virtualenv --system-site-packages venv
-    source venv/bin/activate
-    pip install -r requirements-dev.txt
+## Development Setup
 
-Activate the virtual environment and run setup:
+First, set up a virtualenv to install required development packages
+into and install development requirements:
 
-    ./venv/bin/activate
-    python setup.py egg_info -b dev develop
+    $ cd $PROJECT_DIR
+    $ virtualenv venv
+    $ source venv/bin/activate
+    (venv)$ pip install -r requirements.txt -r requirements-dev.txt
 
-The `-b dev` adds the string `"dev"` to the version, which is important if you
-want to run an installed version of nete and a version you’re developing on at
-the same time.
+You should now have the `nete-gtk` script installed in the virtual
+environment.
 
 Run the application:
 
-    (venv)$ NETE_DIR=. nete-gtk
+    (venv)$ nete-gtk
+
+For the interesting debug info (including actions and state changes),
+run:
+
+    (venv)$ nete-gtk --debug
+
+To additionally output tracebacks at action dispatch time, run:
+
+    (venv)$ nete-gtk --debug --traceback
 
 ## Running tests
 
 Run tests:
 
     (venv)$ pytest
+
+## Create a binary distribution
+
+Run:
+
+    $ ./setup.py bdist_egg
