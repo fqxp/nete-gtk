@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=nete
+Comment[en]=Note-taking
+Comment[de]=Notizen
+Exec=nete-gtk
+Terminal=false
+Type=Application
+StartupNotify=true
+MimeType=text/markdown;
+Categories=GTK;Utility;TextEditor;
+Keywords[de]=Text;Editor;Klartext;Schreiben;Markdown
+Keywords=Text;Editor;Plaintext;Write;Markdown
+DBusActivatable=false

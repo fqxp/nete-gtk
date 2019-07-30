@@ -27,7 +27,7 @@ Assume `$PROJECT_DIR` is the directory you cloned this repository into.
 
 ## Package dependencies
 
-### Debian jessie
+### Debian buster
 
 Install Debian packages:
 
