@@ -27,7 +27,9 @@ class FilterView(Gtk.Bin):
         self.filter_term_entry = Gtk.Entry(
             name='filter_term_entry',
             text=self.filter_term,
-            placeholder_text='Filter notes (Ctrl-F) ...'
+            placeholder_text='Filter notes (Ctrl-F) ...',
+            secondary_icon_name='edit-clear-symbolic',
+            secondary_icon_activatable=True,
         )
         self.add(self.filter_term_entry)
 
@@ -44,14 +46,11 @@ class FilterView(Gtk.Bin):
             'changed',
             lambda source: (
                 self.emit('filter-term-changed', source.get_property('text'))))
-        self.filter_term_entry.connect(
-            'key-press-event',
-            self.on_key_press_event)
-        self.filter_term_entry.connect(
-            'key-release-event',
-            self.on_key_release_event)
+        self.filter_term_entry.connect('key-press-event', self._on_key_press_event)
+        self.filter_term_entry.connect('key-release-event', self._on_key_release_event)
+        self.filter_term_entry.connect('icon-release', self._on_icon_release)
 
-    def on_key_press_event(self, source, event_key):
+    def _on_key_press_event(self, source, event_key):
         if event_key.keyval == Gdk.KEY_Down:
             self.emit('keyboard-down')
             return True
@@ -61,9 +60,13 @@ class FilterView(Gtk.Bin):
         else:
             return False
 
-    def on_key_release_event(self, source, event_key):
+    def _on_key_release_event(self, source, event_key):
         if event_key.keyval == Gdk.KEY_Escape:
             self.emit('reset')
             return True
         else:
             return False
+
+    def _on_icon_release(self, entry, icon_pos, event):
+        if icon_pos == Gtk.EntryIconPosition.SECONDARY:
+            self.filter_term_entry.props.text = ''
