@@ -13,15 +13,11 @@ from gi.repository import Gtk, GtkSource
 def main():
     setup_gtk()
 
-    app = Application()
-    exit_status = app.run(sys.argv)
-
     try:
-        Gtk.main()
+        app = Application()
+        sys.exit(app.run(sys.argv))
     except KeyboardInterrupt:
-        exit_status = 1
-
-    sys.exit(exit_status)
+        sys.exit(0)
 
 
 def setup_gtk():

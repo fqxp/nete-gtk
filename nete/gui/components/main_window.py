@@ -25,7 +25,7 @@ from nete.gui.components.note_view import ConnectedNoteView
 logger = logging.getLogger(__name__)
 
 
-class MainWindow(Gtk.Window):
+class MainWindow(Gtk.ApplicationWindow):
 
     focus = GObject.Property(type=str)
     paned_position = GObject.Property(type=int)
@@ -194,7 +194,7 @@ class MainWindow(Gtk.Window):
         self.add_accel_group(self.accel_group)
 
     def do_quit(self):
-        Gtk.main_quit()
+        self.props.application.quit()
 
 
 def map_state_to_props(state):
