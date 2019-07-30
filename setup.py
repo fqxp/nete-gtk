@@ -12,8 +12,8 @@ setup(
     install_requires=[
         'CommonMark>=0.8',
         'pyrsistent>=0.14',
-        'pycairo>=1.18',
-        'PyGObject>=3.32',
+        'pycairo>=1.16',
+        'PyGObject>=3.30',
     ],
     packages=find_packages(
         exclude=[

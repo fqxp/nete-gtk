@@ -2,7 +2,9 @@ sudo: required
 services: docker
 language: generic
 env:
-  - DOCKER_FILE="Dockerfile.debian9.py3" PYTHON="python3"
+  - DOCKER_FILE="Dockerfile.debian:10.py3" PYTHON="python3"
+  - DOCKER_FILE="Dockerfile.debian:testing.py3" PYTHON="python3"
+  - DOCKER_FILE="Dockerfile.ubuntu:rolling.py3" PYTHON="python3"
 
 before_install:
   - docker build -t nete -f "$DOCKER_FILE" .
