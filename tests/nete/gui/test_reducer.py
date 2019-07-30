@@ -131,7 +131,7 @@ def test__CHANGE_FILTER_TERM__doesnt_preselect_if_preselected_visible(state_with
     assert result['note_list']['preselected_note_title'] == 'FOO'
 
 
-def test__CHANGE_FILTER_TERM__preselects_first_visible_note_if_current_not_visible(state_with_notes): # noqa
+def test__CHANGE_FILTER_TERM__preselects_first_visible_note_if_current_not_visible(state_with_notes):  # noqa
     ''' CHANGE_FILTER_TERM preselects first visible note if current note isn’t visible'''
     result = reduce(state_with_notes, {
         'type': ActionType.CHANGE_FILTER_TERM,

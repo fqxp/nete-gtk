@@ -1,7 +1,7 @@
 from fluous.gobject import connect
 from gi.repository import Gtk, GObject
 from nete.gui.components.note_text_view import ConnectedNoteTextView
-from nete.gui.components.note_title_view import ConnectedNoteTitleView
+from nete.gui.components.toolbar import ConnectedToolbar
 
 
 class NoteView(Gtk.Stack):
@@ -29,8 +29,8 @@ class NoteView(Gtk.Stack):
     def _build_note_grid(self):
         grid = Gtk.Grid()
 
-        title_view = self.build_component(ConnectedNoteTitleView)
-        grid.attach(title_view, left=0, top=0, width=1, height=1)
+        toolbar = self.build_component(ConnectedToolbar)
+        grid.attach(toolbar, left=0, top=0, width=1, height=1)
 
         text_view = self.build_component(ConnectedNoteTextView)
         grid.attach(text_view, left=0, top=1, width=1, height=1)

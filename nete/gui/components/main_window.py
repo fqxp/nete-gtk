@@ -223,7 +223,7 @@ def map_dispatch_to_props(dispatch):
         'focus-filter-term-entry':
             lambda source, s1: dispatch(focus('filter_term_entry')),
         'focus-note-collection-chooser':
-            lambda source, _: dispatch(focus('note_collection_chooser')),
+            lambda source, _: dispatch(focus('note_collection_selector')),
         'move-paned':
             lambda source, position: dispatch(move_paned_position(position)),
         'reset':

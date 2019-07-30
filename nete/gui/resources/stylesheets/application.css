@@ -15,3 +15,8 @@ GtkTreeView row:selected {
   color: #000000;
   background-color: #eeeeee;
 }
+
+#edit-title-button {
+  min-width: 20px;
+  min-height: 20px;
+}
