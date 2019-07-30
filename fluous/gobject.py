@@ -8,21 +8,31 @@ __all__ = (
 silenced_notify_signals = []
 
 
-def connect(Component, map_state_to_props=lambda state: tuple(), map_dispatch_to_props=lambda dispatch: {}):
+def connect(
+    Component,
+    map_state_to_props=lambda state: tuple(),
+    map_dispatch_to_props=lambda dispatch: {}
+):
 
     def create_component(store, *args, **kwargs):
         initial_properties = {key.replace('-', '_'): value
-                              for (key, value) in map_state_to_props(store.state)}
+                              for (key, value) in map_state_to_props(store.state) or []}
         component_kwargs = {**initial_properties, **kwargs}
 
         if 'build_component' in getargspec(Component).args:
-            build_component = lambda ChildComponent, *args, **kwargs: ChildComponent(
+            def build_component(ChildComponent, *args, **kwargs):
+                return ChildComponent(
+                    *args,
+                    store=store,
+                    **kwargs)
+            component = Component(
                 *args,
-                store=store,
-                **kwargs)
-            component = Component(*args, build_component=build_component, **component_kwargs)
+                build_component=build_component,
+                **component_kwargs)
         else:
-            component = Component(*args, **component_kwargs)
+            component = Component(
+                *args,
+                **component_kwargs)
 
         # connect GObject signals to handlers
         for signal, signal_handler in map_dispatch_to_props(store.dispatch).items():
@@ -31,7 +41,8 @@ def connect(Component, map_state_to_props=lambda state: tuple(), map_dispatch_to
             # handler is provided as a default argument - this is a way to pass
             # a changing reference from the current context to the function
             # we’re defining.
-            def handler(source, arg0=None, arg1=None, arg2=None, arg3=None, signal=signal, signal_handler=signal_handler):
+            def handler(source, arg0=None, arg1=None, arg2=None, arg3=None,
+                        signal=signal, signal_handler=signal_handler):
                 if is_notify_signal_silenced(source, signal):
                     return
 
