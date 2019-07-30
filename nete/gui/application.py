@@ -48,10 +48,10 @@ class Application(Gtk.Application):
 
         self.debug_mode = options.contains('debug')
         self.traceback = options.contains('traceback')
-
-        if len(command_line.get_arguments()) > 1:
-            note_title = command_line.get_arguments()[1]
-            self.store.dispatch(select_note(note_title))
+        self.note_title = (
+            command_line.get_arguments()[1]
+            if len(command_line.get_arguments()) > 1
+            else None)
 
         self.activate()
         return 0
@@ -86,6 +86,8 @@ class Application(Gtk.Application):
             self.window = ConnectedMainWindow(self.store)
             self.window.set_application(self)
             self.window.show_all()
+
+        self.store.dispatch(select_note(self.note_title))
 
         self.window.present()
 
