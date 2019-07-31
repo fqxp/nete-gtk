@@ -33,7 +33,6 @@ class Application(Gtk.Application):
             register_session=True,
             **kwargs)
         GLib.set_application_name('nete')
-        GLib.set_prgname(self._application_id())
 
         self.add_main_option_entries(self._command_line_options())
         self.window = None
