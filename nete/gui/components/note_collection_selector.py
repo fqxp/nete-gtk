@@ -18,7 +18,7 @@ class NoteCollectionSelector(Gtk.ComboBoxText):
     def __init__(self, build_component, **kwargs):
         super().__init__(
             name='note_collection_selector',
-            can_focus=False,
+            can_focus=True,
             **kwargs
         )
 
