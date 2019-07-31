@@ -65,10 +65,8 @@ class NoteChooser(Gtk.Grid):
         )
         self.scrollable_treelist.add(self.note_list_view)
 
-        self.create_button = Gtk.Button('New Note', can_focus=False)
+        self.create_button = Gtk.Button(label='New Note', can_focus=False)
         self.attach(self.create_button, 0, 2, 1, 1)
-
-        self.set_focus_chain([])
 
     def _connect_events(self):
         self.create_button.connect(

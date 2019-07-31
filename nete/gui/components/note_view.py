@@ -24,7 +24,7 @@ class NoteView(Gtk.Stack):
         self.show_all()
 
     def _build_no_note_label(self):
-        return Gtk.Label('No note selected')
+        return Gtk.Label(label='No note selected')
 
     def _build_note_grid(self):
         grid = Gtk.Grid()

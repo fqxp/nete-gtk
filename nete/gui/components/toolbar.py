@@ -32,12 +32,12 @@ class Toolbar(Gtk.Box):
 
     def _on_notify_text_edit_mode(self):
         if self.get_property('text-edit-mode') == 'view':
-            self.edit_button.set_label('Edit')
+            self.edit_button.props.label = 'Edit'
         else:
-            self.edit_button.set_label('Done')
+            self.edit_button.props.label = 'Done'
 
     def _build_ui(self):
-        self.edit_button = Gtk.Button('Edit', can_focus=False)
+        self.edit_button = Gtk.Button(label='Edit', can_focus=False)
         self.pack_end(self.edit_button, False, False, 2)
 
 
