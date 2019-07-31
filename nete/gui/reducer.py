@@ -1,7 +1,7 @@
 from fluous import create_reducer
 from pyrsistent import ny
 
-from nete.gui.actions.action_types import ActionType
+from nete.gui.action_types import ActionType
 from nete.gui.state.utils.note_list import (
     add_new,
     is_visible,

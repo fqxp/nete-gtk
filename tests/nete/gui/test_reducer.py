@@ -5,7 +5,7 @@ from nete.gui.state.models import (
     Note,
     NoteListItem,
 )
-from nete.gui.actions.action_types import ActionType
+from nete.gui.action_types import ActionType
 
 
 @pytest.fixture
