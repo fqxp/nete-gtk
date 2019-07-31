@@ -59,10 +59,13 @@ into and install development requirements:
     $ cd $PROJECT_DIR
     $ virtualenv venv
     $ source venv/bin/activate
-    (venv)$ pip install -r requirements.txt -r requirements-dev.txt
+    (venv)$ python setup.py egg_info -b dev develop
 
 You should now have the `nete-gtk` script installed in the virtual
-environment.
+environment. The `egg_info -b dev` makes sure the development version
+of `nete-gtk` never communicates with your system-wide nete
+installation (see
+[this Stackoverflow question](https://stackoverflow.com/questions/39547411/determine-program-was-installed-using-setup-py-develop))
 
 Run the application:
 
