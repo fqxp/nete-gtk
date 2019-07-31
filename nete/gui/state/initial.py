@@ -18,6 +18,7 @@ initial_state = State(
         current_note_collection_id=None,
         focus=None,
         paned_position=250,
+        title_error_message=None,
     ),
     development_mode=in_development_mode(),
 )

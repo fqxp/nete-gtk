@@ -35,6 +35,22 @@ def toggle_edit_note_title():
     }
 
 
+def validate_note_title(transient_title):
+    def validate_note_title(dispatch, state):
+        note_collection = current_note_collection(state)
+        storage = create_storage(note_collection)
+        error_message = storage.validate_note_title(
+            transient_title,
+            state['current_note']['title'])
+
+        return {
+            'type': ActionType.VALIDATE_NOTE_TITLE,
+            'error_message': error_message,
+        }
+
+    return validate_note_title
+
+
 def finish_edit_note_title(new_title):
     def finish_edit_note_title(dispatch, state):
         if current_note(state) is None:

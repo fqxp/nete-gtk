@@ -13,7 +13,11 @@ from nete.gui.state.models import NoteListItem
 
 reduce = create_reducer({
     ActionType.CANCEL_EDIT_NOTE_TITLE: lambda state, action: (
-        state.transform(['ui', 'focus'], 'note_view')),
+        state.transform(
+            ['ui', 'focus'], 'note_view',
+            ['ui', 'title_error_message'], None,
+        )
+    ),
 
     ActionType.CHANGE_CURSOR_POSITION: lambda state, action:
         state.transform(
@@ -66,6 +70,7 @@ reduce = create_reducer({
                     action['new_title']) if note else note
             ),
             ['ui', 'focus'], 'note_view',
+            ['ui', 'title_error_message'], None,
             ['note_list', 'notes', ny, 'title'], (
                 lambda title: action['new_title']
                 if title == action['old_title']
@@ -83,15 +88,6 @@ reduce = create_reducer({
         state.transform(
             ['ui', 'focus'], action['widget_name'],
         ),
-
-    # ActionType.FOCUS_FILTER_TERM_ENTRY: lambda state, action:
-    #     state.transform(
-    #         ['ui', 'focus'], 'filter_term_entry',
-    #         ['note_list', 'preselected_note_title'], (
-    #             first_visible_note(
-    #                 state['note_list']['notes'],
-    #                 state['note_list']['filter_term']))
-    #     ),
 
     ActionType.LOAD_CONFIGURATION: lambda state, action:
         state.transform(
@@ -119,6 +115,7 @@ reduce = create_reducer({
     ActionType.RESET: lambda state, action:
         state.transform(
             ['ui', 'focus'], 'note_view',
+            ['ui', 'title_error_message'], None,
             ['note_list', 'preselected_note_title'], None,
         ),
 
@@ -152,6 +149,9 @@ reduce = create_reducer({
                 'note_title_editor' if state['ui']['focus'] != 'note_title_editor'
                 else 'note_view')
         ) if state['current_note'] is not None else state,
+
+    ActionType.VALIDATE_NOTE_TITLE: lambda state, action:
+        state.transform(['ui', 'title_error_message'], action['error_message'])
 })
 
 

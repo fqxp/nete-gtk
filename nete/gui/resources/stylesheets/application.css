@@ -1,22 +1,26 @@
-#main-window {
-  /* background-color: #aa0000; */
-}
-
 GtkTreeView {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 GtkTreeView row {
-  color: #eeeeee;
-  background-color: #666666;
+    color: #eeeeee;
+    background-color: #666666;
 }
 
 GtkTreeView row:selected {
-  color: #000000;
-  background-color: #eeeeee;
+    color: #000000;
+    background-color: #eeeeee;
 }
 
 #edit-title-button {
-  min-width: 20px;
-  min-height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+}
+
+#title-error-message {
+    background-color: #ffaaaa;
+}
+
+#title-error-message label {
+    padding: 4px;
 }

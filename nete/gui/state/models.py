@@ -47,6 +47,7 @@ class Ui(PRecord):
                           'note_collection_selector',
                       ), None)
                   )
+    title_error_message = field(type=(str, type(None)))
 
 
 class Configuration(PClass):
