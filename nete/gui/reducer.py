@@ -53,12 +53,6 @@ reduce = create_reducer({
                                        state['note_list']['filter_term'])))
         ),
 
-    ActionType.MOVE_NOTE_TO_TRASH: lambda state, action:
-        state.transform(
-            ['note_list', 'notes'], (
-                without(state['note_list']['notes'], action['note_title']))
-        ),
-
     ActionType.FINISH_EDIT_NOTE_TEXT: lambda state, action: (
         state.transform(['ui', 'focus'], 'note_view')),
 
@@ -98,6 +92,15 @@ reduce = create_reducer({
 
     ActionType.LOADED_UI_STATE: lambda state, action:
         state.transform(['ui'], lambda c: c.update(action['ui'])),
+
+    ActionType.MOVE_NOTE_TO_TRASH: lambda state, action:
+        state.transform(
+            ['note_list', 'notes'], (
+                without(state['note_list']['notes'], action['note_title'])),
+            ['ui', 'info_message'], (
+                'Note »{}« has been moved '
+                'into the trashcan'.format(action['note_title'])),
+        ),
 
     ActionType.MOVE_PANED_POSITION: lambda state, action: (
         state.transform(['ui', 'paned_position'], action['position'])),

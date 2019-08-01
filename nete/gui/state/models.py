@@ -48,6 +48,7 @@ class Ui(PRecord):
                       ), None)
                   )
     title_error_message = field(type=(str, type(None)))
+    info_message = field(type=(str, type(None)))
 
 
 class Configuration(PClass):

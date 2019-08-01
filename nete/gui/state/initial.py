@@ -19,6 +19,7 @@ initial_state = State(
         focus=None,
         paned_position=250,
         title_error_message=None,
+        info_message=None,
     ),
     development_mode=in_development_mode(),
 )

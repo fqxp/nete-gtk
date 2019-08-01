@@ -1,10 +1,11 @@
 from fluous.gobject import connect
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GLib, GObject
+from nete.gui.components.info_bar import ConnectedInfoBar
 from nete.gui.components.note_text_view import ConnectedNoteTextView
 from nete.gui.components.toolbar import ConnectedToolbar
 
 
-class NoteView(Gtk.Stack):
+class NoteView(Gtk.Bin):
 
     is_note_selected = GObject.Property(type=bool, default=False)
     widget = GObject.Property(type=GObject.TYPE_PYOBJECT, default=None)
@@ -18,10 +19,17 @@ class NoteView(Gtk.Stack):
         self._connect_events()
 
     def _build_ui(self):
-        self.add_named(self._build_no_note_label(), 'no-note-view')
-        self.add_named(self._build_note_grid(), 'note-view')
+        box = Gtk.VBox()
+        self.add(box)
 
-        self.show_all()
+        self.stack = Gtk.Stack()
+        self.stack.add_named(self._build_no_note_label(), 'no-note-view')
+        self.stack.add_named(self._build_note_grid(), 'note-view')
+
+        box.pack_start(self.stack, True, True, 0)
+
+        self.info_bar = self.build_component(ConnectedInfoBar)
+        box.pack_start(self.info_bar, False, False, 0)
 
     def _build_no_note_label(self):
         return Gtk.Label(label='No note selected')
@@ -43,9 +51,9 @@ class NoteView(Gtk.Stack):
 
     def _update_visibility(self):
         if self.get_property('is-note-selected'):
-            self.set_visible_child_name('note-view')
+            self.stack.set_visible_child_name('note-view')
         else:
-            self.set_visible_child_name('no-note-view')
+            self.stack.set_visible_child_name('no-note-view')
 
 
 def map_state_to_props(state):
