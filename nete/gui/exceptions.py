@@ -1,0 +1,2 @@
+class NeteException(Exception):
+    pass
