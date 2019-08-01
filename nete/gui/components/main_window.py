@@ -6,8 +6,8 @@ from gi.repository import Gdk, Gtk, GObject
 from nete.gui.actions import (
     close_note,
     create_note,
-    delete_note,
     focus,
+    move_note_to_trash,
     move_paned_position,
     reset,
     select_next,
@@ -41,7 +41,7 @@ class MainWindow(Gtk.ApplicationWindow):
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'create-note':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
-        'delete-note':
+        'move-note-to-trash':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'close-note':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
@@ -150,7 +150,7 @@ class MainWindow(Gtk.ApplicationWindow):
             Gdk.ModifierType.CONTROL_MASK,
             Gtk.AccelFlags.VISIBLE)
         self.add_accelerator(
-            'delete-note',
+            'move-note-to-trash',
             self.accel_group,
             ord('D'),
             Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK,
@@ -216,8 +216,8 @@ def map_dispatch_to_props(dispatch):
             lambda source: dispatch(select_previous()),
         'create-note':
             lambda source: dispatch(create_note()),
-        'delete-note':
-            lambda source: dispatch(delete_note()),
+        'move-note-to-trash':
+            lambda source: dispatch(move_note_to_trash()),
         'close-note':
             lambda source: dispatch(close_note()),
         'focus-filter-term-entry':

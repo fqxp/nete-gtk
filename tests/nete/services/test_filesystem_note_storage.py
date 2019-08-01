@@ -1,5 +1,7 @@
 import pytest
 
+from gi.repository import Gio
+
 from nete.services.filesystem_note_storage import FilesystemNoteStorage
 from nete.gui.state.models import Note, NoteCollection
 
@@ -41,7 +43,8 @@ def test__list__returns_list_of_note_list_items(note_storage, create_note):
 
 def test__create_note__creates_a_note_in_filesystem(
     note_collection,
-    note_storage, tmp_path
+    note_storage,
+    tmp_path
 ):
     note = note_storage.create_note()
 
@@ -71,14 +74,19 @@ def test__save__saves_note_to_filesystem(note_storage, tmp_path):
     assert open(tmp_path.joinpath('NOTE 1.md')).read() == 'TEXT'
 
 
-def test__delete__deletes_note_from_filesystem(note_storage, tmp_path, create_note):
+def test__move_to_trash__moves_note_from_folder_to_trash(
+    note_storage,
+    tmp_path,
+    create_note
+):
     create_note('NOTE 1')
 
     assert tmp_path.joinpath('NOTE 1.md').exists()
 
-    note_storage.delete('NOTE 1')
+    note_storage.move_to_trash('NOTE 1')
 
     assert not tmp_path.joinpath('NOTE 1.md').exists()
+    assert Gio.File.new_for_uri('trash:///NOTE 1.md').query_exists()
 
 
 def test__move__renames_note(note_storage, tmp_path, create_note):

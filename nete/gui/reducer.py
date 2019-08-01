@@ -53,7 +53,7 @@ reduce = create_reducer({
                                        state['note_list']['filter_term'])))
         ),
 
-    ActionType.DELETE_NOTE: lambda state, action:
+    ActionType.MOVE_NOTE_TO_TRASH: lambda state, action:
         state.transform(
             ['note_list', 'notes'], (
                 without(state['note_list']['notes'], action['note_title']))

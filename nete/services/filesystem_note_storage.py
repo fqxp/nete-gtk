@@ -5,6 +5,8 @@ import os
 import os.path
 from typing import List, Union
 
+from gi.repository import Gio
+
 from nete.gui.state.models import Note, NoteCollection, NoteListItem
 from nete.gui.state.utils.note_list import is_visible
 from nete.gui.state.selectors import current_note
@@ -61,8 +63,8 @@ class FilesystemNoteStorage:
         with open(filename, 'w') as fd:
             fd.write(note['text'])
 
-    def delete(self, note_title: str):
-        os.unlink(self._filename_from_title(note_title))
+    def move_to_trash(self, note_title: str):
+        Gio.File.new_for_path(self._filename_from_title(note_title)).trash()
 
     def move(self, old_title, new_title):
         old_filename = self._filename_from_title(old_title)

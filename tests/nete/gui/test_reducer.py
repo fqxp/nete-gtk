@@ -67,9 +67,9 @@ def test__CREATED_NOTE__sets_visibility_according_to_current_filter(state, note)
     assert 'TITLE' not in titles
 
 
-def test__DELETE_NOTE__deletes_note(state_with_notes):
+def test__MOVE_NOTE_TO_TRASH__moves_note_to_trash(state_with_notes):
     result = reduce(state_with_notes, {
-        'type': ActionType.DELETE_NOTE,
+        'type': ActionType.MOVE_NOTE_TO_TRASH,
         'note_title': 'FOO'
     })
 

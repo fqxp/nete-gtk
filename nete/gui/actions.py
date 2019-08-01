@@ -80,8 +80,8 @@ def created_note(note):
     }
 
 
-def delete_note():
-    def delete_note(dispatch, state):
+def move_note_to_trash():
+    def move_note_to_trash(dispatch, state):
         if current_note(state) is None:
             return
 
@@ -91,16 +91,17 @@ def delete_note():
         next_note_title = (
             note_list_next(state, current_note_title)
             or note_list_previous(state, current_note_title)
+            or None
         )
         dispatch(select_note(next_note_title))
 
-        storage.delete(current_note_title)
+        storage.move_to_trash(current_note_title)
 
         return {
-            'type': ActionType.DELETE_NOTE,
+            'type': ActionType.MOVE_NOTE_TO_TRASH,
             'note_title': current_note_title,
         }
-    return delete_note
+    return move_note_to_trash
 
 
 def finish_edit_note_text(note_id):
@@ -367,7 +368,10 @@ def validate_note_title(transient_title):
     def validate_note_title(dispatch, state):
         note_collection = current_note_collection(state)
         storage = create_storage(note_collection)
-        error_message = storage.validate_note_title(transient_title)
+        error_message = storage.validate_note_title(
+            transient_title,
+            state['current_note']['title']
+        )
 
         return {
             'type': ActionType.VALIDATE_NOTE_TITLE,
