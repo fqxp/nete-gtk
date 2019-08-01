@@ -1,9 +1,11 @@
 Shortcuts to be used in nete main window:
 
-    Ctrl-q         Quit application
-    Ctrl-Shift-d   Delete note (after confirmation)
+    Ctrl-Shift-d   Move note to trash
+    Ctrl-f         Focus filter field
+    Ctrl-k         Focus note collection selector
     Ctrl-n         Create new note
-    Ctrl-t         Edit title
-    Ctrl-Enter     Edit text
-    Ctrl-up        Switch to previous note
-    Ctrl-down      Switch to next note
+    Ctrl-q         Quit application
+    Ctrl-t         Toggle edit title
+    Ctrl-Enter     Toggle edit text
+    Ctrl-Page up   Switch to previous note
+    Ctrl-Page down Switch to next note
