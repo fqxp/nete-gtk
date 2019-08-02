@@ -13,9 +13,9 @@ before_script:
   - docker run --volume "$(pwd):/app" --workdir "/app" --tty --detach nete bash > container_id
 
 script:
-  - docker exec "$(cat container_id)" "$PYTHON" setup.py install
-  - docker exec "$(cat container_id)" pytest-3
-  - docker exec "$(cat container_id)" "$PYTHON" -m pycodestyle nete
+  - docker exec -e TRAVIS=true "$(cat container_id)" "$PYTHON" setup.py install
+  - docker exec -e TRAVIS=true "$(cat container_id)" pytest-3 -s
+  - docker exec -e TRAVIS=true "$(cat container_id)" "$PYTHON" -m pycodestyle nete
 
 after_script:
   - docker stop "$(cat container_id)"
