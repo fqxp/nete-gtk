@@ -59,13 +59,13 @@ class MainWindow(Gtk.ApplicationWindow):
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
     }
 
-    def __init__(self, build_component, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         self.set_name('main-window')
 
         self.focus_manager = FocusManager(self)
-        self._build_ui(build_component)
+        self._build_ui()
         self._connect_events()
 
     def _connect_events(self):
@@ -91,7 +91,7 @@ class MainWindow(Gtk.ApplicationWindow):
             'position',
             self.get_property('paned_position'))
 
-    def _build_ui(self, build_component):
+    def _build_ui(self):
         self.set_default_size(800, 600)
 
         css_provider = Gtk.CssProvider()
@@ -102,17 +102,17 @@ class MainWindow(Gtk.ApplicationWindow):
             css_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-        self.header_bar = build_component(ConnectedHeaderBar)
+        self.header_bar = ConnectedHeaderBar()
         self.set_titlebar(self.header_bar)
 
         self.paned = Gtk.HPaned(position=self.paned_position)
         self.add(self.paned)
 
-        self.note_chooser = build_component(ConnectedNoteChooser)
+        self.note_chooser = ConnectedNoteChooser()
         self.paned.add1(self.note_chooser)
         self.paned.child_set_property(self.note_chooser, 'shrink', False)
 
-        self.note_view = build_component(ConnectedNoteView)
+        self.note_view = ConnectedNoteView()
         self.paned.add2(self.note_view)
 
         self._add_accelerators()

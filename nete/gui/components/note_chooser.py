@@ -40,15 +40,15 @@ class NoteChooser(Gtk.Grid):
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, tuple()),
     }
 
-    def __init__(self, build_component, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         self.set_name('note-list-view')
 
-        self._build_ui(build_component)
+        self._build_ui()
         self._connect_events()
 
-    def _build_ui(self, build_component):
+    def _build_ui(self):
         self.filter_view = FilterView()
         self.attach(self.filter_view, 0, 0, 1, 1)
 

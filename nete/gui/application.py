@@ -3,6 +3,7 @@ import sys
 
 from gi.repository import Gtk, Gio, GLib
 from fluous.store import Store
+from fluous.gobject import register_store
 from fluous.reducer_decorators import debug_reducer
 
 from nete.gui.actions import (
@@ -82,7 +83,9 @@ class Application(Gtk.Application):
                 lambda ui_state, dispatch: dispatch(save_ui_state(ui_state)),
                 selectors.ui_state)
 
-            self.window = ConnectedMainWindow(self.store)
+            register_store(self.store)
+
+            self.window = ConnectedMainWindow()
             self.window.set_application(self)
             self.window.show_all()
 

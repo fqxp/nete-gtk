@@ -10,10 +10,9 @@ class NoteView(Gtk.Bin):
     is_note_selected = GObject.Property(type=bool, default=False)
     widget = GObject.Property(type=GObject.TYPE_PYOBJECT, default=None)
 
-    def __init__(self, build_component, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.build_component = build_component
         self._build_ui()
         self._update_visibility()
         self._connect_events()
@@ -28,7 +27,7 @@ class NoteView(Gtk.Bin):
 
         box.pack_start(self.stack, True, True, 0)
 
-        self.info_bar = self.build_component(ConnectedInfoBar)
+        self.info_bar = ConnectedInfoBar()
         box.pack_start(self.info_bar, False, False, 0)
 
     def _build_no_note_label(self):
@@ -37,10 +36,10 @@ class NoteView(Gtk.Bin):
     def _build_note_grid(self):
         grid = Gtk.Grid()
 
-        toolbar = self.build_component(ConnectedToolbar)
+        toolbar = ConnectedToolbar()
         grid.attach(toolbar, left=0, top=0, width=1, height=1)
 
-        text_view = self.build_component(ConnectedNoteTextView)
+        text_view = ConnectedNoteTextView()
         grid.attach(text_view, left=0, top=1, width=1, height=1)
 
         return grid

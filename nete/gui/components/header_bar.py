@@ -9,15 +9,15 @@ class HeaderBar(Gtk.HeaderBar):
 
     development_mode = GObject.Property(type=bool, default=False)
 
-    def __init__(self, build_component, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(can_focus=False, **kwargs)
 
-        self._build_ui(build_component)
+        self._build_ui()
 
-    def _build_ui(self, build_component):
+    def _build_ui(self):
         self.set_show_close_button(True)
 
-        self.note_collection_selector = build_component(ConnectedNoteCollectionSelector)
+        self.note_collection_selector = ConnectedNoteCollectionSelector()
         self.pack_start(self.note_collection_selector)
 
         if self.props.development_mode:
@@ -26,7 +26,7 @@ class HeaderBar(Gtk.HeaderBar):
                 use_markup=True)
             self.pack_start(development_mode_label)
 
-        self.note_title = build_component(ConnectedNoteTitle)
+        self.note_title = ConnectedNoteTitle()
         self.set_custom_title(self.note_title)
 
 

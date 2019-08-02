@@ -15,7 +15,7 @@ class NoteCollectionSelector(Gtk.ComboBoxText):
             (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
 
-    def __init__(self, build_component, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(
             name='note_collection_selector',
             can_focus=True,

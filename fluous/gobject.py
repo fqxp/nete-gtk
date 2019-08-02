@@ -6,6 +6,12 @@ __all__ = (
 )
 
 silenced_notify_signals = []
+_store = None
+
+
+def register_store(store):
+    global _store
+    _store = store
 
 
 def connect(
@@ -14,28 +20,17 @@ def connect(
     map_dispatch_to_props=lambda dispatch: {}
 ):
 
-    def create_component(store, *args, **kwargs):
+    def create_component(*args, **kwargs):
+        global _store
+
         initial_properties = {key.replace('-', '_'): value
-                              for (key, value) in map_state_to_props(store.state) or []}
+                              for (key, value) in map_state_to_props(_store.state) or []}
         component_kwargs = {**initial_properties, **kwargs}
 
-        if 'build_component' in getargspec(Component).args:
-            def build_component(ChildComponent, *args, **kwargs):
-                return ChildComponent(
-                    *args,
-                    store=store,
-                    **kwargs)
-            component = Component(
-                *args,
-                build_component=build_component,
-                **component_kwargs)
-        else:
-            component = Component(
-                *args,
-                **component_kwargs)
+        component = Component(*args, **component_kwargs)
 
         # connect GObject signals to handlers
-        for signal, signal_handler in map_dispatch_to_props(store.dispatch).items():
+        for signal, signal_handler in map_dispatch_to_props(_store.dispatch).items():
             # GI isn’t able to handle variable argument lists, so we’re passing
             # an optional list of a maximum number of arguments. The signal
             # handler is provided as a default argument - this is a way to pass
@@ -55,8 +50,8 @@ def connect(
         # subscribe properties to state changes
         def set_state(state):
             set_properties(component, map_state_to_props(state))
-        set_state(store.state)
-        store.subscribe(lambda state, _: set_state(state))
+        set_state(_store.state)
+        _store.subscribe(lambda state, _: set_state(state))
 
         return component
 
