@@ -18,5 +18,3 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 COPY . /nete-gtk
 WORKDIR /nete-gtk
 RUN ./setup.py install
-
-CMD py.test-3

@@ -75,9 +75,6 @@ def test__save__saves_note_to_filesystem(note_storage, tmp_path):
     assert open(tmp_path.joinpath('NOTE 1.md')).read() == 'TEXT'
 
 
-print('ENVIRONMENT')
-print(os.environ)
-
 @pytest.mark.skipif(
     'TRAVIS' in os.environ,
     reason='fails on Travis CI because they probably have some kind of '

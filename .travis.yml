@@ -14,7 +14,7 @@ before_script:
 
 script:
   - docker exec -e TRAVIS=true "$(cat container_id)" "$PYTHON" setup.py install
-  - docker exec -e TRAVIS=true "$(cat container_id)" pytest-3 -s
+  - docker exec -e TRAVIS=true "$(cat container_id)" xvfb-run pytest-3 -s
   - docker exec -e TRAVIS=true "$(cat container_id)" "$PYTHON" -m pycodestyle nete
 
 after_script:

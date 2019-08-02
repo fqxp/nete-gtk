@@ -4,6 +4,8 @@ from gi.repository import Gtk, GLib, GObject
 
 class InfoBar(Gtk.InfoBar):
 
+    REVEAL_TIMEOUT = 5
+
     info_message = GObject.Property(type=str)
 
     def __init__(self, **kwargs):
@@ -19,13 +21,13 @@ class InfoBar(Gtk.InfoBar):
         self._connect_events()
 
     def _build_ui(self):
-        self.info_bar_label = Gtk.Label()
-        self.get_content_area().add(self.info_bar_label)
+        self.label = Gtk.Label()
+        self.get_content_area().add(self.label)
 
     def _connect_events(self):
         self.bind_property(
             'info-message',
-            self.info_bar_label,
+            self.label,
             'label',
             GObject.BindingFlags.DEFAULT)
 
@@ -53,11 +55,11 @@ class InfoBar(Gtk.InfoBar):
         self._remove_infobar_timeout()
         self._info_bar_event_source_id = GLib.timeout_add_seconds(
             priority=GLib.PRIORITY_DEFAULT,
-            interval=5,
+            interval=self.REVEAL_TIMEOUT,
             function=self._on_infobar_timeout)
 
     def _on_infobar_timeout(self):
-        self.info_bar.props.revealed = False
+        self.props.revealed = False
         self._info_bar_event_source_id = None
         return False
 
