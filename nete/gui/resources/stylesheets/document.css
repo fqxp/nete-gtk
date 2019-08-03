@@ -27,3 +27,7 @@ ul, ol, p {
 li {
     list-style: disc;
 }
+
+a {
+    text-decoration: none;
+}
