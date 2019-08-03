@@ -1,8 +1,8 @@
 from fluous.gobject import connect
 from gi.repository import Gtk, GtkSource, GObject, WebKit2
-import commonmark
 
 from nete.gui.actions import change_cursor_position, change_note_text
+from nete.gui.services.markdown import markdown
 from nete.gui.resources import (
     template_resource,
     stylesheet_filename,
@@ -96,7 +96,7 @@ class TextView(Gtk.ScrolledWindow):
 
     def render_text(self, text):
         stylesheet_url = stylesheet_filename('document')
-        rendered_body = commonmark.commonmark(self.props.text)
+        rendered_body = markdown(self.props.text)
 
         return template_resource('document').format(
             style_sheet_url=stylesheet_url,

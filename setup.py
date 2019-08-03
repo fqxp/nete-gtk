@@ -10,7 +10,7 @@ setup(
     license='GPL',
     url='https://github.com/fqxp/nete-gtk',
     install_requires=[
-        'CommonMark>=0.8',
+        'mistune>=0.8,<2.0',
         'pyrsistent>=0.14',
         'cairocffi>=1.0',
         'PyGObject>=3.30',
