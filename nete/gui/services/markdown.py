@@ -2,47 +2,62 @@ import random
 import re
 
 from mistune import (
+    BlockGrammar,
+    BlockLexer,
     Markdown,
     Renderer,
-    InlineGrammar,
-    InlineLexer,
 )
 
 
 class CheckboxRenderer(Renderer):
-    def checkbox(self, checked, label):
+    def checkbox(self, level, checked, label):
         id = random.randint(0, 1 << 32)
         return (
-            '<div>'
+            '<div class="checkbox checkbox__level_{level}">'
             '  <input type="checkbox" id="{id}" onclick="return false" {checked}>'
-            '  <label for={id}>{label}</label>'
+            '  <label for="{id}">{label}</label>'
             '</div>'.format(
+                level=level + 1,
                 checked='checked' if checked else '',
                 id=id,
                 label=label,
             ))
 
 
-class CheckboxInlineLexer(InlineLexer):
+class CheckboxGrammar(BlockGrammar):
+
+    checkbox = re.compile(r'^( *)\[(.)\] (.*?)(?:\n+|$)', re.M)
+
+
+class CheckboxBlockLexer(BlockLexer):
+
+    grammar_class = CheckboxGrammar
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.enable_checkbox()
+
     def enable_checkbox(self):
-        self.rules.checkbox = re.compile(
-            r'^\[(.)\] (.*)$',
-            re.M
-        )
+        self.default_rules.insert(0, 'checkbox')
 
-        self.default_rules.insert(3, 'checkbox')
+    def parse_checkbox(self, m):
+        self.tokens.append({
+            'type': 'checkbox',
+            'level': m.group(1),
+            'checked': m.group(2),
+            'label': m.group(3),
+        })
 
-    def output_checkbox(self, m):
-        checkmark = m.group(1)
-        label = m.group(2)
-        return self.renderer.checkbox(
-            checked=(checkmark != ' '),
-            label=label)
+
+class CustomMarkdown(Markdown):
+    def output_checkbox(self):
+        level = int(len(self.token['level']) / 2)
+        checked = self.token['checked'] != ' '
+        label = self.token['label']
+
+        return self.renderer.checkbox(level, checked, label)
 
 
 renderer = CheckboxRenderer()
-inline = CheckboxInlineLexer(renderer)
-inline.enable_checkbox()
-markdown = Markdown(
-    renderer=renderer,
-    inline=inline)
+lexer = CheckboxBlockLexer()
+markdown = CustomMarkdown(renderer=renderer, block=lexer)

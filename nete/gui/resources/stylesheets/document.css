@@ -31,3 +31,18 @@ li {
 a {
     text-decoration: none;
 }
+
+.checkbox {
+}
+
+.checkbox__level_2 {
+    padding-left: 1.5em;
+}
+
+.checkbox__level_3 {
+    padding-left: 3em;
+}
+
+.checkbox__level_4 {
+    padding-left: 4.5em;
+}
