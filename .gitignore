@@ -12,7 +12,3 @@ venv/
 
 # testing
 .pytest-tmp/
-
-# vim
-NERD_tree_*
-.ropeproject/
