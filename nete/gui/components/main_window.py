@@ -53,8 +53,6 @@ class MainWindow(Gtk.ApplicationWindow):
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'move-paned':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, (int,)),
-        'print-marker':
-            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
         'reset':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
     }
@@ -70,7 +68,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def _connect_events(self):
         self.connect('delete-event', lambda source, param: self.do_quit())
-        self.connect('print-marker', lambda source: print('*' * 80))
         self.paned.connect('notify::position', self._on_paned_moved)
         self._notify_paned_position_handler = self.connect(
             'notify::paned-position',
@@ -184,12 +181,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.accel_group,
             ord('Q'),
             Gdk.ModifierType.CONTROL_MASK,
-            Gtk.AccelFlags.VISIBLE)
-        self.add_accelerator(
-            'print-marker',
-            self.accel_group,
-            ord('P'),
-            Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK,
             Gtk.AccelFlags.VISIBLE)
         self.add_accel_group(self.accel_group)
 
