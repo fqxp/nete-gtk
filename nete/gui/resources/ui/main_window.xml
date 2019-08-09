@@ -1,0 +1,51 @@
+<ApplicationWindow
+    id="main-window"
+    name="main-window">
+
+    <signal
+        name="next-note"
+        flags="RUN_FIRST ACTION" />
+    <signal
+        name="move-paned"
+        flags="RUN_FIRST ACTION"
+        arg_types="int" />
+
+    <property name="focus" type="str" />
+    <property name="paned-position" type="int" />
+
+    <titlebar>
+        <HeaderBar />
+    </titlebar>
+
+    <children>
+        <Paned id="paned" position="{self.props.paned-position}">
+            <NoteChooser shrink="{false}"/>
+            <NoteView />
+
+            <connect
+                signal="notify::position"
+                handler="_on_paned_moved" />
+        </Paned>
+    </children>
+
+    <connect
+        signal="delete-event"
+        handler="_on_delete_event" />
+    <connect
+        source="paned"
+        signal="notify::position"
+        handler="_on_paned_moved" />
+    <connect
+        signal="notify::paned-position"
+        handler="_on_notify_paned_position" />
+
+    <bind-property
+        source-property="focus"
+        target="focus-manager"
+        target-property="focus"
+        flags="DEFAULT" />
+
+    <accel-group>
+        <accelerator name="next-note" key="Page_Down" modifier="CONTROL" flags="VISIBLE" />
+    </accel-group>
+</ApplicationWindow>
