@@ -74,6 +74,12 @@ class NoteTextView(Gtk.Stack):
 
 class TextView(Gtk.ScrolledWindow):
 
+    WEBKIT_SETTINGS = WebKit2.Settings(
+        enable_java=False,
+        enable_javascript=False,
+        enable_javascript_markup=False,
+    )
+
     text = GObject.Property(type=str, default='')
 
     def __init__(self, **kwargs):
@@ -83,7 +89,9 @@ class TextView(Gtk.ScrolledWindow):
             can_focus=False,
             **kwargs)
 
-        self.web_view = WebKit2.WebView(name='note_view')
+        self.web_view = WebKit2.WebView(
+            name='note_view',
+            settings=self.WEBKIT_SETTINGS)
         self.add(self.web_view)
 
         self.update_view()
