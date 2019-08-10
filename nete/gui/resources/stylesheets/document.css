@@ -1,5 +1,5 @@
 body {
-    padding: 25px;
+    padding: 4vw;
     background-color: #eeeeee;
     display: flex;
     justify-content: center;
@@ -9,8 +9,7 @@ body {
 #content {
     padding: 2em 2em;
     background-color: #fdf6e3;
-    border: 1px solid #eee8d5;
-    box-shadow: 2px 2px 5px #93a1a1;
+    box-shadow: .3vw .3vw .8vw #93a1a1;
     flex-grow: 1;
     max-width: 60rem;
     min-width: 15rem;

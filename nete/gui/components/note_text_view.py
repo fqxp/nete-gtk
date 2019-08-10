@@ -14,6 +14,7 @@ class NoteTextView(Gtk.Stack):
     text = GObject.Property(type=str, default='')
     cursor_position = GObject.Property(type=int, default=0)
     mode = GObject.Property(type=str, default='view')
+    zoom_level = GObject.Property(type=float, default=1.0)
 
     __gsignals__ = {
         'text-changed':
@@ -42,6 +43,11 @@ class NoteTextView(Gtk.Stack):
             'cursor-position',
             self.text_editor,
             'cursor-position',
+            GObject.BindingFlags.DEFAULT)
+        self.bind_property(
+            'zoom-level',
+            self.text_view,
+            'zoom-level',
             GObject.BindingFlags.DEFAULT)
 
         self.text_editor.connect(
@@ -81,6 +87,7 @@ class TextView(Gtk.ScrolledWindow):
     )
 
     text = GObject.Property(type=str, default='')
+    zoom_level = GObject.Property(type=float, default=1.0)
 
     def __init__(self, **kwargs):
         super().__init__(
@@ -89,20 +96,30 @@ class TextView(Gtk.ScrolledWindow):
             can_focus=False,
             **kwargs)
 
+        self._build_ui()
+        self._connect_events()
+        self._update_view()
+
+    def _build_ui(self):
         self.web_view = WebKit2.WebView(
             name='note_view',
             settings=self.WEBKIT_SETTINGS)
         self.add(self.web_view)
 
-        self.update_view()
-        self.connect('notify::text', lambda source, params: self.update_view())
+    def _connect_events(self):
+        self.connect('notify::text', lambda source, params: self._update_view())
+        self.bind_property(
+            'zoom-level',
+            self.web_view,
+            'zoom-level',
+            GObject.BindingFlags.DEFAULT)
 
-    def update_view(self):
+    def _update_view(self):
         self.web_view.load_html(
-            self.render_text(self.get_property('text')),
+            self._render_text(self.get_property('text')),
             'file://.')
 
-    def render_text(self, text):
+    def _render_text(self, text):
         stylesheet_url = stylesheet_filename('document')
         rendered_body = markdown(self.props.text)
 
@@ -212,6 +229,7 @@ def map_state_to_props(state):
             if state['current_note']
             else 0)),
         ('mode', 'edit' if state['ui']['focus'] == 'note_editor' else 'view'),
+        ('zoom-level', state['ui']['zoom_level']),
     )
 
 

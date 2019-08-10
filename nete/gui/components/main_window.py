@@ -13,7 +13,10 @@ from nete.gui.actions import (
     select_next,
     select_previous,
     toggle_edit_note_text,
-    toggle_edit_note_title
+    toggle_edit_note_title,
+    zoom_in,
+    zoom_out,
+    zoom_reset,
 )
 from nete.gui.resources import stylesheet_filename
 from nete.gui.components.focus_manager import FocusManager
@@ -54,6 +57,12 @@ class MainWindow(Gtk.ApplicationWindow):
         'move-paned':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, (int,)),
         'reset':
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
+        'zoom-in':
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
+        'zoom-out':
+            (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
+        'zoom-reset':
             (GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.ACTION, None, ()),
     }
 
@@ -182,6 +191,24 @@ class MainWindow(Gtk.ApplicationWindow):
             ord('Q'),
             Gdk.ModifierType.CONTROL_MASK,
             Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator(
+            'zoom-in',
+            self.accel_group,
+            ord('+'),
+            Gdk.ModifierType.CONTROL_MASK,
+            Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator(
+            'zoom-out',
+            self.accel_group,
+            ord('-'),
+            Gdk.ModifierType.CONTROL_MASK,
+            Gtk.AccelFlags.VISIBLE)
+        self.add_accelerator(
+            'zoom-reset',
+            self.accel_group,
+            ord('0'),
+            Gdk.ModifierType.CONTROL_MASK,
+            Gtk.AccelFlags.VISIBLE)
         self.add_accel_group(self.accel_group)
 
     def do_quit(self):
@@ -219,6 +246,12 @@ def map_dispatch_to_props(dispatch):
             lambda source, position: dispatch(move_paned_position(position)),
         'reset':
             lambda source: dispatch(reset()),
+        'zoom-in':
+            lambda source: dispatch(zoom_in()),
+        'zoom-out':
+            lambda source: dispatch(zoom_out()),
+        'zoom-reset':
+            lambda source: dispatch(zoom_reset()),
     }
 
 

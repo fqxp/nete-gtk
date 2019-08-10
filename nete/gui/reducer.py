@@ -10,6 +10,10 @@ from nete.gui.state.utils.note_list import (
 )
 from nete.gui.state.models import NoteListItem
 
+ZOOM_LEVEL_MAX = 5.0
+ZOOM_LEVEL_MIN = 0.3
+ZOOM_INTERVAL = 0.2
+
 
 reduce = create_reducer({
     ActionType.CANCEL_EDIT_NOTE_TITLE: lambda state, action: (
@@ -154,7 +158,24 @@ reduce = create_reducer({
         ) if state['current_note'] is not None else state,
 
     ActionType.VALIDATE_NOTE_TITLE: lambda state, action:
-        state.transform(['ui', 'title_error_message'], action['error_message'])
+        state.transform(['ui', 'title_error_message'], action['error_message']),
+
+    ActionType.ZOOM_IN: lambda state, action:
+        state.transform(['ui', 'zoom_level'], (
+            lambda zoom_level: zoom_level + ZOOM_INTERVAL
+            if (zoom_level + ZOOM_INTERVAL) <= ZOOM_LEVEL_MAX
+            else ZOOM_LEVEL_MAX)
+        ),
+
+    ActionType.ZOOM_OUT: lambda state, action:
+        state.transform(['ui', 'zoom_level'], (
+            lambda zoom_level: zoom_level - ZOOM_INTERVAL
+            if (zoom_level - ZOOM_INTERVAL) >= ZOOM_LEVEL_MIN
+            else ZOOM_LEVEL_MIN)
+        ),
+
+    ActionType.ZOOM_RESET: lambda state, action:
+        state.transform(['ui', 'zoom_level'], 1.0),
 })
 
 

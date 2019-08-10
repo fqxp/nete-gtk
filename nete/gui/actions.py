@@ -379,3 +379,21 @@ def validate_note_title(transient_title):
         }
 
     return validate_note_title
+
+
+def zoom_in():
+    return {
+        'type': ActionType.ZOOM_IN,
+    }
+
+
+def zoom_out():
+    return {
+        'type': ActionType.ZOOM_OUT,
+    }
+
+
+def zoom_reset():
+    return {
+        'type': ActionType.ZOOM_RESET,
+    }

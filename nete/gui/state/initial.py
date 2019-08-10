@@ -20,6 +20,7 @@ initial_state = State(
         paned_position=250,
         title_error_message=None,
         info_message=None,
+        zoom_level=1.0,
     ),
     development_mode=in_development_mode(),
 )

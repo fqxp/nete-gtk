@@ -49,6 +49,7 @@ class Ui(PRecord):
                   )
     title_error_message = field(type=(str, type(None)))
     info_message = field(type=(str, type(None)))
+    zoom_level = field(type=(float))
 
 
 class Configuration(PClass):
