@@ -121,7 +121,7 @@ reduce = create_reducer({
 
     ActionType.RESET: lambda state, action:
         state.transform(
-            ['ui', 'focus'], 'note_view',
+            ['ui', 'focus'], 'note_view' if state['current_note'] else None,
             ['ui', 'title_error_message'], None,
             ['note_list', 'preselected_note_title'], None,
         ),
