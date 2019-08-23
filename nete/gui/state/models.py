@@ -49,6 +49,12 @@ class Ui(PRecord):
                   )
     title_error_message = field(type=(str, type(None)))
     info_message = field(type=(str, type(None)))
+    info_message_type = field(type=(str, type(None)),
+                              invariant=lambda value: (
+                                  value in (
+                                      None,
+                                      'info',
+                                      'error')))
     zoom_level = field(type=(float))
 
 
