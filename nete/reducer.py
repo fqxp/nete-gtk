@@ -1,14 +1,14 @@
 from fluous import create_reducer
 from pyrsistent import ny
 
-from nete.gui.action_types import ActionType
-from nete.gui.state.utils.note_list import (
+from nete.action_types import ActionType
+from nete.state.utils.note_list import (
     add_new,
     is_visible,
     ordered,
     without
 )
-from nete.gui.state.models import NoteListItem
+from nete.state.models import NoteListItem
 
 ZOOM_LEVEL_MAX = 5.0
 ZOOM_LEVEL_MIN = 0.3

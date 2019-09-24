@@ -4,7 +4,7 @@ import pytest
 from gi.repository import Gio
 
 from nete.services.filesystem_note_storage import FilesystemNoteStorage
-from nete.gui.state.models import Note, NoteCollection
+from nete.state.models import Note, NoteCollection
 
 
 __doc__ = 'FilesystemNoteStorage'

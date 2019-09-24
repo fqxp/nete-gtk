@@ -23,7 +23,7 @@ setup(
         ],
     ),
     package_data={
-        'nete.gui.resources': [
+        'nete.resources': [
             '*/*.css',
             '*/*.html',
             '*/*.lang',
@@ -41,7 +41,7 @@ setup(
     },
     entry_points={
         'gui_scripts': [
-            'nete-gtk = nete.gui.main:main',
+            'nete-gtk = nete.main:main',
         ],
     },
 )

@@ -1,9 +1,9 @@
 from fluous.gobject import connect
 from gi.repository import Gtk, GtkSource, GObject, WebKit2
 
-from nete.gui.actions import change_cursor_position, change_note_text
-from nete.gui.services.markdown import markdown
-from nete.gui.resources import (
+from nete.actions import change_cursor_position, change_note_text
+from nete.services.markdown import markdown
+from nete.resources import (
     template_resource,
     stylesheet_filename,
 )

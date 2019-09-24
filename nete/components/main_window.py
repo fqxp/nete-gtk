@@ -3,7 +3,7 @@ import logging
 from fluous.gobject import connect
 from gi.repository import Gdk, Gtk, GObject
 
-from nete.gui.actions import (
+from nete.actions import (
     close_note,
     create_note,
     focus,
@@ -18,11 +18,11 @@ from nete.gui.actions import (
     zoom_out,
     zoom_reset,
 )
-from nete.gui.resources import stylesheet_filename
-from nete.gui.components.focus_manager import FocusManager
-from nete.gui.components.header_bar import ConnectedHeaderBar
-from nete.gui.components.note_chooser import ConnectedNoteChooser
-from nete.gui.components.note_view import ConnectedNoteView
+from nete.resources import stylesheet_filename
+from nete.components.focus_manager import FocusManager
+from nete.components.header_bar import ConnectedHeaderBar
+from nete.components.note_chooser import ConnectedNoteChooser
+from nete.components.note_view import ConnectedNoteView
 
 
 logger = logging.getLogger(__name__)

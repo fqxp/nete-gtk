@@ -5,7 +5,7 @@ from configparser import ConfigParser
 
 from pyrsistent import pvector
 
-from nete.gui.state.models import Configuration, NoteCollection
+from nete.state.models import Configuration, NoteCollection
 from nete.utils import config_filename
 
 CONFIG_FILENAME = 'config.ini'

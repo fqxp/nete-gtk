@@ -3,8 +3,8 @@ from configparser import ConfigParser
 import pytest
 from pyrsistent import pvector
 
-from nete.gui.services import config_storage
-from nete.gui.state.models import (
+from nete.services import config_storage
+from nete.state.models import (
     Configuration,
     NoteCollection,
 )

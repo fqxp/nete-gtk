@@ -4,7 +4,7 @@ import time
 import pytest
 from gi.repository import Gtk, GLib
 
-from nete.gui.components.info_bar import InfoBar
+from nete.components.info_bar import InfoBar
 
 __doc__ = 'InfoBar'
 

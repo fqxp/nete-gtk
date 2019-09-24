@@ -5,7 +5,7 @@ from gi.repository import Gtk, Gio, GLib
 from fluous.store import Store
 from fluous.reducer_decorators import debug_reducer
 
-from nete.gui.actions import (
+from nete.actions import (
     initialize,
     load_configuration,
     load_ui_state,
@@ -14,9 +14,9 @@ from nete.gui.actions import (
     save_ui_state,
     select_note,
 )
-from nete.gui.components.main_window import ConnectedMainWindow
-from nete.gui.reducer import reduce
-from nete.gui.state import selectors, initial_state
+from nete.components.main_window import ConnectedMainWindow
+from nete.reducer import reduce
+from nete.state import selectors, initial_state
 from nete.utils import in_development_mode, version
 
 

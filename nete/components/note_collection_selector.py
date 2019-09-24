@@ -1,7 +1,7 @@
 from gi.repository import Gtk, GObject
 from fluous.gobject import connect
 
-from nete.gui.actions import select_collection
+from nete.actions import select_collection
 
 
 class NoteCollectionSelector(Gtk.ComboBoxText):

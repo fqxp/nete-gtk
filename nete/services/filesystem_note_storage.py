@@ -7,10 +7,10 @@ from typing import List, Union
 
 from gi.repository import Gio
 
-from nete.gui.exceptions import NeteException
-from nete.gui.state.models import Note, NoteCollection, NoteListItem
-from nete.gui.state.utils.note_list import is_visible
-from nete.gui.state.selectors import current_note
+from nete.exceptions import NeteException
+from nete.state.models import Note, NoteCollection, NoteListItem
+from nete.state.utils.note_list import is_visible
+from nete.state.selectors import current_note
 
 
 class FilesystemNoteStorage:

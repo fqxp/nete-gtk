@@ -1,8 +1,8 @@
 from gi.repository import Gtk, GObject
 from fluous.gobject import connect
 
-from nete.gui.components.note_title import ConnectedNoteTitle
-from nete.gui.components.note_collection_selector import ConnectedNoteCollectionSelector
+from nete.components.note_title import ConnectedNoteTitle
+from nete.components.note_collection_selector import ConnectedNoteCollectionSelector
 
 
 class HeaderBar(Gtk.HeaderBar):

@@ -1,11 +1,11 @@
 import pytest
 
-from nete.gui.reducer import reduce
-from nete.gui.state.models import (
+from nete.reducer import reduce
+from nete.state.models import (
     Note,
     NoteListItem,
 )
-from nete.gui.action_types import ActionType
+from nete.action_types import ActionType
 
 
 @pytest.fixture

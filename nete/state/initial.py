@@ -1,4 +1,4 @@
-from nete.gui.state.models import (
+from nete.state.models import (
     NoteList,
     State,
     Ui,

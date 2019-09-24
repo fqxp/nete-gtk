@@ -1,6 +1,6 @@
 from fluous.gobject import connect
 from gi.repository import Gdk, Gtk, GObject
-from nete.gui.actions import (
+from nete.actions import (
     cancel_edit_note_title,
     finish_edit_note_title,
     toggle_edit_note_title,

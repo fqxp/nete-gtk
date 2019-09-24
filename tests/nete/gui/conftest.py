@@ -1,6 +1,6 @@
 import pytest
 
-from nete.gui.state.models import (
+from nete.state.models import (
     Configuration,
     NoteCollection,
     NoteList,

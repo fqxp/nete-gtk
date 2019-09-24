@@ -1,7 +1,7 @@
 import pytest
 import random
 
-from nete.gui.services.markdown import markdown
+from nete.services.markdown import markdown
 
 
 @pytest.fixture

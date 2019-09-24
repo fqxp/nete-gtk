@@ -1,8 +1,8 @@
 from fluous.gobject import connect
 from gi.repository import Gtk, GLib, GObject
-from nete.gui.components.info_bar import ConnectedInfoBar
-from nete.gui.components.note_text_view import ConnectedNoteTextView
-from nete.gui.components.toolbar import ConnectedToolbar
+from nete.components.info_bar import ConnectedInfoBar
+from nete.components.note_text_view import ConnectedNoteTextView
+from nete.components.toolbar import ConnectedToolbar
 
 
 class NoteView(Gtk.Bin):

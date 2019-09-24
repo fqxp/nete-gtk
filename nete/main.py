@@ -1,9 +1,9 @@
 import sys
 
-from nete.gui.gi_versions import assert_gi_versions
+from nete.gi_versions import assert_gi_versions
 assert_gi_versions()
-from nete.gui.application import Application
-from nete.gui.resources import (
+from nete.application import Application
+from nete.resources import (
     sourceview_languages_dir,
     sourceview_styles_dir,
 )

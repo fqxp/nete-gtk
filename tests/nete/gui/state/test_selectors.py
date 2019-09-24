@@ -1,7 +1,7 @@
 import pytest
 from pyrsistent import s
 
-from nete.gui.state.models import (
+from nete.state.models import (
     Configuration,
     Note,
     NoteCollection,
@@ -10,7 +10,7 @@ from nete.gui.state.models import (
     State,
     Ui,
 )
-from nete.gui.state import selectors
+from nete.state import selectors
 
 
 @pytest.fixture

@@ -1,7 +1,7 @@
-from nete.gui.action_types import ActionType
+from nete.action_types import ActionType
 from nete.services import ui_state_storage
-from nete.gui.services import config_storage
-from nete.gui.state.selectors import (
+from nete.services import config_storage
+from nete.state.selectors import (
     current_note,
     current_note_collection,
     note_collection_by_id,

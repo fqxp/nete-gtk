@@ -1,6 +1,6 @@
 from fluous.gobject import connect
 from gi.repository import Gtk, GObject
-from nete.gui.actions import (
+from nete.actions import (
     toggle_edit_note_text,
 )
 
