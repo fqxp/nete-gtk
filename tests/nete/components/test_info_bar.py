@@ -89,7 +89,7 @@ def test__info_bar_reveal_timeout_is_extended_when_there_are_two_updates(
 
     assert info_bar_with_1_second_reveal_timeout.props.revealed
 
-    time.sleep(2)
+    time.sleep(1)
     refresh_gui()
 
     assert not info_bar_with_1_second_reveal_timeout.props.revealed
