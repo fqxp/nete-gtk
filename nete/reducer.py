@@ -137,7 +137,7 @@ reduce = create_reducer({
         state.transform(
             ['current_note'], None,
             ['ui', 'current_note_collection_id'], action['collection_id'],
-            ['ui', 'focus'], 'filter_term_entry',
+            ['note_list', 'filter_term'], '',
             ['note_list', 'preselected_note_title'], None,
             ['note_list', 'notes'], ordered(action['notes']),
             ['ui', 'focus'], 'filter_term_entry',
