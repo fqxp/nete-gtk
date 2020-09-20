@@ -141,7 +141,7 @@ reduce = create_reducer({
             ['note_list', 'preselected_note_title'], None,
             ['note_list', 'notes'], ordered(action['notes']),
             ['ui', 'focus'], 'filter_term_entry',
-        ),
+        ) if state['ui']['current_note_collection_id'] != action['collection_id'] else state,
 
     ActionType.TOGGLE_EDIT_NOTE_TEXT: lambda state, action:
         state.transform(
