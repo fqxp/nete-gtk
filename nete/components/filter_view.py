@@ -24,7 +24,7 @@ class FilterView(Gtk.Bin):
         self._connect_events()
 
     def _build_ui(self):
-        self.filter_term_entry = Gtk.Entry(
+        self.filter_term_entry = Gtk.SearchEntry(
             name='filter_term_entry',
             text=self.filter_term,
             placeholder_text='Filter notes (Ctrl-F) ...',
@@ -43,7 +43,7 @@ class FilterView(Gtk.Bin):
             'activate',
             lambda source: (self.emit('select-preselected-note')))
         self.filter_term_entry.connect(
-            'changed',
+            'search-changed',
             lambda source: (
                 self.emit('filter-term-changed', source.get_property('text'))))
         self.filter_term_entry.connect('key-press-event', self._on_key_press_event)
