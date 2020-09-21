@@ -6,6 +6,7 @@ __all__ = (
 )
 
 silenced_notify_signals = []
+signal_handler_level = 0
 
 
 def connect(
@@ -43,12 +44,20 @@ def connect(
             # we’re defining.
             def handler(source, arg0=None, arg1=None, arg2=None, arg3=None,
                         signal=signal, signal_handler=signal_handler):
+                global signal_handler_level
+
                 if is_notify_signal_silenced(source, signal):
                     return
 
-                args_count = signal_handler.__code__.co_argcount
-                handler_args = [source, arg0, arg1, arg2, arg3][:args_count]
-                signal_handler(*handler_args)
+                signal_handler_level += 1
+
+                try:
+                    if signal_handler_level == 1:
+                        args_count = signal_handler.__code__.co_argcount
+                        handler_args = [source, arg0, arg1, arg2, arg3][:args_count]
+                        signal_handler(*handler_args)
+                finally:
+                    signal_handler_level -= 1
 
             component.connect(signal, handler)
 
