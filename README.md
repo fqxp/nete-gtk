@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/fqxp/nete-gtk.svg?branch=master)](https://travis-ci.org/fqxp/nete-gtk)
 
-# NOTE: THIS IS NOT FOR PUBLIC USE YET
+**DISCLAIMER: This is alpha state software. Expect bugs.**
 
 # What is nete?
 
